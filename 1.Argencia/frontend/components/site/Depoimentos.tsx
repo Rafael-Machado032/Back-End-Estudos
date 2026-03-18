@@ -12,7 +12,7 @@ const depoimentos = [
 
 export default function Depoimentos() {
     const [pagina, setPagina] = useState(0)
-    const depoPagina = 2
+    const depoPagina = 3
     const nPaginas = depoimentos.length / depoPagina;
 
     const proximo = () => {
