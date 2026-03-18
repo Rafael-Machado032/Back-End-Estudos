@@ -54,11 +54,8 @@ export default function Depoimentos() {
                                 <img src="/images/RATE.svg" alt="rate.svg" />
                             </figure>
                             ))}
-
                         </div>
                     ))}
-
-
                 </div>
             </div>
         </section>
