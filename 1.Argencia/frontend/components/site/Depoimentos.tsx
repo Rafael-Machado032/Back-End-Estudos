@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 
 const depoimentos = [
-    { id: 1, foto: "DEPOIMENTO1.png", nome: "Miriam Souza", cargo: "Designer", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
+    { id: 1, foto: "DEPOIMENTO1.png", nome: "Miriam Souza", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
     { id: 2, foto: "DEPOIMENTO1.png", nome: "Bruno Souza", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
     { id: 3, foto: "DEPOIMENTO1.png", nome: "Carla Lima", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
     { id: 1, foto: "DEPOIMENTO1.png", nome: "Ana Silva", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
@@ -25,7 +25,7 @@ export default function Depoimentos() {
         return () => {
             clearInterval(contador)
         }
-    }, [pagina])
+    }, [pagina])//Se mudar a variavel morre e começa tudo de novo
 
 
 
@@ -50,7 +50,7 @@ export default function Depoimentos() {
                                     <img src={`/images/${item.foto}`} alt="" />
                                     <cite className='text-2xl font-bold'>{item.nome}</cite>
                                 </figcaption>
-                                <blockquote>O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold.</blockquote>
+                                <blockquote>{item.texto}</blockquote>
                                 <img src="/images/RATE.svg" alt="rate.svg" />
                             </figure>
                             ))}
