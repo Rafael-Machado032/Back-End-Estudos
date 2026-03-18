@@ -11,6 +11,7 @@ const depoimentos = [
 export default function Testimonials() {
     // 2. O "ponteiro" que diz qual depoimento estamos vendo (começa no 0)
     const [indice, setIndice] = useState(0)
+    
 
     // 3. Função para ir para o próximo
     const proximo = () => {
