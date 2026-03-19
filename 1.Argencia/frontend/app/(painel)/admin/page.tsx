@@ -2,6 +2,8 @@ import React from 'react'
 
 export default function page() {
   return (
-    <div>page</div>
+    <main className='mt-27 w-full border-10 h-50'>
+      
+    </main>
   )
 }

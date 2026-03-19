@@ -5,7 +5,7 @@ import Servicos from "@/components/site/Servicos";
 import Incetico from "@/components/site/Incetico";
 import Beneficio from "@/components/site/Beneficio";
 import Depoimentos from "@/components/site/Depoimentos";
-
+import Formulario from "@/components/site/Formulario";
 
 export default function Home() {
   return (
@@ -16,6 +16,7 @@ export default function Home() {
       <Incetico/>
       <Beneficio/>
       <Depoimentos/>
+      <Formulario/>
     </main>
   );
 }

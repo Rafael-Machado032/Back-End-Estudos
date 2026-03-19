@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import {Roboto, Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import  { Header }  from "@/components/Header";
-import  { Footer }  from "@/components/Footer";
+import "../globals.css";
+import  { Header }  from "@/components/admin/Header";
+import {Aside} from "@/components/admin/Aside";
+import  { Footer }  from "@/components/admin/Footer";
 
 
 const roboto = Roboto({
@@ -70,9 +71,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
-
         <Header />
+        <div className="flex">
+          <Aside/>
           {children}
+        </div>
+        
         <Footer />
       </body>
     </html>
