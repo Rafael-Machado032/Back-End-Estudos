@@ -11,9 +11,10 @@ const depoimentos = [
 ]
 
 export default function Depoimentos() {
-    const [pagina, setPagina] = useState(0)
+    const [pagina, setPagina] = useState(1)
     const depoPagina = 3
     const nPaginas = depoimentos.length / depoPagina;
+
 
     const proximo = () => {
         setPagina((paginaAtual) => (paginaAtual === nPaginas - 1 ? 0 : paginaAtual + 1))
@@ -30,8 +31,8 @@ export default function Depoimentos() {
 
 
     return (
-        <section className='w-full max-w-6xl mx-auto text-center p-4'>
-            <h2>Depoimentos</h2>
+        <section className='flex flex-col gap-9 w-full max-w-6xl mx-auto text-center p-4'>
+            <h2 className="font-bold text-5xl">Depoimentos</h2>
             {/* "Moldura" Onde vai limitar a visão do transbordo */}
             {/* Segredo: overflow-hidden Limita a visão  */}
             <div className=' overflow-hidden'>{/* Moldura */}
@@ -44,19 +45,28 @@ export default function Depoimentos() {
                         <div key={i_pagina} className='flex w-full gap-8 min-w-full justify-center items-center'>{/* Pagina */}
                             {/* Conteudo */}
                             {/* É criada a pagina mais cada pagina tem um conteudo diferente é feito cortes no array para selecionar o conteudo de cada pagina*/}
-                            {depoimentos.slice(i_pagina*depoPagina,(i_pagina+1)*depoPagina).map((item)=>(
+                            {depoimentos.slice(i_pagina * depoPagina, (i_pagina + 1) * depoPagina).map((item) => (
                                 <figure key={item.id} className='flex flex-col justify-center items-center gap-4'>
-                                <figcaption className='flex flex-col justify-center items-center'>
-                                    <img src={`/images/${item.foto}`} alt="" />
-                                    <cite className='text-2xl font-bold'>{item.nome}</cite>
-                                </figcaption>
-                                <blockquote>{item.texto}</blockquote>
-                                <img src="/images/RATE.svg" alt="rate.svg" />
-                            </figure>
+                                    <figcaption className='flex flex-col justify-center items-center'>
+                                        <img src={`/images/${item.foto}`} alt="" />
+                                        <cite className='text-2xl font-bold'>{item.nome}</cite>
+                                    </figcaption>
+                                    <blockquote className="text-[#7E92AC]">{item.texto}</blockquote>
+                                    <img src="/images/RATE.svg" alt="rate.svg" />
+                                </figure>
                             ))}
                         </div>
                     ))}
                 </div>
+            </div>
+            <div className="flex gap-4 justify-center items-center">
+                {Array.from({ length: nPaginas }).map((_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => setPagina(i)} // O "link" acontece aqui!
+                        className={`h-3 rounded-full transition-all duration-300 ${pagina === i ? "w-8 bg-blue-600" : "w-3 bg-gray-300"}`}
+                    />
+                ))}
             </div>
         </section>
     )
