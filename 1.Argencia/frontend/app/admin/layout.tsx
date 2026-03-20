@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import {Roboto, Geist, Geist_Mono } from "next/font/google";
+import { Roboto, Geist, Geist_Mono } from "next/font/google";
+import { NavegacaoProvedor } from "@/contexts/Navegacao"; // ajuste o caminho
 import "../globals.css";
-import  { Header }  from "@/components/admin/Header";
-import {Aside} from "@/components/admin/Aside";
-import  { Footer }  from "@/components/admin/Footer";
+import { Header } from "@/components/admin/Header";
+import { Aside } from "@/components/admin/Aside";
+import { Footer } from "@/components/admin/Footer";
 
 
 const roboto = Roboto({
@@ -63,21 +64,19 @@ export const viewport = { //A cor da barra do mobile com a cor do site
 };
 
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
-        <Header />
-        <div className="flex">
-          <Aside/>
-          {children}
-        </div>
-        
-        <Footer />
+        <NavegacaoProvedor>
+          <Header />
+          <div className="flex w-full">
+            <Aside />
+            {children}
+          </div>
+          <Footer />
+        </NavegacaoProvedor>
+
       </body>
     </html>
   );
