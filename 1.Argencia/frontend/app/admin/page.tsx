@@ -11,7 +11,7 @@ import Mensagem from '@/components/admin/site/Mensagem'
 export default function page() {
     const { abaAtiva } = useNavegacao(); // A mesma variável que o Aside alterou!
   return (
-    <main className='mt-27 w-full h-screen p-6'>
+    <main className='mt-28 h-128 w-full py-6 pr-6'>
         {abaAtiva === 'home' && <Home/>}
         {abaAtiva === 'depoimento' && <Depoimentos/>}
         {abaAtiva === 'mensagem' && <Mensagem/>}
