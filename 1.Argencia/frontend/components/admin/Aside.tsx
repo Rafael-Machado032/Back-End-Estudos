@@ -6,7 +6,7 @@ import { useNavegacao } from "@/contexts/Navegacao";
 export function Aside() {
     // Pegamos a função e o valor da nossa "nuvem"
     const { abaAtiva, setAbaAtiva } = useNavegacao();
-    const [isOpen, setIsOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
     return (
         <aside className={`flex w-full h-screen top-0 transition-all duration-700 ease-in-out ${isOpen ? ' max-w-90' : 'max-w-30'} `}>

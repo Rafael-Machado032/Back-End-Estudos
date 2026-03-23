@@ -1,6 +1,10 @@
-import React from 'react'
+"use client"
+
+import { useState } from "react"
+
 
 export default function Depoimentos() {
+    const [first, setfirst] = useState()
     return (
         <section className='flex flex-col sm:flex-row'>
             <div className='sm:w-1/2 pr-6'>

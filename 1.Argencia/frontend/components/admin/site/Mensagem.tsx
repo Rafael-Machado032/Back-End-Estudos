@@ -1,6 +1,9 @@
-import React from 'react'
+"use client"
+
+import { useState } from "react"
 
 export default function Mensagem() {
+    const [first, setfirst] = useState()
     return (
         <section className='flex flex-col sm:flex-row h-full'>
             <div className='sm:w-1/2 pr-6'>

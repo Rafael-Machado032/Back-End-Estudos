@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Roboto, Geist, Geist_Mono } from "next/font/google";
 import { NavegacaoProvedor } from "@/contexts/Navegacao"; // ajuste o caminho
+import { DadosProvedor } from "@/contexts/Usuario";
 import "../globals.css";
 import { Header } from "@/components/admin/Header";
 import { Aside } from "@/components/admin/Aside";
@@ -69,12 +70,14 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
         <NavegacaoProvedor>
-          <Header />
-          <div className="flex w-full">
-            <Aside />
-            {children}
-          </div>
-          <Footer />
+          <DadosProvedor>
+            <Header />
+            <div className="flex w-full">
+              <Aside />
+              {children}
+            </div>
+            <Footer />
+          </DadosProvedor>
         </NavegacaoProvedor>
 
       </body>
