@@ -48,6 +48,7 @@ export default function Home() {
                 setDados(novosDados);
             } else {
                 alert("Erro ao salvar no servidor.");
+                novosDados.nome=dados.nome
             }
             // Opcional: limpar o preview após salvar a foto
             setPreview(null);

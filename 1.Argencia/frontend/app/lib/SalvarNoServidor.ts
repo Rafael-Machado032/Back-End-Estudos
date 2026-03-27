@@ -14,15 +14,17 @@ export async function SalvarNoServidor(formData: FormData) {
             body: formData, // so use o formaData se for carregar imagem
             headers: {
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${token}` 
+                'Authorization': `Bearer ${token}`
             }
         });
 
-        if (!resposta.ok) return { success: false };
-
-        const dados = await resposta.json();
-        return { success: true, ...dados }; // Retorna os dados para o front
-
+        if (!resposta.ok) {
+            return { success: false };
+        } else {
+            const dados = await resposta.json();
+            return { success: true, ...dados }; // Retorna os dados para o front
+        }
+        
     } catch (error) {
         console.error("Erro no Backend:", error);
         return { success: false };
