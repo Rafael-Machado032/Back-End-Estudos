@@ -1,9 +1,7 @@
 'use server';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation'; // Importe do local correto
 
 export async function FazerLogin(formData: FormData) {
-    let loginSucesso = false;
 
     try {
         const res = await fetch(`${process.env.API_URL}/login`, {
@@ -20,17 +18,13 @@ export async function FazerLogin(formData: FormData) {
         if (res.ok && dados.token) {
             const cookieStore = await cookies();
             cookieStore.set('token', dados.token, { path: '/', httpOnly: true });
-            loginSucesso = true; // Marca que deu certo
+            return { success: true, user: dados.user }
         }
     } catch (error) {
         console.error("Erro no fetch:", error);
         return { success: false };
     }
 
-    // O REDIRECIONAMENTO DEVE FICAR FORA DO TRY/CATCH
-    if (loginSucesso) {
-        redirect("/admin");
-    }
-
+    
     return { success: false };
 }

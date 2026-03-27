@@ -1,8 +1,11 @@
 "use client";
-
+import { useDados } from "@/contexts/Usuario"; // Importa seu contexto
 import { FazerLogin } from "../lib/FazerLogin";
+import { useRouter } from "next/navigation"; // 1. Importe o router
 
 export default function LoginPage() {
+    const { setDados } = useDados(); // Pega a função de salvar do contexto
+    const router = useRouter(); // 2. Inicialize o router
 
     const login = async (formData: FormData) => {
         const emailInput = formData.get("email") as string
@@ -12,6 +15,12 @@ export default function LoginPage() {
             const resultado = await FazerLogin(formData)
             if (!resultado?.success) {
                 alert("Usuario ou Senha Incorreto")
+            }else{
+                setDados({
+                nome: resultado.user.name,
+                foto: resultado.user.foto
+            });
+            router.push("/admin");
             }
         }
 
