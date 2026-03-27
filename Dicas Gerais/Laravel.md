@@ -1,3 +1,11 @@
+**Pré-requisitos**
+PHP e Composer
+
+*Extesão do PHP*
+PHP.ini
+Precisa habilitar para uso do laravel
+Ctype, cURL, DOM, Fileinfo, Filter, Hash, Mbstring, OpenSSL, PCRE, PDO, Session, Tokenizer, XML
+
 **Criando Projeto**
 Na pasta onde fica o projeto instala com o coamando
 `composer create-project laravel/laravel nome_projeto`
@@ -76,11 +84,15 @@ No cors.php modifique:
     `php artisan migrate:rollback`  Ele "desfaz" a última migração.
     `php artisan migrate:fresh`     Ele apaga tudo e cria do zero (cuidado: apaga os dados que você já salvou!).
 
-1. Construindo a Tabela no Banco
+    *Consulta no SQLiteStudio*
+    Selecione o arquivo.
+    database\database.sqlite
+
+3. Construindo a Tabela no Banco
     `php artisan migrate`
     Executa os scripts. Na primeira vez, cria o arquivo do banco (.sqlite) e as tabelas físicas.
 
-2. O Gerente dos Dados (Model)
+4. O Gerente dos Dados (Model)
     `php artisan make:model NomeNoSingular`
     - app/Models/
     É a ponte. Ele traduz os comandos do Next.js (PHP) para a linguagem do banco (SQL). É quem salva, deleta e busca.
@@ -110,4 +122,11 @@ No cors.php modifique:
 5. Ligando o Motor
     `php artisan serve`
     Ativa o servidor. Sem ele rodando, o Next.js não consegue "conversar" com o banco de dados.
+
+6. Usar comando direto no console
+    `php artisan tinker`
+    - User::create(['name' => 'Admin', 'email' => 'admin@email.com', 'password' => bcrypt('123456')]);
+    Insere o primeiro usuario no banco de dados
+
+
 

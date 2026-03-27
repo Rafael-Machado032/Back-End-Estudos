@@ -19,9 +19,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['http://localhost:3000'],// URL padrão do Next.js
 
-    'allowed_origins_patterns' => ['http://localhost:3000'], // URL padrão do Next.js
+    'allowed_origins_patterns' => [], 
 
     'allowed_headers' => ['*'],
 

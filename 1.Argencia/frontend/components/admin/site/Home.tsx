@@ -5,7 +5,7 @@ import { SalvarNoServidor } from '@/app/lib/SalvarNoServidor'
 
 export default function Home() {
 
-    const { dados, setDados } = useDados()
+    const { dados, setDados } = useDados() //Usa no contexto
     const [preview, setPreview] = useState<string | null>(null);
     const [fLayout, setFLayout] = useState<string | null>(null)
 
@@ -21,7 +21,8 @@ export default function Home() {
 
     const salvar = async (formData: FormData) => {
         const nomeInput = formData.get("nome") as string;
-        const fotoInput = await SalvarNoServidor(formData); // Pode vir null
+        const fotoInput = formData.get("foto-usuario") as File
+        const fotonome = fotoInput.name
 
         // Criamos o novo objeto começando com o que JÁ TEMOS no contexto
         let novosDados = { ...dados };
@@ -29,21 +30,31 @@ export default function Home() {
         // Se o usuário digitou um nome novo, atualiza o nome
         if (nomeInput && nomeInput.trim() !== "") {
             novosDados.nome = nomeInput;
+
         }
 
         // Se o usuário subiu uma foto nova, atualiza a foto
-        if (fotoInput) {
-            novosDados.foto = fotoInput;
+        if (fotoInput && fotoInput.size > 0) {
+            novosDados.foto = fotonome;
         }
 
         // Só chama o setDados se algo realmente mudou
         if (nomeInput || fotoInput) {
             setDados(novosDados);
+            const resultado = await SalvarNoServidor(formData);
+
+            if (resultado?.success) {
+                alert("Alterado com Sucesso!"); // O alert fica aqui, no lado do cliente!
+                setDados(novosDados);
+            } else {
+                alert("Erro ao salvar no servidor.");
+            }
             // Opcional: limpar o preview após salvar a foto
-            setPreview(null); 
+            setPreview(null);
         } else {
             alert("Digite um nome ou escolha uma foto para salvar!");
         }
+
     };
 
 
