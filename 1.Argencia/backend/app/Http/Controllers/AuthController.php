@@ -11,7 +11,6 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        Log::info('Dados recebidos do Next.js:', $request->all());
         // 1. Busca o usuário pelo e-mail que o Next enviou
         $user = User::where('email', $request->email)->first();
 
