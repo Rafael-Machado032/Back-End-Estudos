@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Backend (Laravel)",
+            "type": "shell",
+            "command": "php artisan serve",
+            "options": {
+                "cwd": "${workspaceFolder}/1.Argencia/backend"
+            },
+            "presentation": {
+                "group": "servidores",
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "Frontend (Next.js)",
+            "type": "shell",
+            "command": "npm run dev",
+            "options": {
+                "cwd": "${workspaceFolder}/1.Argencia/frontend"
+            },
+            "presentation": {
+                "group": "servidores",
+                "reveal": "always",
+                "panel": "dedicated"
+            }
+        },
+        {
+            "label": "🚀 RODAR TUDO",
+            "dependsOn": [
+                "Backend (Laravel)",
+                "Frontend (Next.js)"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "never"
+            }
+        }
+    ]
+}
