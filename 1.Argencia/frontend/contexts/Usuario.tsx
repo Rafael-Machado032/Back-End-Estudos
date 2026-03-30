@@ -2,15 +2,15 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-interface usuario { //Pacote usuario
-    nome: string;
+interface usuario { //Interface do usuario
+    nome: string; // Parametros da interface
     foto: string;
 }
 
 
 interface DadosContextoTipo { //Contrato do que o contexto vai usar
-    dados: usuario;
-    setDados: (novosDados: usuario) => void
+    dados: usuario; // O parametro dados é tipo usuario criado ali em cima
+    setDados: (novosDados: usuario) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
 }
 
 //Conexao que vai usar o nosso contrato ou vazio

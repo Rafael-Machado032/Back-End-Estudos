@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useDados } from '@/contexts/Usuario'
 import { SalvarNoServidor } from '@/app/lib/SalvarNoServidor'
+import { log } from 'console'
 
 export default function Home() {
 
@@ -25,7 +26,7 @@ export default function Home() {
         const fotonome = fotoInput.name
 
         // Criamos o novo objeto começando com o que JÁ TEMOS no contexto
-        let novosDados = { ...dados };
+        const novosDados = { ...dados };
 
         // Se o usuário digitou um nome novo, atualiza o nome
         if (nomeInput && nomeInput.trim() !== "") {
@@ -40,15 +41,17 @@ export default function Home() {
 
         // Só chama o setDados se algo realmente mudou
         if (nomeInput || fotoInput) {
-            setDados(novosDados);
+            
+            
             const resultado = await SalvarNoServidor(formData);
+            alert(resultado.success)
+            
 
             if (resultado?.success) {
                 alert("Alterado com Sucesso!"); // O alert fica aqui, no lado do cliente!
                 setDados(novosDados);
             } else {
                 alert("Erro ao salvar no servidor.");
-                novosDados.nome=dados.nome
             }
             // Opcional: limpar o preview após salvar a foto
             setPreview(null);
