@@ -107,7 +107,6 @@ No cors.php modifique:
         protected $fillable = ['titulo', 'caminho', 'tipo'];
 
         public $timestamps = true; //Autoriza registrar a data de criação
-
     }
 
 3. O Cérebro da Lógica (Controller)
@@ -115,18 +114,34 @@ No cors.php modifique:
     - app/Http/Controllers/
     Valida se os dados estão certos, decide em qual pasta do HD salvar o arquivo e responde para o Next.js se deu certo ou errado.
 
-4. Abrindo a Porta das Imagens
+4. Criar Controller, Model e Tabela
+    `php artisan make:model NomeDoModelo -mcr`
+    -m (Migration): Cria o arquivo para você criar a tabela no Banco de Dados.
+    -c (Controller): Cria o arquivo onde ficará a lógica (seu atualizar, salvar, etc).
+    -r (Resource): Já cria o Controller com os métodos padrões (index, store, update, destroy) prontinhos.
+    Depois de feito a tabela colocando os campos execulte
+    `php artisan migrate`
+
+5. Criar Pacote Completo
+    `php artisan make:model Nome -all`
+    -m (Migration): Cria o arquivo para gerar a tabela no banco.
+    -c (Controller): Cria o arquivo de lógica.
+    -r (Resource): Faz o Controller já vir com as funções padrão (index, store, update, etc).
+    -f (Factory): Cria o gerador de dados falsos para testes.
+    -s (Seeder): Cria o arquivo para inserir dados iniciais no banco.
+    -p (Policy): Cria as regras de quem pode acessar o quê.
+    -R (Requests): Cria arquivos de validação (FormRequests) para o seu Controller.
+
+
+7. Abrindo a Porta das Imagens
     `php artisan storage:link`
     Cria um "atalho" da pasta Privada para a Pública. Essencial para o Next.js conseguir exibir as fotos no navegador.
 
-5. Ligando o Motor
+8. Ligando o Motor
     `php artisan serve`
     Ativa o servidor. Sem ele rodando, o Next.js não consegue "conversar" com o banco de dados.
 
-6. Usar comando direto no console
+9. Usar comando direto no console
     `php artisan tinker`
     - User::create(['name' => 'Admin', 'email' => 'admin@email.com', 'password' => bcrypt('123456')]);
     Insere o primeiro usuario no banco de dados
-
-
-

@@ -1,17 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-
-
 
 class UsuarioController extends Controller
 {
     public function atualizar(Request $request)
     {
-
-
         // 1. Validação (Segurança)
         try {
             $dadosValidos = $request->validate([
@@ -33,12 +29,18 @@ class UsuarioController extends Controller
 
         // 3.Testa se não veio vazio e salva o Nome
         if ($request->filled('nome')) {
-            $usuario->nome = $request->nome;
+            $usuario->name = $request->nome;
         }
 
         // 4. Salva a Foto (se o Next enviou uma)
         if ($request->hasFile('foto-usuario')) {
-            // O Laravel gera um nome único e salva em storage/app/public/perfil
+           
+            // 2. Se o usuário já tinha uma foto antiga, a gente deleta ela do HD
+            if ($usuario->foto) {
+                Storage::disk('public')->delete($usuario->foto);
+            }
+
+             // O Laravel gera um nome único e salva em storage/app/public/perfil
             $caminho = $request->file('foto-usuario')->store('perfil', 'public');
             $usuario->foto = $caminho;
         }
@@ -48,7 +50,7 @@ class UsuarioController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Perfil atualizado!',
-            'foto_nome' => $usuario->foto
+            'user' => $usuario // <-- Mandando o objeto, o Laravel anexa o 'foto_url' automaticamente
         ]);
     }
 }

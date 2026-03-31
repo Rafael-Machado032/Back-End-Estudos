@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import {Roboto, Geist, Geist_Mono } from "next/font/google";
+import { Roboto, Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
-import  { Header }  from "@/components/Header";
-import  { Footer }  from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { LayoutProvedor } from "@/contexts/LayoutContext";
 
 
 const roboto = Roboto({
@@ -70,10 +71,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
-
-        <Header />
+        <LayoutProvedor>
+          <Header />
           {children}
-        <Footer />
+          <Footer />
+        </LayoutProvedor>
       </body>
     </html>
   );

@@ -4,8 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\AuthController;
-
-
+use App\Http\Controllers\LayoutController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -17,7 +16,8 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
 
 // Só quem tem o Token (está logado) consegue entrar aqui
 Route::middleware('auth:sanctum')->post('/usuario/atualizar', [UsuarioController::class, 'atualizar']);
-
+// Rota padrão para uso do controler padrão do Laravel
+Route::middleware('auth:sanctum')->apiResource('layouts', LayoutController::class);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

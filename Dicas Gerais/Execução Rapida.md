@@ -1,3 +1,10 @@
+**Execusão Rapida**
+- Ctrl + Shift + B
+Ctrl + P procure "tasks.json"
+
+
+*Exemplo que execulta 2 servidores backend e frontend*
+````
 {
     "version": "2.0.0",
     "tasks": [
@@ -43,3 +50,4 @@
         }
     ]
 }
+``

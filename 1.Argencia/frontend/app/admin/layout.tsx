@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto, Geist, Geist_Mono } from "next/font/google";
 import { NavegacaoProvedor } from "@/contexts/Navegacao"; // ajuste o caminho
 import { DadosProvedor } from "@/contexts/Usuario";
+import { LayoutProvedor } from "@/contexts/LayoutContext";
 import "../globals.css";
 import { Header } from "@/components/admin/Header";
 import { Aside } from "@/components/admin/Aside";
@@ -71,12 +72,14 @@ export default function AdminLayout({ children, }: Readonly<{ children: React.Re
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
         <NavegacaoProvedor>
           <DadosProvedor>
-            <Header />
-            <div className="flex w-full">
-              <Aside />
-              {children}
-            </div>
-            <Footer />
+            <LayoutProvedor>
+              <Header />
+              <div className="flex w-full">
+                <Aside />
+                {children}
+              </div>
+              <Footer />
+            </LayoutProvedor>
           </DadosProvedor>
         </NavegacaoProvedor>
 

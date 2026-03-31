@@ -4,7 +4,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 
 interface usuario { //Interface do usuario
     nome: string; // Parametros da interface
-    foto: string;
+    foto_url?: string; // URL completa que vem do Laravel (asset)
 }
 
 
@@ -18,25 +18,35 @@ const DadosContexto = createContext<DadosContextoTipo | undefined>(undefined);
 
 //Provedor e a função que vai abraçar
 export function DadosProvedor({ children }: { children: ReactNode }) {
-    const [dados, setDados] = useState<usuario>({
-        nome: "Usuario",
-        foto: ""
-    }); // Estado global
-
-    // Dentro do seu Provider
-    useEffect(() => {
-        // 1. Tenta buscar o que ficou "esquecido" no navegador
-        const salvo = localStorage.getItem('usuario_dados');
-        if (salvo) {
-            setDados(JSON.parse(salvo));
+    const [mounted, setMounted] = useState(false);
+    const [dados, setDados] = useState<usuario>(() => {
+        if (typeof window !== 'undefined') {
+            const salvo = localStorage.getItem('usuario_dados');
+            return salvo ? JSON.parse(salvo) : { nome: "Carregando...", foto_url: "" };
         }
-    }, []);
+        return { nome: "Carregando...", foto_url: "" };
+    });
 
+
+    // 2. useEffect apenas para dizer que o componente montou (evita erro de Hydration)
     useEffect(() => {
-        // 2. Toda vez que o 'dados' mudar, a gente "tatuia" no navegador
-        localStorage.setItem('usuario_dados', JSON.stringify(dados));
-    }, [dados]);
+        // O setTimeout com 0 tira o setState do fluxo crítico de renderização
+        const timer = setTimeout(() => {
+            setMounted(true);
+        }, 0);
 
+        return () => clearTimeout(timer); // Limpeza básica
+    }, []);
+    // 2. Salva sempre que 'dados' mudar (mas pula a primeira vez se não estiver montado)
+    useEffect(() => {
+        if (mounted) {
+            localStorage.setItem('usuario_dados', JSON.stringify(dados));
+        }
+    }, [dados, mounted]);
+    // Evita o erro de Hydration: não renderiza o conteúdo real até que o cliente esteja pronto
+    if (!mounted) {
+        return null; // Ou um esqueleto/loading
+    }
 
     return (
         // Enviamos o valor para quem estiver lá dentro
