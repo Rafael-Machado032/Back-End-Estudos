@@ -1,14 +1,14 @@
 "use client"
-import { useState } from 'react'
-import { useDados } from '@/contexts/Usuario'
-import { useLayout } from '@/contexts/LayoutContext'
-import { SalvarNoServidor } from '@/app/lib/SalvarNoServidor'
 import { SalvarLayoutNoServidor } from '@/app/lib/SalvarLayoutNoServidor'
-import NextImage from 'next/image';
+import { SalvarUsuarioNoServidor } from '@/app/lib/SalvarUsuarioNoServidor'
+import { useLayout } from '@/contexts/LayoutContext'
+import { useUsuario } from '@/contexts/UsuarioContext'
+import NextImage from 'next/image'
+import { useState } from 'react'
 
 export default function Home() {
 
-    const { setDados } = useDados() //Usa no contexto
+    const { setUsuarioDados } = useUsuario() //Usa no contexto
     const { setLayoutDados } = useLayout() //Usa no contexto
     const [preview, setPreview] = useState<string | null>(null);
     const [previewLayout, setPreviewLayout] = useState<string | null>(null); // Novo estado
@@ -46,12 +46,12 @@ export default function Home() {
             formData.set("foto-usuario", fotoInput, fotoInput.name);
         }
 
-        // Só chama o setDados se algo realmente mudou
+        // Só chama o setUsuarioDados se algo realmente mudou
         if (nomeInput || fotoInput) {
-            const resultado = await SalvarNoServidor(formData); // Usamos o formData para enviar arquivo e nome juntos
+            const resultado = await SalvarUsuarioNoServidor(formData); // Usamos o formData para enviar arquivo e nome juntos
             if (resultado?.success) {
                 alert("Alterado com Sucesso!"); // O alert fica aqui, no lado do cliente!
-                setDados({
+                setUsuarioDados({
                     nome: resultado.user.name,
                     foto_url: resultado.user.foto_url // <--- Esse é o link que funciona no <img src>
                 });

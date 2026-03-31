@@ -1,5 +1,5 @@
 'use client'
-
+import NextImage from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -13,7 +13,7 @@ export function Header() {
                     {/* Logo */}
                     <div className={`z-10 shrink-0 flex items-center ${isOpen ? 'text-black' : 'text-white'}`}>
                         <Link href="/" className="text-2xl font-bold">
-                            <img src="/images/logoagencia.svg" alt="" />
+                            <NextImage src="/images/logoagencia.svg" alt="Logo da Agência" width={100} height={50} />
                         </Link>
                     </div>
 

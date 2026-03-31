@@ -1,7 +1,7 @@
+import { UsuarioProvedor } from "@/contexts/UsuarioContext";
 import type { Metadata } from "next";
-import { Roboto, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "../globals.css";
-import { DadosProvedor } from "@/contexts/Usuario";
 
 const roboto = Roboto({
     weight: ['400', '700'], // Escolha os pesos (400 é normal, 700 é negrito)
@@ -63,9 +63,9 @@ export default function LoginLayout({ children, }: Readonly<{ children: React.Re
     return (
         <html lang="pt-BR">
             <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
-                <DadosProvedor>
+                <UsuarioProvedor>
                     {children}
-                </DadosProvedor>
+                </UsuarioProvedor>
             </body>
         </html>
     );

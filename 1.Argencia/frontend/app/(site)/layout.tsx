@@ -5,6 +5,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LayoutProvedor } from "@/contexts/LayoutContext";
 import { buscarLayout } from "../lib/BuscarLayout";
+import { DepoimentoProvedor } from "@/contexts/DepoimentoContext";
+import { MensagemProvedor } from "@/contexts/MensagemContext";
 
 
 const roboto = Roboto({
@@ -65,7 +67,7 @@ export const viewport = { //A cor da barra do mobile com a cor do site
 
 
 
-export default async function RootLayout({children, }: Readonly<{children: React.ReactNode;}>) {
+export default async function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
 
   const dadosIniciais = await buscarLayout();
   console.log("RESULTADO DA API NO SERVIDOR:", JSON.stringify(dadosIniciais, null, 2));
@@ -74,9 +76,13 @@ export default async function RootLayout({children, }: Readonly<{children: React
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
         <LayoutProvedor dadosIniciais={dadosIniciais?.layout}>
-          <Header />
-          {children}
-          <Footer />
+          <DepoimentoProvedor dadosIniciais={dadosIniciais?.depoimentos}>
+            <MensagemProvedor dadosIniciais={dadosIniciais?.mensagens}>
+              <Header />
+              {children}
+              <Footer />
+            </MensagemProvedor>
+          </DepoimentoProvedor>
         </LayoutProvedor>
       </body>
     </html>

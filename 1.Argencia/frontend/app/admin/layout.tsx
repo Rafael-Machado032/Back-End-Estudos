@@ -1,12 +1,14 @@
-import type { Metadata } from "next";
-import { Roboto, Geist, Geist_Mono } from "next/font/google";
-import { NavegacaoProvedor } from "@/contexts/Navegacao"; // ajuste o caminho
-import { DadosProvedor } from "@/contexts/Usuario";
-import { LayoutProvedor } from "@/contexts/LayoutContext";
-import "../globals.css";
-import { Header } from "@/components/admin/Header";
 import { Aside } from "@/components/admin/Aside";
 import { Footer } from "@/components/admin/Footer";
+import { Header } from "@/components/admin/Header";
+import { LayoutProvedor } from "@/contexts/LayoutContext";
+import { NavegacaoProvedor } from "@/contexts/Navegacao"; // ajuste o caminho
+import { UsuarioProvedor } from "@/contexts/UsuarioContext";
+import { DepoimentoProvedor } from "@/contexts/DepoimentoContext";
+import { MensagemProvedor } from "@/contexts/MensagemContext";
+import type { Metadata } from "next";
+import { Geist, Geist_Mono, Roboto } from "next/font/google";
+import "../globals.css";
 import { buscarLayout } from "../lib/BuscarLayout";
 
 const roboto = Roboto({
@@ -64,27 +66,31 @@ export const viewport = { //A cor da barra do mobile com a cor do site
     { media: "(prefers-color-scheme: dark)", color: "#1f2937" },
   ],
 };
- 
- 
+
+
 
 export default async function AdminLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
 
   const dadosIniciais = await buscarLayout();
-  
+
   return (
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
         <NavegacaoProvedor>
-          <DadosProvedor>
+          <UsuarioProvedor>
             <LayoutProvedor dadosIniciais={dadosIniciais?.layout}>
-              <Header />
-              <div className="flex w-full">
-                <Aside />
-                {children}
-              </div>
-              <Footer />
+              <DepoimentoProvedor dadosIniciais={dadosIniciais?.depoimentos}>
+                <MensagemProvedor dadosIniciais={dadosIniciais?.mensagens}>
+                  <Header />
+                  <div className="flex w-full">
+                    <Aside />
+                    {children}
+                  </div>
+                  <Footer />
+                </MensagemProvedor>
+              </DepoimentoProvedor>
             </LayoutProvedor>
-          </DadosProvedor>
+          </UsuarioProvedor>
         </NavegacaoProvedor>
 
       </body>

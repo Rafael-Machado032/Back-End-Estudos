@@ -8,20 +8,20 @@ interface usuario { //Interface do usuario
 }
 
 
-interface DadosContextoTipo { //Contrato do que o contexto vai usar
-    dados: usuario; // O parametro dados é tipo usuario criado ali em cima
-    setDados: (novosDados: usuario) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
+interface UsuarioContextoTipo { //Contrato do que o contexto vai usar
+    usuarioDados: usuario; // O parametro dados é tipo usuario criado ali em cima
+    setUsuarioDados: (novosDados: usuario) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
 }
 
 //Conexao que vai usar o nosso contrato ou vazio
-const DadosContexto = createContext<DadosContextoTipo | undefined>(undefined);
+const UsuarioContexto = createContext<UsuarioContextoTipo | undefined>(undefined);
 
 //Provedor e a função que vai abraçar
-export function DadosProvedor({ children }: { children: ReactNode }) {
+export function UsuarioProvedor({ children }: { children: ReactNode }) {
     const [mounted, setMounted] = useState(false);
-    const [dados, setDados] = useState<usuario>(() => {
+    const [usuarioDados, setUsuarioDados] = useState<usuario>(() => {
         if (typeof window !== 'undefined') {
-            const salvo = localStorage.getItem('usuario_dados');
+            const salvo = localStorage.getItem('usuario_data');
             return salvo ? JSON.parse(salvo) : { nome: "Carregando...", foto_url: "" };
         }
         return { nome: "Carregando...", foto_url: "" };
@@ -40,9 +40,9 @@ export function DadosProvedor({ children }: { children: ReactNode }) {
     // 2. Salva sempre que 'dados' mudar (mas pula a primeira vez se não estiver montado)
     useEffect(() => {
         if (mounted) {
-            localStorage.setItem('usuario_dados', JSON.stringify(dados));
+            localStorage.setItem('usuario_data', JSON.stringify(usuarioDados));
         }
-    }, [dados, mounted]);
+    }, [usuarioDados, mounted]);
     // Evita o erro de Hydration: não renderiza o conteúdo real até que o cliente esteja pronto
     if (!mounted) {
         return null; // Ou um esqueleto/loading
@@ -50,17 +50,17 @@ export function DadosProvedor({ children }: { children: ReactNode }) {
 
     return (
         // Enviamos o valor para quem estiver lá dentro
-        <DadosContexto.Provider value={{ dados, setDados }}>
+        <UsuarioContexto.Provider value={{ usuarioDados: usuarioDados, setUsuarioDados }}>
             {children}
-        </DadosContexto.Provider>
+        </UsuarioContexto.Provider>
     );
 }
 
 // Avisa se o contexto esta dentro do provedor se estiver fora da erro
-export const useDados = () => {
-    const context = useContext(DadosContexto);
+export const useUsuario = () => {
+    const context = useContext(UsuarioContexto);
     if (!context) {
-        throw new Error("useDados deve ser usado dentro de um DadosProvedor");
+        throw new Error("useUsuario deve ser usado dentro de um UsuarioProvedor");
     }
     return context;
 };
