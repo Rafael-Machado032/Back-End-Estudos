@@ -12,7 +12,7 @@ export default function Home() {
     const { setLayoutDados } = useLayout() //Usa no contexto
     const [preview, setPreview] = useState<string | null>(null);
     const [previewLayout, setPreviewLayout] = useState<string | null>(null); // Novo estado
-    
+
     const pegarCaminhoFoto = (e: React.ChangeEvent<HTMLInputElement>) => {
         const arquivo = e.target.files?.[0]; // Pega o primeiro arquivo
 
@@ -66,23 +66,25 @@ export default function Home() {
     };
 
     const salvarLayout = async (formData: FormData) => {
-        const fotoInput = formData.get("foto-pc") as File
+        const layoutInput = formData.get("foto-pc") as File
 
         // No console do navegador (F12)
         console.table(Object.fromEntries(formData));
 
-        if (!fotoInput || fotoInput.size === 0) {
+        if (!layoutInput || layoutInput.size === 0) {
             formData.delete("foto-pc");
         } else {
-            formData.set("foto-pc", fotoInput, fotoInput.name);
+            formData.set("foto-pc", layoutInput, layoutInput.name);
         }
 
-        if (fotoInput) {
+        if (layoutInput) {
             const resultadoLayout = await SalvarLayoutNoServidor(formData);
 
             if (resultadoLayout?.success) {
                 alert("Layout atualizado com sucesso!");
-                setLayoutDados(resultadoLayout.layout); // Atualiza o contexto com a nova URL do layout
+                setLayoutDados({
+                    layout_url: resultadoLayout.layout.foto_pc_url
+                });
             } else {
                 alert("Erro ao atualizar o layout.");
             }

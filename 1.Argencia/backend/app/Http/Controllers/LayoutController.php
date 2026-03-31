@@ -8,55 +8,22 @@ use Illuminate\Support\Facades\Storage;
 
 class LayoutController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Layout $layout)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Layout $layout)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
+  
     public function update(Request $request, $id)
     {
+
+       error_log("Nome do arquivo: " . $request->file('foto-pc')->getClientOriginalName());
         // 1. Validação (Sempre importante!)
-        $request->validate([
+        try{
+            $dadosValidos=$request->validate([
             'foto-pc' => 'required|image|max:5000', // 'foto-pc' é o name do seu input no Next
-        ]);
+            ]);
+        }catch (\Illuminate\Validation\ValidationException $e) {
+            // Isso vai imprimir no seu terminal EXATAMENTE o que deu errado
+            error_log(print_r($e->errors(), true));
+            throw $e; // Reança o erro para manter o comportamento padrão
+        }
+        error_log("Caminho temporário: " . $request->file('foto-pc')->getPathname());
 
         // 2. Busca o Layout pelo ID (no seu caso, passamos o ID 1)
         // Se não existir, o findOrFail já retorna um erro 404 sozinho
@@ -86,12 +53,12 @@ class LayoutController extends Controller
             'layout' => $layout // Aqui o Next.js já recebe o 'foto_pc_url'
         ]);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Layout $layout)
+    public function show($id)
     {
-        //
+        
+        $layout = Layout::findOrFail($id);
+        return response()->json([
+            'layout' => $layout
+        ]);
     }
 }

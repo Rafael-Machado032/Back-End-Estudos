@@ -7,7 +7,7 @@ import "../globals.css";
 import { Header } from "@/components/admin/Header";
 import { Aside } from "@/components/admin/Aside";
 import { Footer } from "@/components/admin/Footer";
-
+import { buscarLayout } from "../lib/BuscarLayout";
 
 const roboto = Roboto({
   weight: ['400', '700'], // Escolha os pesos (400 é normal, 700 é negrito)
@@ -64,15 +64,19 @@ export const viewport = { //A cor da barra do mobile com a cor do site
     { media: "(prefers-color-scheme: dark)", color: "#1f2937" },
   ],
 };
+ 
+ 
 
+export default async function AdminLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
 
-export default function AdminLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
+  const dadosIniciais = await buscarLayout();
+  
   return (
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
         <NavegacaoProvedor>
           <DadosProvedor>
-            <LayoutProvedor>
+            <LayoutProvedor dadosIniciais={dadosIniciais?.layout}>
               <Header />
               <div className="flex w-full">
                 <Aside />

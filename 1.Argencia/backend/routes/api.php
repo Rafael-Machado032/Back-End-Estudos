@@ -17,7 +17,15 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
 // Só quem tem o Token (está logado) consegue entrar aqui
 Route::middleware('auth:sanctum')->post('/usuario/atualizar', [UsuarioController::class, 'atualizar']);
 // Rota padrão para uso do controler padrão do Laravel
-Route::middleware('auth:sanctum')->apiResource('layouts', LayoutController::class);
+// No routes/api.php
+Route::middleware('auth:sanctum')->group(function () {
+    // Defina explicitamente o POST para o update antes do resource
+    Route::post('layout/{id}', [LayoutController::class, 'update']); 
+    
+});
+
+Route::get('/layout/{id}', [LayoutController::class, 'show']);
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();

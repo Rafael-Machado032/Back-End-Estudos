@@ -15,6 +15,6 @@ class Layout extends Model
     // 3. A lógica para criar o link completo da imagem
     public function getFotoPcUrlAttribute()
     {
-        return $this->foto_pc ? asset('storage/' . $this->foto_pc) : null;
+        return $this->foto_pc ? url('storage/' . $this->foto_pc) : null;
     }
 }

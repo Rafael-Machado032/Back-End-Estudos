@@ -5,7 +5,8 @@ import NextImage from 'next/image';
 
 export default function Hero() {
     const { layoutDados } = useLayout();
-
+    // DEBUG: Veja se isso imprime a URL correta no console do navegador (F12)
+    console.log("URL que chegou no Hero:", layoutDados?.layout_url);
     return (
         <section className="bg-[url(/images/bg.svg)] bg-cover bg-no-repeat bg-center max-h-235  text-white">
 
@@ -20,13 +21,11 @@ export default function Hero() {
                         {/* TELA DO COMPUTADOR (Onde a imagem aparece) */}
                         <div className='relative w-full h-full rounded-xl overflow-hidden bg-blue-950'>
                             <NextImage
-                                src={layoutDados.layout_url && layoutDados.layout_url !== ""
-                                    ? layoutDados.layout_url
-                                    : "/images/projeto2.png"
-                                }
+                                src={layoutDados?.layout_url || "/images/projeto2.png"}
                                 alt="Projeto"
                                 fill
                                 unoptimized
+                                priority
                                 className='object-cover' // Isso substitui o bg-cover
                             />
                         </div>
