@@ -20,20 +20,20 @@ interface LayoutVindoDoBanco {
 
 interface LayoutProvedorProps {
     children: ReactNode;
-    dadosIniciais?: LayoutVindoDoBanco | null; // Aqui substituímos o 'any'
+    layoutInicial?: LayoutVindoDoBanco | null; // Aqui substituímos o 'any'
 }
 
 //Conexao que vai usar o nosso contrato ou vazio
 const LayoutContexto = createContext<LayoutContextoTipo | undefined>(undefined);
 
 //Provedor e a função que vai abraçar
-export function LayoutProvedor({ children, dadosIniciais }: LayoutProvedorProps) {
+export function LayoutProvedor({ children, layoutInicial }: LayoutProvedorProps) {
     const [mounted, setMounted] = useState(false);
     // 1. Inicializa o estado com uma função para evitar acessar localStorage no servidor
     const [layoutDados, setLayoutDados] = useState<LayoutEstado>(() => {
         // 1. Prioridade Máxima: O que o servidor (Next) acabou de buscar no Laravel
-        if (dadosIniciais?.foto_pc_url) {
-            return { layout_url: dadosIniciais.foto_pc_url };
+        if (layoutInicial?.foto_pc_url) {
+            return { layout_url: layoutInicial.foto_pc_url };
         }
         // Prioridade 2: LocalStorage (Fallback/Cache local)
         if (typeof window !== 'undefined') {// Verifica se estamos no cliente
@@ -76,7 +76,7 @@ export function LayoutProvedor({ children, dadosIniciais }: LayoutProvedorProps)
     }
     // Adicione isso dentro do useEffect de montagem no seu LayoutContext.tsx
 
-    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", dadosIniciais);
+    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", layoutInicial);
 
 
     return (

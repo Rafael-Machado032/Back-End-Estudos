@@ -1,29 +1,25 @@
 'use client'; // 1. Sempre 'use client' pois o contexto usa estado (useState)
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-
+// 1. O Único Molde (serve para o Banco e para o Usuário)
 interface Depoimento { //Interface do usuario
-    nome: string; // Parametros da interface
-    mensagem: string; // URL completa que vem do Laravel (asset)
-}
-
-
-interface DepoimentoContextoTipo { //Contrato do que o contexto vai usar
-    depoimentoDados: Depoimento; // O parametro dados é tipo usuario criado ali em cima
-    setDepoimentoDados: (novosDados: Depoimento) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
-}
-
-interface DepoimentoVindoDoBanco {
     id: number;
     nome: string;
-    mensagem: string;
-    // adicione outros campos se existirem no seu banco
+    mensagem: string; 
+    foto_url: string;
 }
 
+// 2. O Contrato do Contexto
+interface DepoimentoContextoTipo { //Contrato do que o contexto vai usar
+    depoimentoDados: Depoimento[]; // [] Porque pode ter vários depoimentos e não apenas um
+    setDepoimentoDados: (novosDados: Depoimento[]) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
+}
+
+// 3. As Props do Provedor
 interface DepoimentoProvedorProps {
     children: ReactNode;
-    // Se quiser receber dados iniciais do servidor, adicione aqui
-    dadosIniciais?: DepoimentoVindoDoBanco | null; // Aqui substituímos o 'any'
+    // IMPORTANTE: Aqui tem que ser um Array [] ou null, porque o contexto espera um array de depoimentos ou nada, e não um único depoimento
+    depoimentosIniciais?: Depoimento[] | null;
 }
 
 
@@ -31,19 +27,19 @@ interface DepoimentoProvedorProps {
 const DepoimentoContexto = createContext<DepoimentoContextoTipo | undefined>(undefined);
 
 //Provedor e a função que vai abraçar
-export function DepoimentoProvedor({ children, dadosIniciais }:  DepoimentoProvedorProps ) {
+export function DepoimentoProvedor({ children, depoimentosIniciais }:  DepoimentoProvedorProps ) {
     const [mounted, setMounted] = useState(false);
-    const [depoimentoDados, setDepoimentoDados] = useState<Depoimento>(() => {
+    const [depoimentoDados, setDepoimentoDados] = useState<Depoimento[]>(() => {
         // 1. Prioridade Máxima: O que o servidor (Next) acabou de buscar no Laravel
-        if (dadosIniciais?.nome && dadosIniciais.mensagem) {
-            return { nome: dadosIniciais.nome, mensagem: dadosIniciais.mensagem };
+        if (depoimentosIniciais) {
+            return depoimentosIniciais;
         }
         // Prioridade 2: LocalStorage (Fallback/Cache local)
         if (typeof window !== 'undefined') {// Verifica se estamos no cliente
             const salvo = localStorage.getItem('depoimento_data');
-            return salvo ? JSON.parse(salvo) : { nome: "", mensagem: "" };
+            return salvo ? JSON.parse(salvo) : [];
         }
-        return { nome: "", mensagem: "" };
+        return [];
     });
 
 
@@ -65,7 +61,7 @@ export function DepoimentoProvedor({ children, dadosIniciais }:  DepoimentoProve
     useEffect(() => {
         // Escuta mudanças no localStorage vindas de outras abas/layouts
         const sincronizar = (e: StorageEvent) => {
-            if (e.key === 'depoimento_dados' && e.newValue) {
+            if (e.key === 'depoimento_data' && e.newValue) {
                 setDepoimentoDados(JSON.parse(e.newValue));
             }
         };
@@ -79,7 +75,7 @@ export function DepoimentoProvedor({ children, dadosIniciais }:  DepoimentoProve
     }
     // Adicione isso dentro do useEffect de montagem no seu LayoutContext.tsx
 
-    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", dadosIniciais);
+    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", depoimentosIniciais);
 
     return (
         // Enviamos o valor para quem estiver lá dentro

@@ -2,14 +2,16 @@ import { Aside } from "@/components/admin/Aside";
 import { Footer } from "@/components/admin/Footer";
 import { Header } from "@/components/admin/Header";
 import { LayoutProvedor } from "@/contexts/LayoutContext";
+import { buscarLayout } from "../lib/BuscarLayout";
 import { NavegacaoProvedor } from "@/contexts/Navegacao"; // ajuste o caminho
 import { UsuarioProvedor } from "@/contexts/UsuarioContext";
 import { DepoimentoProvedor } from "@/contexts/DepoimentoContext";
+import { buscarDepoimentos } from "../lib/BuscarDepoimento";
 import { MensagemProvedor } from "@/contexts/MensagemContext";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "../globals.css";
-import { buscarLayout } from "../lib/BuscarLayout";
+
 
 const roboto = Roboto({
   weight: ['400', '700'], // Escolha os pesos (400 é normal, 700 é negrito)
@@ -71,16 +73,18 @@ export const viewport = { //A cor da barra do mobile com a cor do site
 
 export default async function AdminLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
 
-  const dadosIniciais = await buscarLayout();
+  const layoutInicial = await buscarLayout();
+  const depoimentosIniciais = await buscarDepoimentos();
+  const mensagemInicial = null; // Se quiser, pode criar uma função para buscar mensagens iniciais também
 
   return (
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
         <NavegacaoProvedor>
           <UsuarioProvedor>
-            <LayoutProvedor dadosIniciais={dadosIniciais?.layout}>
-              <DepoimentoProvedor dadosIniciais={dadosIniciais?.depoimentos}>
-                <MensagemProvedor dadosIniciais={dadosIniciais?.mensagens}>
+            <LayoutProvedor layoutInicial={layoutInicial?.layout}>
+              <DepoimentoProvedor depoimentosIniciais={depoimentosIniciais}>
+                <MensagemProvedor mensagensIniciais={mensagemInicial}>
                   <Header />
                   <div className="flex w-full">
                     <Aside />

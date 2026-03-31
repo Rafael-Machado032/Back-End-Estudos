@@ -1,24 +1,20 @@
 "use client";
 import { useEffect, useState } from "react"
-
-const depoimentos = [
-    { id: 1, foto: "DEPOIMENTO1.png", nome: "Miriam Souza", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
-    { id: 2, foto: "DEPOIMENTO1.png", nome: "Bruno Souza", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
-    { id: 3, foto: "DEPOIMENTO1.png", nome: "Carla Lima", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
-    { id: 4, foto: "DEPOIMENTO1.png", nome: "Ana Silva", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
-    { id: 5, foto: "DEPOIMENTO1.png", nome: "Bruno Souza", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
-    { id: 6, foto: "DEPOIMENTO1.png", nome: "Carla Lima", texto: "O trabalho da Agência Bold foi fundamental para o nosso posicionamento e nossas estratégias de 2021. Juntos tivemos excelentes resultados e nossos clientes ficaram surpresos com a qualidade. Foi um trabalho incrível feito a muitas mãos pela Uber e pelo time da Agência Bold." },
-]
+import { useDepoimento } from "@/contexts/DepoimentoContext";
+import NextImage from "next/image";
 
 export default function Depoimentos() {
+    const { depoimentoDados } = useDepoimento(); // Puxa do seu contexto profissional
+    // Fallback: Se o banco estiver vazio, não deixa o cálculo de páginas dar erro (divisão por zero)
+    const listaFinal = depoimentoDados.length > 0 ? depoimentoDados : [];
     const [pagina, setPagina] = useState(1)
     const [comTransicao, setComTransicao] = useState(true);
     const [largura, setLargura] = useState(0);
-    const [depopagina,setDepoPagina] = useState(3)
+    const [depopagina] = useState(3)
 
 
     const depoPagina = largura < 768 ? 1 : depopagina;
-    const nPaginas = depoimentos.length / depoPagina;
+    const nPaginas = listaFinal.length > 0 ? Math.ceil(listaFinal.length / depoPagina) : 0;
     const nPaginasComClones = nPaginas + 2;
 
 
@@ -61,7 +57,7 @@ export default function Depoimentos() {
         return () => {
             clearInterval(contador);
             window.removeEventListener('resize', verificarTamanho)
-        } 
+        }
     }, [pagina, comTransicao]);
 
 
@@ -87,14 +83,14 @@ export default function Depoimentos() {
                         return <div key={i_pagina} className='flex w-full gap-8 min-w-full justify-center items-center'>{/* Pagina */}
                             {/* Conteudo */}
                             {/* É criada a pagina mais cada pagina tem um conteudo diferente é feito cortes no array para selecionar o conteudo de cada pagina*/}
-                            {depoimentos.slice(paginaConteudo * depoPagina, (paginaConteudo + 1) * depoPagina).map((item) => (
+                            {listaFinal.slice(paginaConteudo * depoPagina, (paginaConteudo + 1) * depoPagina).map((item) => (
                                 <figure key={item.id} className='flex flex-col justify-center items-center gap-4'>
                                     <figcaption className='flex flex-col justify-center items-center'>
-                                        <img src={`/images/${item.foto}`} alt="" />
+                                        <NextImage src={item.foto_url || "/images/avatar-default.png"} alt={item.nome} width={100} height={100} unoptimized />
                                         <cite className='text-2xl font-bold'>{item.nome}</cite>
                                     </figcaption>
-                                    <blockquote className="text-[#7E92AC]">{item.texto}</blockquote>
-                                    <img src="/images/RATE.svg" alt="rate.svg" />
+                                    <blockquote className="text-[#7E92AC]">{item.mensagem}</blockquote>
+                                    <NextImage src="/images/RATE.svg" alt="rate.svg" width={100} height={20}/>
                                 </figure>
                             ))}
                         </div>

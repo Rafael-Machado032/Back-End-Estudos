@@ -22,20 +22,20 @@ interface MensagemVindoDoBanco {
 
 interface MensagemProvedorProps {
     children: ReactNode;
-    dadosIniciais?: MensagemVindoDoBanco | null; // Aqui substituímos o 'any'
+    mensagensIniciais?: MensagemVindoDoBanco | null; // Aqui substituímos o 'any'
 }
 
 //Conexao que vai usar o nosso contrato ou vazio
 const MensagemContexto = createContext<MensagemContextoTipo | undefined>(undefined);
 
 //Provedor e a função que vai abraçar
-export function MensagemProvedor({ children, dadosIniciais }: MensagemProvedorProps) {
+export function MensagemProvedor({ children, mensagensIniciais }: MensagemProvedorProps) {
     const [mounted, setMounted] = useState(false);
     // 1. Inicializa o estado com uma função para evitar acessar localStorage no servidor
     const [mensagemDados, setMensagemDados] = useState<MensagemEstado>(() => {
         // 1. Prioridade Máxima: O que o servidor (Next) acabou de buscar no Laravel
-        if (dadosIniciais?.mensagem) {
-            return { nome: dadosIniciais.nome, email: dadosIniciais.email, mensagem: dadosIniciais.mensagem };
+        if (mensagensIniciais?.mensagem) {
+            return { nome: mensagensIniciais.nome, email: mensagensIniciais.email, mensagem: mensagensIniciais.mensagem };
         }
         // Prioridade 2: LocalStorage (Fallback/Cache local)
         if (typeof window !== 'undefined') {// Verifica se estamos no cliente
@@ -78,7 +78,7 @@ export function MensagemProvedor({ children, dadosIniciais }: MensagemProvedorPr
     }
     // Adicione isso dentro do useEffect de montagem no seu LayoutContext.tsx
 
-    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", dadosIniciais);
+    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", mensagensIniciais);
 
 
     return (

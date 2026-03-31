@@ -9,7 +9,7 @@ import { useState } from 'react'
 export default function Home() {
 
     const { setUsuarioDados } = useUsuario() //Usa no contexto
-    const { setLayoutDados } = useLayout() //Usa no contexto
+    const { layoutDados, setLayoutDados } = useLayout() //Usa no contexto
     const [preview, setPreview] = useState<string | null>(null);
     const [previewLayout, setPreviewLayout] = useState<string | null>(null); // Novo estado
 
@@ -116,7 +116,7 @@ export default function Home() {
                 <div className='w-full max-w-100 pt-[10%] pb-[12%] px-[10%] lg:px-[5.5%] flex items-center justify-center bg-[url(/images/mockup.svg)] bg-contain bg-no-repeat bg-center'>
                     <div className=' w-full h-full rounded-xl overflow-hidden bg-blue-950'>
                         <div className="relative w-full pb-[60.9%] overflow-hidden">
-                            <NextImage src={previewLayout ? previewLayout : "/images/mockup.svg"} alt="foto-layout" unoptimized fill />
+                            <NextImage src={previewLayout ? previewLayout : layoutDados.layout_url} alt="foto-layout" unoptimized fill />
                         </div>
                     </div>
                 </div>

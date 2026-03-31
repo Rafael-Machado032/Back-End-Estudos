@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { LayoutProvedor } from "@/contexts/LayoutContext";
 import { buscarLayout } from "../lib/BuscarLayout";
 import { DepoimentoProvedor } from "@/contexts/DepoimentoContext";
+import { buscarDepoimentos } from "../lib/BuscarDepoimento";
 import { MensagemProvedor } from "@/contexts/MensagemContext";
 
 
@@ -69,15 +70,17 @@ export const viewport = { //A cor da barra do mobile com a cor do site
 
 export default async function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
 
-  const dadosIniciais = await buscarLayout();
-  console.log("RESULTADO DA API NO SERVIDOR:", JSON.stringify(dadosIniciais, null, 2));
+  const layoutInicial = await buscarLayout();
+  const depoimentosIniciais = await buscarDepoimentos();
+  const mensagemInicial = null; // Se quiser, pode criar uma função para buscar mensagens iniciais também
+  console.log("RESULTADO DA API NO SERVIDOR:", JSON.stringify(layoutInicial, null, 2));
 
   return (
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
-        <LayoutProvedor dadosIniciais={dadosIniciais?.layout}>
-          <DepoimentoProvedor dadosIniciais={dadosIniciais?.depoimentos}>
-            <MensagemProvedor dadosIniciais={dadosIniciais?.mensagens}>
+        <LayoutProvedor layoutInicial={layoutInicial?.layout}>
+          <DepoimentoProvedor depoimentosIniciais={depoimentosIniciais}>
+            <MensagemProvedor mensagensIniciais={mensagemInicial}>
               <Header />
               {children}
               <Footer />
