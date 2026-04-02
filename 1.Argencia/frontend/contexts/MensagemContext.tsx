@@ -78,7 +78,7 @@ export function MensagemProvedor({ children, mensagensIniciais }: MensagemProved
     }
     // Adicione isso dentro do useEffect de montagem no seu LayoutContext.tsx
 
-    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", mensagensIniciais);
+    console.log("Mensagens QUE CHEGARAM NO CONTEXTO:", mensagensIniciais);
 
 
     return (

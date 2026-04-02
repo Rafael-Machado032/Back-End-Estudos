@@ -143,5 +143,5 @@ No cors.php modifique:
 
 9. Usar comando direto no console
     `php artisan tinker`
-    - User::create(['name' => 'Admin', 'email' => 'admin@email.com', 'password' => bcrypt('123456')]);
+    - User::create(['name' => 'Admin', 'email' => 'admin@admin.com', 'password' => bcrypt('123456')]);
     Insere o primeiro usuario no banco de dados

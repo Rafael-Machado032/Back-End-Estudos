@@ -75,7 +75,7 @@ export function DepoimentoProvedor({ children, depoimentosIniciais }:  Depoiment
     }
     // Adicione isso dentro do useEffect de montagem no seu LayoutContext.tsx
 
-    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", depoimentosIniciais);
+    console.log("Depoimentos QUE CHEGARAM NO CONTEXTO:", depoimentosIniciais);
 
     return (
         // Enviamos o valor para quem estiver lá dentro

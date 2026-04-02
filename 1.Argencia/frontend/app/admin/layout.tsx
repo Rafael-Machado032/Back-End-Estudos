@@ -5,6 +5,7 @@ import { LayoutProvedor } from "@/contexts/LayoutContext";
 import { buscarLayout } from "../lib/BuscarLayout";
 import { NavegacaoProvedor } from "@/contexts/Navegacao"; // ajuste o caminho
 import { UsuarioProvedor } from "@/contexts/UsuarioContext";
+import { buscarUsuarioLogado } from "../lib/BuscarUsuarioLogado";
 import { DepoimentoProvedor } from "@/contexts/DepoimentoContext";
 import { buscarDepoimentos } from "../lib/BuscarDepoimento";
 import { MensagemProvedor } from "@/contexts/MensagemContext";
@@ -72,7 +73,8 @@ export const viewport = { //A cor da barra do mobile com a cor do site
 
 
 export default async function AdminLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
-
+  
+  const usuarioLogado = await buscarUsuarioLogado();
   const layoutInicial = await buscarLayout();
   const depoimentosIniciais = await buscarDepoimentos();
   const mensagemInicial = null; // Se quiser, pode criar uma função para buscar mensagens iniciais também
@@ -81,7 +83,7 @@ export default async function AdminLayout({ children, }: Readonly<{ children: Re
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
         <NavegacaoProvedor>
-          <UsuarioProvedor>
+          <UsuarioProvedor usuarioInicial={usuarioLogado}>
             <LayoutProvedor layoutInicial={layoutInicial?.layout}>
               <DepoimentoProvedor depoimentosIniciais={depoimentosIniciais}>
                 <MensagemProvedor mensagensIniciais={mensagemInicial}>

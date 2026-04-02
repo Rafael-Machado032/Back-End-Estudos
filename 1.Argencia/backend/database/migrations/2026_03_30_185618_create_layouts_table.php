@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('layouts', function (Blueprint $table) {
             $table->id();
-            $table->string('foto_pc')->nullable(); // Coluna para armazenar o caminho da foto do layout
+            $table->string('foto_layout')->nullable(); // Coluna para armazenar o caminho da foto do layout
             $table->timestamps();
         });
     }

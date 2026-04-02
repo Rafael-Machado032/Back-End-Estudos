@@ -1,7 +1,7 @@
 "use client";
-import { useUsuario } from "@/contexts/UsuarioContext"; // Importa seu contexto
-import { useRouter } from "next/navigation"; // 1. Importe o router
-import { FazerLogin } from "../lib/FazerLogin";
+import { useUsuario } from "@/contexts/UsuarioContext"; // Importa o "balde" (contexto) para guardar o user
+import { useRouter } from "next/navigation"; // Ferramenta para mudar de página
+import { FazerLogin } from "../lib/FazerLogin"; // A função que vai lá no Laravel validar o login (POST /api/login) e devolver os dados do usuário e o token
 
 export default function LoginPage() {
     const { setUsuarioDados } = useUsuario(); // Pega a função de salvar do contexto
@@ -12,15 +12,17 @@ export default function LoginPage() {
         const senhaInput = formData.get("senha") as string
 
         if (emailInput && emailInput.trim() != "" && senhaInput && senhaInput.trim() != "") {
-            const resultado = await FazerLogin(formData)
+            const resultado = await FazerLogin(formData) // Chama a Server Action que faz o fetch para o Laravel (POST /api/login)
             if (!resultado?.success) {
+                // Se o Laravel disser que a senha/email não batem, ou se der algum erro, mostra um alerta
                 alert("Usuario ou Senha Incorreto")
             } else {
-                setUsuarioDados({
+                // SUCESSO: O Laravel devolveu os dados do usuário e o Token
+                setUsuarioDados({ // 1. Guarda os dados (nome e foto) no Contexto do navegador
                     nome: resultado.user.name,
                     foto_url: resultado.user.foto
                 });
-                router.push("/admin");
+                router.push("/admin");// 2. Manda o usuário para a área restrita (/admin)
             }
         }
 

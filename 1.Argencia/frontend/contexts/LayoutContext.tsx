@@ -77,7 +77,7 @@ export function LayoutProvedor({ children, layoutInicial }: LayoutProvedorProps)
     }
     // Adicione isso dentro do useEffect de montagem no seu LayoutContext.tsx
 
-    console.log("DADOS QUE CHEGARAM NO CONTEXTO:", layoutInicial);
+    console.log("Layouts QUE CHEGARAM NO CONTEXTO:", layoutInicial);
 
 
     return (

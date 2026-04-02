@@ -10,6 +10,7 @@ class UsuarioController extends Controller
     public function update(Request $request)
     {
         // 1. Validação (Segurança)
+        error_log("Dados vindo do Next: " . print_r($request->all(), true));
         try {
             $dadosValidos = $request->validate([
                 'nome' => 'nullable|string|max:255',

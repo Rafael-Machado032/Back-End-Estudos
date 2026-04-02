@@ -63,6 +63,9 @@ export default function LoginLayout({ children, }: Readonly<{ children: React.Re
     return (
         <html lang="pt-BR">
             <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
+                {/* O Provedor "abraça" a página de login. 
+                    Isso permite que, ao logar, os dados do usuário fiquem salvos 
+                    na memória do navegador para serem usados em outras páginas. */}
                 <UsuarioProvedor>
                     {children}
                 </UsuarioProvedor>

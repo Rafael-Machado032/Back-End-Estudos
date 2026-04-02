@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('foto')->nullable(); // Adiciona o campo da foto
+            $table->string('foto_perfil')->nullable(); // Adiciona o campo da foto
             // O campo 'name' e 'email' já vem por padrão no Laravel
         });
     }

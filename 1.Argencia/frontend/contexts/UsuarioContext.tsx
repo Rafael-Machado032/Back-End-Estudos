@@ -3,21 +3,21 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 interface usuario { //Interface do usuario
-    nome: string; // Parametros da interface
+    nome: string; // O que o seu Next vai usar internamente
     foto_url?: string; // URL completa que vem do Laravel (asset)
     foto_url_completa?: string; // URL completa que vem do Laravel (asset) - Accessor
 }
 
 
 interface UsuarioContextoTipo { //Contrato do que o contexto vai usar
-    usuarioDados: usuario; // O parametro dados é tipo usuario criado ali em cima
+    usuarioDados: usuario; // Onde os dados ficam guardados
     setUsuarioDados: (novosDados: usuario) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
 }
 
 interface UsuarioProvedorProps {
     children: ReactNode;
     // IMPORTANTE: Aqui tem que ser um objeto do tipo usuario ou null, porque o contexto espera um objeto de usuario ou nada, e não um array ou string
-    usuarioInicial?: usuario | null;
+    usuarioInicial?: usuario | null; // Nome do Prop O que o Next pode passar para o contexto (pode ser null se o Next não tiver dados)
 }
 
 //Conexao que vai usar o nosso contrato ou vazio
@@ -29,7 +29,10 @@ export function UsuarioProvedor({ children, usuarioInicial }: UsuarioProvedorPro
     const [usuarioDados, setUsuarioDados] = useState<usuario>(() => {
         // 1. Prioridade Máxima: O que o servidor (Next) acabou de buscar no Laravel
         if (usuarioInicial) {
-            return { foto_url: usuarioInicial.foto_url_completa };
+            return {
+                nome: usuarioInicial.nome,
+                foto_url: usuarioInicial.foto_url_completa 
+            };
         }
         // 2. Prioridade 2: LocalStorage (Fallback/Cache local)
         if (typeof window !== 'undefined') {
@@ -61,10 +64,11 @@ export function UsuarioProvedor({ children, usuarioInicial }: UsuarioProvedorPro
     if (!mounted) {
         return null; // Ou um esqueleto/loading
     }
+    console.log("Usuarios QUE CHEGARAM NO CONTEXTO:", usuarioInicial);
 
     return (
         // Enviamos o valor para quem estiver lá dentro
-        <UsuarioContexto.Provider value={{ usuarioDados: usuarioDados, setUsuarioDados }}>
+        <UsuarioContexto.Provider value={{ usuarioDados, setUsuarioDados }}>
             {children}
         </UsuarioContexto.Provider>
     );
