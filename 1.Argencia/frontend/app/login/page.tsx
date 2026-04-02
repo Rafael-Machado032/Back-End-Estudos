@@ -20,12 +20,12 @@ export default function LoginPage() {
                 // SUCESSO: O Laravel devolveu os dados do usuário e o Token
                 setUsuarioDados({ // 1. Guarda os dados (nome e foto) no Contexto do navegador
                     nome: resultado.user.name,
-                    foto_url: resultado.user.foto
+                    foto_url: resultado.user.foto_perfil
                 });
+                
                 router.push("/admin");// 2. Manda o usuário para a área restrita (/admin)
             }
         }
-
     };
 
     return (

@@ -4,8 +4,8 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 
 interface LayoutEstado {
     id: number;
-    layout_url: string;
-    layout_url_completa: string; // O Accessor do Laravel
+    layout_url?: string;
+    layout_url_completa?: string; // O Accessor do Laravel
 }
 
 interface LayoutContextoTipo { //Contrato do que o contexto vai usar

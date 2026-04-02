@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 
 interface usuario { //Interface do usuario
     nome: string; // O que o seu Next vai usar internamente
+    name?: string; // O que o Laravel devolve (pode ser usado para pegar outros dados, mas o Next só vai usar 'nome')
     foto_url?: string; // URL completa que vem do Laravel (asset)
     foto_url_completa?: string; // URL completa que vem do Laravel (asset) - Accessor
 }
@@ -30,8 +31,8 @@ export function UsuarioProvedor({ children, usuarioInicial }: UsuarioProvedorPro
         // 1. Prioridade Máxima: O que o servidor (Next) acabou de buscar no Laravel
         if (usuarioInicial) {
             return {
-                nome: usuarioInicial.nome,
-                foto_url: usuarioInicial.foto_url_completa 
+                nome: usuarioInicial.name,
+                foto_url: usuarioInicial.foto_url_completa
             };
         }
         // 2. Prioridade 2: LocalStorage (Fallback/Cache local)
@@ -65,6 +66,7 @@ export function UsuarioProvedor({ children, usuarioInicial }: UsuarioProvedorPro
         return null; // Ou um esqueleto/loading
     }
     console.log("Usuarios QUE CHEGARAM NO CONTEXTO:", usuarioInicial);
+    console.log("Usuarios que vai local storage:", usuarioDados);
 
     return (
         // Enviamos o valor para quem estiver lá dentro

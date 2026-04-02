@@ -54,7 +54,6 @@ class LayoutController extends Controller
     }
     public function show($id)
     {
-        
         $layout = Layout::findOrFail($id);
         return response()->json([
             'layout' => $layout
