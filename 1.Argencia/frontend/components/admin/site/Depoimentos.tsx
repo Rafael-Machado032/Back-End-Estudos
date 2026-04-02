@@ -9,7 +9,7 @@ import NextImage from "next/image"
 export default function Depoimentos() {
     const formRef = useRef<HTMLFormElement>(null); // Cria a referência para o formulário
     const { depoimentoDados, setDepoimentoDados } = useDepoimento();
-    const [previewDepoimento, setPreviewDepoimento] = useState("");
+    const [previewDepoimento, setPreviewDepoimento] = useState<string | null>(null);
 
     const pegarCaminhoFotoDepoimento = (e: React.ChangeEvent<HTMLInputElement>) => {
         const arquivo = e.target.files?.[0]; // Pega o primeiro arquivo
@@ -38,7 +38,7 @@ export default function Depoimentos() {
                     nome: resultado.depoimento.nome,
                     mensagem: resultado.depoimento.mensagem
                 }]);
-                setPreviewDepoimento("");
+                setPreviewDepoimento(null); // Limpa o preview após salvar
                 // O jeito "React" de resetar o formulário:
                 formRef.current?.reset();
             } else {

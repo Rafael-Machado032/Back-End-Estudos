@@ -5,6 +5,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 interface usuario { //Interface do usuario
     nome: string; // Parametros da interface
     foto_url?: string; // URL completa que vem do Laravel (asset)
+    foto_url_completa?: string; // URL completa que vem do Laravel (asset) - Accessor
 }
 
 
@@ -13,13 +14,24 @@ interface UsuarioContextoTipo { //Contrato do que o contexto vai usar
     setUsuarioDados: (novosDados: usuario) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
 }
 
+interface UsuarioProvedorProps {
+    children: ReactNode;
+    // IMPORTANTE: Aqui tem que ser um objeto do tipo usuario ou null, porque o contexto espera um objeto de usuario ou nada, e não um array ou string
+    usuarioInicial?: usuario | null;
+}
+
 //Conexao que vai usar o nosso contrato ou vazio
 const UsuarioContexto = createContext<UsuarioContextoTipo | undefined>(undefined);
 
 //Provedor e a função que vai abraçar
-export function UsuarioProvedor({ children }: { children: ReactNode }) {
+export function UsuarioProvedor({ children, usuarioInicial }: UsuarioProvedorProps) {
     const [mounted, setMounted] = useState(false);
     const [usuarioDados, setUsuarioDados] = useState<usuario>(() => {
+        // 1. Prioridade Máxima: O que o servidor (Next) acabou de buscar no Laravel
+        if (usuarioInicial) {
+            return { foto_url: usuarioInicial.foto_url_completa };
+        }
+        // 2. Prioridade 2: LocalStorage (Fallback/Cache local)
         if (typeof window !== 'undefined') {
             const salvo = localStorage.getItem('usuario_data');
             return salvo ? JSON.parse(salvo) : { nome: "Carregando...", foto_url: "" };
@@ -43,6 +55,8 @@ export function UsuarioProvedor({ children }: { children: ReactNode }) {
             localStorage.setItem('usuario_data', JSON.stringify(usuarioDados));
         }
     }, [usuarioDados, mounted]);
+    
+    
     // Evita o erro de Hydration: não renderiza o conteúdo real até que o cliente esteja pronto
     if (!mounted) {
         return null; // Ou um esqueleto/loading

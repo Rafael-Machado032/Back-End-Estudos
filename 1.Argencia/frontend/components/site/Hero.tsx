@@ -6,7 +6,7 @@ import NextImage from 'next/image';
 export default function Hero() {
     const { layoutDados } = useLayout();
     // DEBUG: Veja se isso imprime a URL correta no console do navegador (F12)
-    console.log("URL que chegou no Hero:", layoutDados?.layout_url);
+    console.log("URL que chegou no Hero:", layoutDados?.layout_url_completa);
     return (
         <section className="bg-[url(/images/bg.svg)] bg-cover bg-no-repeat bg-center max-h-235  text-white">
             <div className='mx-auto w-full max-w-6xl pt-36 flex justify-center '>
@@ -18,7 +18,7 @@ export default function Hero() {
                         {/* TELA DO COMPUTADOR (Onde a imagem aparece) */}
                         <div className='relative w-full h-full rounded-xl overflow-hidden bg-blue-950'>
                             <NextImage
-                                src={layoutDados.layout_url}
+                                src={layoutDados.layout_url_completa}
                                 alt="Projeto"
                                 fill
                                 unoptimized

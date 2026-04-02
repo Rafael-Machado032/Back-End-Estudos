@@ -8,14 +8,13 @@ use Illuminate\Support\Facades\Storage;
 
 class LayoutController extends Controller
 {
-  
     public function update(Request $request, $id)
     {
 
-       error_log("Nome do arquivo: " . $request->file('foto-pc')->getClientOriginalName());
+        error_log("Nome do arquivo: " . $request->file('foto-pc')->getClientOriginalName());
         // 1. Validação (Sempre importante!)
         try{
-            $dadosValidos=$request->validate([
+            $request->validate([
             'foto-pc' => 'required|image|max:5000', // 'foto-pc' é o name do seu input no Next
             ]);
         }catch (\Illuminate\Validation\ValidationException $e) {
@@ -50,7 +49,7 @@ class LayoutController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Layout atualizado com sucesso!',
-            'layout' => $layout // Aqui o Next.js já recebe o 'foto_pc_url'
+            'layout' => $layout // Aqui o Next.js já recebe o 'layout_url_completa' graças ao Accessor e ao $appends
         ]);
     }
     public function show($id)

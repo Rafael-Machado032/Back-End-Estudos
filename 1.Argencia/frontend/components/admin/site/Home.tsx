@@ -53,7 +53,7 @@ export default function Home() {
                 alert("Alterado com Sucesso!"); // O alert fica aqui, no lado do cliente!
                 setUsuarioDados({
                     nome: resultado.user.name,
-                    foto_url: resultado.user.foto_url // <--- Esse é o link que funciona no <img src>
+                    foto_url: resultado.user.foto_url_completa // <--- Esse é o link que funciona no <img src>
                 });
             } else {
                 alert("Erro ao salvar no servidor.");
@@ -83,7 +83,9 @@ export default function Home() {
             if (resultadoLayout?.success) {
                 alert("Layout atualizado com sucesso!");
                 setLayoutDados({
-                    layout_url: resultadoLayout.layout.foto_pc_url
+                    id: resultadoLayout.layout.id,
+                    layout_url: resultadoLayout.layout.layout_url,
+                    layout_url_completa: resultadoLayout.layout.layout_url_completa // <--- Esse é o link que funciona no <img src>
                 });
             } else {
                 alert("Erro ao atualizar o layout.");
@@ -116,7 +118,7 @@ export default function Home() {
                 <div className='w-full max-w-100 pt-[10%] pb-[12%] px-[10%] lg:px-[5.5%] flex items-center justify-center bg-[url(/images/mockup.svg)] bg-contain bg-no-repeat bg-center'>
                     <div className=' w-full h-full rounded-xl overflow-hidden bg-blue-950'>
                         <div className="relative w-full pb-[60.9%] overflow-hidden">
-                            <NextImage src={previewLayout ? previewLayout : layoutDados.layout_url} alt="foto-layout" unoptimized fill />
+                            <NextImage src={previewLayout ? previewLayout : layoutDados.layout_url_completa} alt="foto-layout" unoptimized fill />
                         </div>
                     </div>
                 </div>

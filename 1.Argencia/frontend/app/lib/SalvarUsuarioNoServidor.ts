@@ -5,11 +5,12 @@ export async function SalvarUsuarioNoServidor(formData: FormData) {
     // CORREÇÃO: Adicione o await aqui
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
+    formData.append('_method', 'PUT');
     try {
         // Puxa a URL do arquivo .env
         const urlBase = process.env.API_URL;
         // O Next.js envia o pacote completo (nome + arquivo) para o Laravel
-        const resposta = await fetch(`${urlBase}/usuario/atualizar`, {
+        const resposta = await fetch(`${urlBase}/usuario`, {
             method: 'POST',
             body: formData, // so use o formaData se for carregar imagem
             headers: {

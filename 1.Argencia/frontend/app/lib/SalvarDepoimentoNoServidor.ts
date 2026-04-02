@@ -5,6 +5,7 @@ export async function SalvarDepoimentoNoServidor(formData: FormData) {
     // CORREÇÃO: Adicione o await aqui
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
+    formData.append('_method', 'PUT');
     try {
         // Puxa a URL do arquivo .env
         const urlBase = process.env.API_URL;

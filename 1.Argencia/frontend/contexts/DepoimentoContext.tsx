@@ -5,7 +5,7 @@ import { createContext, useContext, useState, ReactNode, useEffect } from 'react
 interface Depoimento { //Interface do usuario
     id: number;
     nome: string;
-    mensagem: string; 
+    mensagem: string;
     foto_url: string;
 }
 
@@ -19,7 +19,7 @@ interface DepoimentoContextoTipo { //Contrato do que o contexto vai usar
 interface DepoimentoProvedorProps {
     children: ReactNode;
     // IMPORTANTE: Aqui tem que ser um Array [] ou null, porque o contexto espera um array de depoimentos ou nada, e não um único depoimento
-    depoimentosIniciais?: Depoimento[] | null;
+    depoimentosIniciais?: Depoimento[] | null; // O '?' torna opcional
 }
 
 

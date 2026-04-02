@@ -1,0 +1,10 @@
+{
+    "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+    "notebook.defaultFormatter": "bmewburn.vscode-intelephense-client",
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    }
+}

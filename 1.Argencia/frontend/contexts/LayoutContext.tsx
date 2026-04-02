@@ -3,7 +3,9 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 interface LayoutEstado {
+    id: number;
     layout_url: string;
+    layout_url_completa: string; // O Accessor do Laravel
 }
 
 interface LayoutContextoTipo { //Contrato do que o contexto vai usar
@@ -11,16 +13,9 @@ interface LayoutContextoTipo { //Contrato do que o contexto vai usar
     setLayoutDados: (novosDados: LayoutEstado) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
 }
 
-interface LayoutVindoDoBanco {
-    id: number;
-    foto_pc: string;
-    foto_pc_url: string; // O Accessor do Laravel
-    // adicione outros campos se existirem no seu banco
-}
-
 interface LayoutProvedorProps {
     children: ReactNode;
-    layoutInicial?: LayoutVindoDoBanco | null; // Aqui substituímos o 'any'
+    layoutInicial?: LayoutEstado | null; // Aqui substituímos o 'any'
 }
 
 //Conexao que vai usar o nosso contrato ou vazio
@@ -32,15 +27,21 @@ export function LayoutProvedor({ children, layoutInicial }: LayoutProvedorProps)
     // 1. Inicializa o estado com uma função para evitar acessar localStorage no servidor
     const [layoutDados, setLayoutDados] = useState<LayoutEstado>(() => {
         // 1. Prioridade Máxima: O que o servidor (Next) acabou de buscar no Laravel
-        if (layoutInicial?.foto_pc_url) {
-            return { layout_url: layoutInicial.foto_pc_url };
+        if (layoutInicial) {
+            return {
+                layout_url_completa: layoutInicial.layout_url_completa
+            };
         }
         // Prioridade 2: LocalStorage (Fallback/Cache local)
         if (typeof window !== 'undefined') {// Verifica se estamos no cliente
             const salvo = localStorage.getItem('layout_url_data');
             return salvo ? JSON.parse(salvo) : { layout_url: "" };
         }
-        return { layout_url: "" };
+        return {
+            id: 0,
+            layout_url: "",
+            layout_url_completa: ""
+        };
     });
 
 
