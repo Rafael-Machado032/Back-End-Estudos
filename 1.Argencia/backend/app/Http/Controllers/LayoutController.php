@@ -11,18 +11,18 @@ class LayoutController extends Controller
     public function update(Request $request, $id)
     {
 
-        error_log("Nome do arquivo: " . $request->file('foto-pc')->getClientOriginalName());
+        error_log("Dados vindo do Next: " . print_r($request->all(), true));
         // 1. Validação (Sempre importante!)
-        try{
+        try {
             $request->validate([
-            'foto-pc' => 'required|image|max:5000', // 'foto-pc' é o name do seu input no Next
+                'foto-pc' => 'required|image|max:5000', // 'foto-pc' é o name do seu input no Next
             ]);
-        }catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             // Isso vai imprimir no seu terminal EXATAMENTE o que deu errado
             error_log(print_r($e->errors(), true));
             throw $e; // Reança o erro para manter o comportamento padrão
         }
-        error_log("Caminho temporário: " . $request->file('foto-pc')->getPathname());
+        error_log("Depois (pelo array): " . print_r($request->all(), true));
 
         // 2. Busca o Layout pelo ID (no seu caso, passamos o ID 1)
         // Se não existir, o findOrFail já retorna um erro 404 sozinho
@@ -30,17 +30,17 @@ class LayoutController extends Controller
 
         // 3. Se enviou um arquivo novo...
         if ($request->hasFile('foto-pc')) {
-            
+
             // Deleta a foto anterior do HD se ela existir
-            if ($layout->foto_pc) {
-                Storage::disk('public')->delete($layout->foto_pc);
+            if ($layout->foto_layout) {
+                Storage::disk('public')->delete($layout->foto_layout);
             }
 
             // Salva a nova na pasta 'layouts' dentro do storage
             $caminho = $request->file('foto-pc')->store('layouts', 'public');
-            
+
             // Atualiza o caminho no objeto
-            $layout->foto_pc = $caminho;
+            $layout->foto_layout = $caminho;
         }
 
         // 4. Grava no Banco de Dados

@@ -19,7 +19,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'foto'
+        'foto_perfil'
     ];
 
     protected $hidden = [
@@ -32,7 +32,7 @@ class User extends Authenticatable
     
     // No arquivo App\Models\User.php
     public function getFotoUrlCompletaAttribute() {
-        return $this->foto ? asset('storage/' . $this->foto) : null;
+        return $this->foto_perfil ? asset('storage/' . $this->foto_perfil) : null;
     }
 
     protected function casts(): array

@@ -31,7 +31,7 @@ class UsuarioController extends Controller
 
         // 3.Testa se não veio vazio e salva o Nome
         if ($request->filled('nome')) {
-            $usuario->name = $request->nome;
+            $usuario->name = $request->input('nome');
         }
 
         // 4. Salva a Foto (se o Next enviou uma)
@@ -44,7 +44,7 @@ class UsuarioController extends Controller
 
             // O Laravel gera um nome único e salva em storage/app/public/perfil
             $caminho = $request->file('foto-usuario')->store('perfil', 'public');
-            $usuario->foto = $caminho;
+            $usuario->foto_perfil = $caminho;
         }
 
         $usuario->save();

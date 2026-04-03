@@ -13,7 +13,7 @@ export default function Home() {
     const [preview, setPreview] = useState<string | null>(null);
     const [previewLayout, setPreviewLayout] = useState<string | null>(null); // Novo estado
 
-    const pegarCaminhoFoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const pegarCaminhoFoto = (e: React.ChangeEvent<HTMLInputElement>) => { //Usa para preview da foto do usuário
         const arquivo = e.target.files?.[0]; // Pega o primeiro arquivo
 
         if (arquivo) {
@@ -55,6 +55,7 @@ export default function Home() {
                     nome: resultado.user.name,
                     foto_url: resultado.user.foto_url_completa // <--- Esse é o link que funciona no <img src>
                 });
+                alert(resultado.user.foto_url_completa)
             } else {
                 alert("Erro ao salvar no servidor.");
             }
@@ -84,8 +85,7 @@ export default function Home() {
                 alert("Layout atualizado com sucesso!");
                 setLayoutDados({
                     id: resultadoLayout.layout.id,
-                    layout_url: resultadoLayout.layout.layout_url,
-                    layout_url_completa: resultadoLayout.layout.layout_url_completa // <--- Esse é o link que funciona no <img src>
+                    layout_url: resultadoLayout.layout.layout_url_completa,
                 });
             } else {
                 alert("Erro ao atualizar o layout.");
@@ -118,7 +118,8 @@ export default function Home() {
                 <div className='w-full max-w-100 pt-[10%] pb-[12%] px-[10%] lg:px-[5.5%] flex items-center justify-center bg-[url(/images/mockup.svg)] bg-contain bg-no-repeat bg-center'>
                     <div className=' w-full h-full rounded-xl overflow-hidden bg-blue-950'>
                         <div className="relative w-full pb-[60.9%] overflow-hidden">
-                            <NextImage src={previewLayout ? previewLayout : layoutDados.layout_url_completa} alt="foto-layout" unoptimized fill />
+                            <NextImage src={previewLayout ? previewLayout : layoutDados.layout_url_completa!} alt="foto-layout" unoptimized fill />
+                            {/**O "!" Serve para indicar que o valor nunca será null para o tipo layoutDados.layout_url_completa e o Typescript não vai reclamar */}
                         </div>
                     </div>
                 </div>

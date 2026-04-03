@@ -20,9 +20,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-
-    Route::post('/layout/{id}', [LayoutController::class, 'update']);
-    Route::post('/usuario', [UsuarioController::class, 'update']);
+    //Route::post('/usuario', [UsuarioController::class, 'update']);
+    //Route::post('/layout/{id}', [LayoutController::class, 'update']);
+    Route::match(['post', 'put'], '/layout/{id}', [LayoutController::class, 'update']);
+    Route::match(['post', 'put'], '/usuario', [UsuarioController::class, 'update']);
     Route::post('/depoimento', [DepoimentoController::class, 'update']);
     
 });

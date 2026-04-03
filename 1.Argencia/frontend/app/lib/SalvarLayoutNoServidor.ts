@@ -20,7 +20,10 @@ export async function SalvarLayoutNoServidor(formData: FormData) {
         });
 
         if (!resposta.ok) {
+            const erroTexto = await resposta.text(); // Pega o erro (pode ser validação ou erro de servidor)
+            console.log("ERRO VINDO DO LARAVEL:", erroTexto);
             return { success: false };
+            
         } else {
             const dados = await resposta.json();
             return { success: true, ...dados }; // Retorna os dados para o front

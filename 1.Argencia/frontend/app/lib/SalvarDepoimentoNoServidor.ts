@@ -20,6 +20,8 @@ export async function SalvarDepoimentoNoServidor(formData: FormData) {
         });
 
         if (!resposta.ok) {
+            const erroTexto = await resposta.text(); // Pega o erro (pode ser validação ou erro de servidor)
+            console.log("ERRO VINDO DO LARAVEL:", erroTexto);
             return { success: false };
         } else {
             const dados = await resposta.json();
