@@ -25,7 +25,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //Route::post('/depoimento', [DepoimentoController::class, 'update']);
     Route::match(['post', 'put'], '/layout/{id}', [LayoutController::class, 'update']);
     Route::match(['post', 'put'], '/usuario', [UsuarioController::class, 'update']);
-    Route::match(['post', 'put'], '/depoimento', [DepoimentoController::class, 'update']);
+    //Route::match(['post', 'put'], '/depoimento', [DepoimentoController::class, 'update']);
+    Route::post('/depoimento', [DepoimentoController::class, 'store']);
+    Route::post('/depoimento/{id}', [DepoimentoController::class, 'update']); // Tem que ter o {id}
+    Route::delete('/depoimento/{id}', [DepoimentoController::class, 'destroy']); // Tem que ter o {id}
 });
 
 // Rotas públicas (sem autenticação)
