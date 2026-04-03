@@ -18,7 +18,7 @@ export default function Hero() {
                         {/* TELA DO COMPUTADOR (Onde a imagem aparece) */}
                         <div className='relative w-full h-full rounded-xl overflow-hidden bg-blue-950'>
                             <NextImage
-                                src={layoutDados.layout_url_completa}
+                                src={layoutDados.layout_url_completa!}
                                 alt="Projeto"
                                 fill
                                 unoptimized
