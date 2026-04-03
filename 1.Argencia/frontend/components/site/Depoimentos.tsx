@@ -1,111 +1,153 @@
 "use client";
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo, useCallback } from "react"; // Adicionado useMemo e useCallback
 import { useDepoimento } from "@/contexts/DepoimentoContext";
 import NextImage from "next/image";
 
 export default function Depoimentos() {
-    const { depoimentoDados } = useDepoimento(); // Puxa do seu contexto profissional
-    // Fallback: Se o banco estiver vazio, não deixa o cálculo de páginas dar erro (divisão por zero)
-    const listaFinal = depoimentoDados.length > 0 ? depoimentoDados : [];
-    const [pagina, setPagina] = useState(1)
-    const [comTransicao, setComTransicao] = useState(true);
-    const [largura, setLargura] = useState(0);
-    const [depopagina] = useState(3)
+    const { depoimentoDados } = useDepoimento();
+    // Garante que listaFinal seja sempre um array, mesmo se o banco estiver vazio
+    const listaFinal = depoimentoDados || [];
 
+    const [pagina, setPagina] = useState(1); // Página atual (começa em 1 por causa do clone)
+    const [comTransicao, setComTransicao] = useState(true); // Liga/Desliga a animação suave
+    const [largura, setLargura] = useState(0); // Largura da tela para responsividade
 
-    const depoPagina = largura < 768 ? 1 : depopagina;
-    const nPaginas = listaFinal.length > 0 ? Math.ceil(listaFinal.length / depoPagina) : 0;
-    const nPaginasComClones = nPaginas + 2;
+    // 1. Estabiliza o cálculo de páginas para não quebrar o useEffect
 
+    const { depoPagina, nPaginas } = useMemo(() => {
+        /**
+         * useMemo: Cálculos matemáticos estáveis.
+         * Só recalcula se a 'largura' da tela ou o 'tamanho da lista' mudar.
+         */
+        const total = listaFinal.length;
+        if (total === 0) return { depoPagina: 1, nPaginas: 0 };
+        // Lógica de Uniformidade: Divide o total por 3 ou 2 se for exato, senão mostra 1 por página em telas grandes. Em telas pequenas, sempre 1 por página.
+        let porPagina = 1;
+        if (largura >= 768) {
+            if (total % 3 === 0) porPagina = 3;
+            else if (total % 2 === 0) porPagina = 2;
+            else porPagina = 1;
+        }
 
-    const proximo = () => {
-        setPagina((paginaAtual) => (paginaAtual + 1))
-    }
+        return {
+            depoPagina: porPagina,
+            nPaginas: Math.ceil(total / porPagina) // Total de páginas necessárias
+        };
+    }, [largura, listaFinal.length]);
+
+    const nPaginasComClones = nPaginas + 2; // Precisamos de 2 páginas extras (clones) para o efeito de "Loop Infinito"
+
+    // 2. useCallback para a função proximo ser estável
+    const proximo = useCallback(() => {
+        /**
+         * useCallback: Memoriza a função de avançar página.
+         * Evita que o useEffect seja disparado desnecessariamente.
+         */
+        setPagina((p) => p + 1);
+    }, []);
 
     useEffect(() => {
-        // LÓGICA DO TELETRANSPORTE INVISÍVEL
-        if (pagina === nPaginas + 1) { // Chegou no clone do final
-            setTimeout(() => {
-                setComTransicao(false); // Desliga a animação
-                setPagina(1);           // Pula para a página 1 real
-            }, 700); // Mesmo tempo da duration-700
-        }
+        /**
+         * useEffect: O "Cérebro" do carrossel.
+         * Controla o Teletransporte, o Auto-play e o monitoramento da tela.
+         */
+        if (nPaginas === 0) return;
 
-        if (pagina === 0) { // Chegou no clone do início
-            setTimeout(() => {
+        let timerTeletransporte: NodeJS.Timeout;
+
+        // LÓGICA DO TELETRANSPORTE (Loop Infinito)
+        if (pagina === nPaginas + 1) {  // Se chegou no último clone, pula para a 1ª página real sem animação
+            timerTeletransporte = setTimeout(() => {
+                setComTransicao(false);  // Desliga animação para o pulo ser invisível
+                setPagina(1);
+            }, 700);  // Tempo da transição CSS para garantir que o usuário não perceba o "teletransporte"
+        } else if (pagina === 0) { // Se chegou no clone do início, pula para a última página real
+            timerTeletransporte = setTimeout(() => {
                 setComTransicao(false);
-                setPagina(nPaginas); // Pula para a última real
-            }, 700);
+                setPagina(nPaginas);
+            }, 700);  // Tempo da transição CSS para garantir que o usuário não perceba o "teletransporte"
         }
 
-        // Religa a transição para o próximo clique
-        if (!comTransicao) {
-            setTimeout(() => setComTransicao(true), 50);
+        // Religa a transição
+        if (!comTransicao) {  // Se a transição foi desligada pelo teletransporte, religa ela após 50ms para o próximo clique funcionar normalmente
+            const timerTransicao = setTimeout(() => setComTransicao(true), 50);
+            return () => clearTimeout(timerTransicao);
         }
 
-        const verificarTamanho = () => {
-            setLargura(window.innerWidth);
-        };
-
-        // 2. Executa assim que carrega
-        verificarTamanho();
-
-        // 3. "Ouve" toda vez que o usuário esticar ou encolher a tela
+        // Monitor de largura
+        const verificarTamanho = () => setLargura(window.innerWidth);// Função para atualizar a largura da tela no estado
         window.addEventListener('resize', verificarTamanho);
+        if (largura === 0) verificarTamanho(); // Roda uma vez ao carregar para garantir que a largura inicial seja capturada
 
-        const contador = setInterval(proximo, 5000);
-        return () => {
+        const contador = setInterval(proximo, 5000);  // Configura o avanço automático a cada 5 segundos
+
+        return () => {  // Limpeza: Remove ouvintes e timers ao fechar o componente para evitar bugs de memória
             clearInterval(contador);
-            window.removeEventListener('resize', verificarTamanho)
-        }
-    }, [pagina, comTransicao]);
+            clearTimeout(timerTeletransporte);
+            window.removeEventListener('resize', verificarTamanho);
+        };
+    }, [pagina, comTransicao, nPaginas, proximo, largura]); // Dependências completas e estáveis
 
-
+    if (listaFinal.length === 0) return null; // Se não tiver depoimentos, não renderiza nada (pode ser substituído por um placeholder se desejar)
 
     return (
         <section className='flex flex-col gap-9 w-full max-w-6xl mx-auto text-center p-4'>
-            <h2 className="font-bold text-5xl">Depoimentos</h2>
-            {/* "Moldura" Onde vai limitar a visão do transbordo */}
-            {/* Segredo: overflow-hidden Limita a visão  */}
-            <div className=' overflow-hidden'>{/* Moldura */}
-                {/* "Fita" Onde vai ficar todas as paginas um do la do outro */}
-                {/* Segredo: shrink-0 Não deixa a pagina quebrar a proxima linha */}
-                <div className={`flex shrink-0 ${comTransicao ? 'transition-transform duration-700 ease-in-out' : 'transition-none'}`} style={{ transform: `translateX(-${pagina * 100}%)` }}>{/* Fita */}
-                    {/* "Pagina" posso colocar quantos conteudo quizer dentro da pagina */}
-                    {/* Segredo: min-w-full Garante a pagina oculpa a moldura e posibilidade de expansão*/}
-                    {Array.from({ length: nPaginasComClones }).map((_, i_pagina) => {
-                        // Mudar o conteudo
+            <h2 className="font-bold text-4xl">Depoimentos</h2>
+
+            <div className='overflow-hidden'>{/* MOLDURA: Esconde o que está fora da área visível */}
+                <div
+                    className={`flex shrink-0 ${comTransicao ? 'transition-transform duration-700 ease-in-out' : 'transition-none'}`}
+                    style={{ transform: `translateX(-${pagina * 100}%)` }}
+                >{/* FITA: Move-se lateralmente com base na página atual */}
+                    {Array.from({ length: nPaginasComClones }).map((_, i_pagina) => { // Renderiza as páginas (Reais + Clones)
+                        // Lógica para decidir qual conteúdo mostrar em cada página (incluindo clones)
                         let paginaConteudo;
-                        if (i_pagina === 0) paginaConteudo = nPaginas - 1; // Se for a primeira pagina "0" o conteudo é do ultimo
-                        else if (i_pagina === nPaginas + 1) paginaConteudo = 0; // Se for a ultima pagina o conteudo é do primeiro
+                        if (i_pagina === 0) paginaConteudo = nPaginas - 1; // Clone da última no início
+                        else if (i_pagina === nPaginas + 1) paginaConteudo = 0; // Clone da primeira no fim
                         else paginaConteudo = i_pagina - 1; // Páginas normais
 
-                        return <div key={i_pagina} className='flex w-full gap-8 min-w-full justify-center items-center'>{/* Pagina */}
-                            {/* Conteudo */}
-                            {/* É criada a pagina mais cada pagina tem um conteudo diferente é feito cortes no array para selecionar o conteudo de cada pagina*/}
-                            {listaFinal.slice(paginaConteudo * depoPagina, (paginaConteudo + 1) * depoPagina).map((item) => (
-                                <figure key={item.id} className='flex flex-col justify-center items-center gap-4'>
-                                    <figcaption className='flex flex-col justify-center items-center'>
-                                        <NextImage src={item.foto_url_completa || "/images/avatar-default.png"} alt={item.nome} width={100} height={100} unoptimized />
-                                        <cite className='text-2xl font-bold'>{item.nome}</cite>
-                                    </figcaption>
-                                    <blockquote className="text-[#7E92AC]">{item.mensagem}</blockquote>
-                                    <NextImage src="/images/RATE.svg" alt="rate.svg" width={100} height={20}/>
-                                </figure>
-                            ))}
-                        </div>
+                        return (
+                            <div key={i_pagina} className='flex w-full gap-8 min-w-full justify-center items-start p-2'>
+                                {/* Faz o "recorte" dos depoimentos que pertencem a esta página */}
+                                {listaFinal.slice(paginaConteudo * depoPagina, (paginaConteudo + 1) * depoPagina).map((item) => (
+                                    <figure key={item.id} className='flex flex-col justify-center items-center gap-4 flex-1 max-w-75'>
+                                        <figcaption className='flex flex-col justify-center items-center gap-2'>
+                                            {/* Foto com tamanho controlado e otimizada */}
+                                            <div className="relative w-20 h-20">
+                                                <NextImage
+                                                    src={item.foto_url_completa || "/images/avatar-default.png"}
+                                                    alt={item.nome}
+                                                    fill
+                                                    className="rounded-full object-cover"
+                                                    unoptimized
+                                                />
+                                            </div>
+                                            <cite className='text-xl font-bold not-italic'>{item.nome}</cite>
+                                        </figcaption>
+                                        <blockquote className="text-[#7E92AC] text-sm italic min-h-16">
+                                            &ldquo;{item.mensagem}&rdquo;
+                                        </blockquote>
+                                        <NextImage src="/images/RATE.svg" alt="Avaliação" width={100} height={20} />
+                                    </figure>
+                                ))}
+                            </div>
+                        );
                     })}
                 </div>
             </div>
+            {/* PAGINAÇÃO (Bolinhas) */}
             <div className="flex gap-4 justify-center items-center">
                 {Array.from({ length: nPaginas }).map((_, i) => (
                     <button
                         key={i}
-                        onClick={() => setPagina(i + 1)} // O "link" acontece aqui!
+                        // Força a volta da transição ao clicar manualmente, garantindo que o "teletransporte" funcione corretamente mesmo após cliques rápidos
+                        onClick={() => { setComTransicao(true); setPagina(i + 1); }}
                         className={`h-3 rounded-full transition-all duration-300 
-                            ${(pagina === i + 1 || (pagina === 0 && i === nPaginas - 1) || (pagina === nPaginas + 1 && i === 0)) ? "w-8 bg-blue-600" : "w-3 bg-gray-300"}`} />
+                            ${(pagina === i + 1 || (pagina === 0 && i === nPaginas - 1) || (pagina === nPaginas + 1 && i === 0))
+                                ? "w-8 bg-blue-600" : "w-3 bg-gray-300"}`}
+                    />
                 ))}
             </div>
         </section>
-    )
+    );
 }
