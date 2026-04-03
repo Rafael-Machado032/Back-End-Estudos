@@ -7,6 +7,7 @@ interface Depoimento { //Interface do usuario
     nome: string;
     mensagem: string;
     foto_url: string;
+    foto_url_completa?: string; // URL completa que vem do Laravel (asset) - Accessor
 }
 
 // 2. O Contrato do Contexto
@@ -79,7 +80,7 @@ export function DepoimentoProvedor({ children, depoimentosIniciais }:  Depoiment
 
     return (
         // Enviamos o valor para quem estiver lá dentro
-        <DepoimentoContexto.Provider value={{ depoimentoDados: depoimentoDados, setDepoimentoDados: setDepoimentoDados }}>
+        <DepoimentoContexto.Provider value={{  depoimentoDados, setDepoimentoDados }}>
             {children}
         </DepoimentoContexto.Provider>
     );

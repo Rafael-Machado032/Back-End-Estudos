@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class Depoimento extends Model
 {
 
-    protected $fillable = ['nome', 'mensagem', 'foto_url'];
+    protected $fillable = ['nome', 'mensagem', 'foto_depoimento'];
 
     // 2. IMPORTANTE: Faz o Laravel incluir a URL no JSON que vai pro Next
     protected $appends = ['foto_url_completa']; 
@@ -15,6 +15,6 @@ class Depoimento extends Model
     // para não dar conflito na hora de salvar no banco.
     public function getFotoUrlCompletaAttribute()
     {
-        return $this->foto_url ? asset('storage/' . $this->foto_url) : null;
+        return $this->foto_depoimento ? asset('storage/' . $this->foto_depoimento) : null;
     }
 }

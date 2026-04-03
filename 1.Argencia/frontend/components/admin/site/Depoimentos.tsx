@@ -34,7 +34,7 @@ export default function Depoimentos() {
                 alert("Depoimento cadastrado com Sucesso!");
                 setDepoimentoDados([...depoimentoDados, {
                     id: resultado.depoimento.id, // Supondo que o Laravel retorne o ID do depoimento criado
-                    foto_url: resultado.depoimento.foto_url,
+                    foto_url: resultado.depoimento.foto_url_completa,
                     nome: resultado.depoimento.nome,
                     mensagem: resultado.depoimento.mensagem
                 }]);
@@ -85,7 +85,7 @@ export default function Depoimentos() {
                             <div key={item.id} className='p-4 flex justify-between items-center border rounded-lg bg-white shadow-sm'>
                                 <div className="relative w-16 h-16 mr-4 shrink-0 overflow-hidden rounded-full border">
                                     <NextImage
-                                        src={item.foto_url || "/images/avatar-default.png"}
+                                        src={item.foto_url_completa || "/images/avatar-default.png"}
                                         alt={item.nome}
                                         className='object-cover'
                                         unoptimized

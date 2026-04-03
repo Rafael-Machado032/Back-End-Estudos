@@ -10,9 +10,9 @@ class UsuarioController extends Controller
     public function update(Request $request)
     {
         // 1. Validação (Segurança)
-        error_log("Dados vindo do Next: " . print_r($request->all(), true));
+        error_log("Dados vindo do Next: " . json_encode($request->all(), JSON_PRETTY_PRINT));
         try {
-            $dadosValidos = $request->validate([
+            $request->validate([
                 'nome' => 'nullable|string|max:255',
                 'foto-usuario' => 'nullable|image|max:2048'
             ]);
@@ -21,8 +21,7 @@ class UsuarioController extends Controller
             error_log(print_r($e->errors(), true));
             throw $e; // Reança o erro para manter o comportamento padrão
         }
-
-        error_log("Depois (pelo array): " . $dadosValidos['nome']);
+        error_log("Depois (pelo array): " . json_encode($request->all(), JSON_PRETTY_PRINT));
         //required: Para informações vitais (Nome, E-mail, Senha). O usuário não pode apagar e deixar em branco.
         //nullable: Para informações opcionais (Foto, Bio, Telefone). O usuário escolhe se quer preencher ou não.
 

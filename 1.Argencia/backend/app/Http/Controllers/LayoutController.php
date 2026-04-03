@@ -11,7 +11,7 @@ class LayoutController extends Controller
     public function update(Request $request, $id)
     {
 
-        error_log("Dados vindo do Next: " . print_r($request->all(), true));
+        error_log("Dados vindo do Next: " . json_encode($request->all(), JSON_PRETTY_PRINT));
         // 1. Validação (Sempre importante!)
         try {
             $request->validate([
@@ -22,7 +22,7 @@ class LayoutController extends Controller
             error_log(print_r($e->errors(), true));
             throw $e; // Reança o erro para manter o comportamento padrão
         }
-        error_log("Depois (pelo array): " . print_r($request->all(), true));
+        error_log("Depois (pelo array): " . json_encode($request->all(), JSON_PRETTY_PRINT));
 
         // 2. Busca o Layout pelo ID (no seu caso, passamos o ID 1)
         // Se não existir, o findOrFail já retorna um erro 404 sozinho

@@ -86,7 +86,7 @@ export default function Depoimentos() {
                             {listaFinal.slice(paginaConteudo * depoPagina, (paginaConteudo + 1) * depoPagina).map((item) => (
                                 <figure key={item.id} className='flex flex-col justify-center items-center gap-4'>
                                     <figcaption className='flex flex-col justify-center items-center'>
-                                        <NextImage src={item.foto_url || "/images/avatar-default.png"} alt={item.nome} width={100} height={100} unoptimized />
+                                        <NextImage src={item.foto_url_completa || "/images/avatar-default.png"} alt={item.nome} width={100} height={100} unoptimized />
                                         <cite className='text-2xl font-bold'>{item.nome}</cite>
                                     </figcaption>
                                     <blockquote className="text-[#7E92AC]">{item.mensagem}</blockquote>

@@ -22,10 +22,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     //Route::post('/usuario', [UsuarioController::class, 'update']);
     //Route::post('/layout/{id}', [LayoutController::class, 'update']);
+    //Route::post('/depoimento', [DepoimentoController::class, 'update']);
     Route::match(['post', 'put'], '/layout/{id}', [LayoutController::class, 'update']);
     Route::match(['post', 'put'], '/usuario', [UsuarioController::class, 'update']);
-    Route::post('/depoimento', [DepoimentoController::class, 'update']);
-    
+    Route::match(['post', 'put'], '/depoimento', [DepoimentoController::class, 'update']);
 });
 
 // Rotas públicas (sem autenticação)
