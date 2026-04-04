@@ -128,7 +128,10 @@ export default function Depoimentos() {
                                         <blockquote className="text-[#7E92AC] text-sm italic min-h-16">
                                             &ldquo;{item.mensagem}&rdquo;
                                         </blockquote>
-                                        <NextImage src="/images/RATE.svg" alt="Avaliação" width={100} height={20} priority />
+                                        <div className="relative w-50 h-5">
+                                            <NextImage src="/images/RATE.svg" alt="Avaliação" fill priority unoptimized />
+                                        </div>
+                                        
                                     </figure>
                                 ))}
                             </div>

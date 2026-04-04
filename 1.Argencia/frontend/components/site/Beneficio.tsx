@@ -22,8 +22,8 @@ export default function Beneficio() {
                     <span className='text-[#7E92AC]'>Garantia de resultados, pague de acordo com o desempenho do seu projeto ou campanha.</span>
                 </div>
             </div>
-            <div className='relative md:w-1/2 h-max'>
-                <NextImage src="/images/mackbook.png" alt="mackbook.png" fill priority />
+            <div className='relative md:w-1/2 h-75 md:h-125'>
+                <NextImage src="/images/mackbook.png" alt="mackbook.png" className="object-contain" fill priority unoptimized />
             </div>
         </section>
     )

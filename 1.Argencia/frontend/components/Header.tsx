@@ -13,7 +13,9 @@ export function Header() {
                     {/* Logo */}
                     <div className={`z-10 shrink-0 flex items-center ${isOpen ? 'text-black' : 'text-white'}`}>
                         <Link href="/" className="text-2xl font-bold">
-                            <NextImage src="/images/logoagencia.svg" alt="Logo da Agência" width={100} height={50} priority />
+                        <div className='relative w-100 h-15'>
+                                <NextImage src="/images/logoagencia.svg" alt="Logo da Agência" fill priority unoptimized />
+                        </div>
                         </Link>
                     </div>
 
