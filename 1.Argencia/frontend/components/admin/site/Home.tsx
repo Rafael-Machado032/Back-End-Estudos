@@ -118,7 +118,7 @@ export default function Home() {
                 <div className='w-full max-w-100 pt-[10%] pb-[12%] px-[10%] lg:px-[5.5%] flex items-center justify-center bg-[url(/images/mockup.svg)] bg-contain bg-no-repeat bg-center'>
                     <div className=' w-full h-full rounded-xl overflow-hidden bg-blue-950'>
                         <div className="relative w-full pb-[60.9%] overflow-hidden">
-                            <NextImage src={previewLayout ? previewLayout : layoutDados.layout_url_completa!} alt="foto-layout" unoptimized fill />
+                            <NextImage src={previewLayout ? previewLayout : layoutDados.layout_url_completa!} alt="foto-layout" unoptimized fill priority />
                             {/**O "!" Serve para indicar que o valor nunca será null para o tipo layoutDados.layout_url_completa e o Typescript não vai reclamar */}
                         </div>
                     </div>

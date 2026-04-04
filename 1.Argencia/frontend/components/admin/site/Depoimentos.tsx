@@ -118,7 +118,7 @@ export default function Depoimentos() {
 
             <div className='sm:w-1/2'>
                 <h2 className='text-center text-xl font-bold mb-4'>Gerenciar Depoimentos</h2>
-                <div className='h-112.5 overflow-y-auto flex flex-col gap-3 p-2 bg-gray-50 rounded shadow-inner'>
+                <div className='h-105 border overflow-y-auto flex flex-col gap-3 p-2 bg-gray-50 rounded shadow-inner'>
                     {depoimentoDados.map((item) => (
                         <div key={item.id} className='p-3 flex items-center border rounded-lg bg-white hover:shadow-md transition'>
                             <div className="relative w-12 h-12 mr-3 shrink-0 overflow-hidden rounded-full border">

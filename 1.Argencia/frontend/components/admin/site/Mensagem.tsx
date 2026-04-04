@@ -24,7 +24,7 @@ export default function MensagemPage() {
     return (
         <section className='flex flex-col sm:flex-row h-full gap-4'>
             {/* LADO ESQUERDO: VISUALIZAÇÃO */}
-            <div className='sm:w-1/2'>
+            <div className='sm:w-1/2 border-r pr-4'>
                 <h2 className='text-center text-xl font-bold mb-6'>Mensagem</h2>
                 <div className='flex flex-col gap-2 h-full max-h-107 p-2 border bg-gray-200'>
                     {mensagemAberta ? (
