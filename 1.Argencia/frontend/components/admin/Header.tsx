@@ -25,6 +25,7 @@ export function Header() {
                                 fill
                                 unoptimized
                                 className='object-cover'
+                                priority
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center bg-blue-100 text-blue-600 font-bold">

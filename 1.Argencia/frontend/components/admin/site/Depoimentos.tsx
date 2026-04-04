@@ -87,7 +87,7 @@ export default function Depoimentos() {
                     <div className='flex flex-col justify-center items-center '>
                         <div className="relative w-24 h-24 mb-2 overflow-hidden rounded-full border bg-gray-100 flex items-center justify-center">
                             {previewDepoimento ?
-                                <NextImage src={previewDepoimento} alt="Preview" className='object-cover' unoptimized fill /> :
+                                <NextImage src={previewDepoimento} alt="Preview" className='object-cover' unoptimized fill priority /> :
                                 <span className="text-gray-400">Sem foto</span>
                             }
                         </div>
@@ -122,7 +122,7 @@ export default function Depoimentos() {
                     {depoimentoDados.map((item) => (
                         <div key={item.id} className='p-3 flex items-center border rounded-lg bg-white hover:shadow-md transition'>
                             <div className="relative w-12 h-12 mr-3 shrink-0 overflow-hidden rounded-full border">
-                                <NextImage src={item.foto_url_completa || "/images/avatar-default.png"} alt={item.nome} className='object-cover' unoptimized fill />
+                                <NextImage src={item.foto_url_completa || "/images/avatar-default.png"} alt={item.nome} className='object-cover' unoptimized fill priority />
                             </div>
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-bold text-sm truncate">{item.nome}</h3>

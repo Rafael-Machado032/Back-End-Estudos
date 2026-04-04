@@ -120,6 +120,7 @@ export default function Depoimentos() {
                                                     fill
                                                     className="rounded-full object-cover"
                                                     unoptimized
+                                                    priority
                                                 />
                                             </div>
                                             <cite className='text-xl font-bold not-italic'>{item.nome}</cite>
@@ -127,7 +128,7 @@ export default function Depoimentos() {
                                         <blockquote className="text-[#7E92AC] text-sm italic min-h-16">
                                             &ldquo;{item.mensagem}&rdquo;
                                         </blockquote>
-                                        <NextImage src="/images/RATE.svg" alt="Avaliação" width={100} height={20} />
+                                        <NextImage src="/images/RATE.svg" alt="Avaliação" width={100} height={20} priority />
                                     </figure>
                                 ))}
                             </div>
