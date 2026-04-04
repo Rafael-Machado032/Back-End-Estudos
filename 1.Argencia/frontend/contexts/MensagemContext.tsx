@@ -15,7 +15,8 @@ interface Mensagem {
 // 2. O Contrato do Contexto
 interface MensagemContextoTipo {
     mensagemDados: Mensagem[];
-    setMensagemDados: (novosDados: Mensagem[]) => void;
+    // Altere esta linha para aceitar o "Dispatch" do React
+    setMensagemDados: React.Dispatch<React.SetStateAction<Mensagem[]>>;
     mensagemAberta: Mensagem | null; // Para saber qual msg exibir no lado esquerdo
     setMensagemAberta: (msg: Mensagem | null) => void;
 }

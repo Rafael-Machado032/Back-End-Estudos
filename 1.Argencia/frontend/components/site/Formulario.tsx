@@ -11,14 +11,17 @@ export default function Formulario() {
     const resultado = await EnviarMensagemContato(formData);
 
     if (resultado.success) {
-      alert("Mensagem enviada com sucesso! Logo entraremos em contato.");
+      alert("Mensagem enviada com sucesso!");
       formRef.current?.reset();
-      alert(resultado.mensagem);
-      setMensagemDados(resultado.mensagem);
+
+      // ADICIONA a nova mensagem no início e mantém as anteriores (...)
+      setMensagemDados((prev) => [resultado.mensagem, ...prev]);
+
     } else {
-      alert("Erro ao enviar mensagem. Tente novamente mais tarde.");
+      alert("Erro ao enviar mensagem.");
     }
   }
+
 
   return (
     <section className='flex flex-col gap-8 max-w-2xl mx-auto px-6 py-8 text-center'>
