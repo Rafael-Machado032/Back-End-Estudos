@@ -1,7 +1,6 @@
 "use client"
 import { useState } from 'react';
 import { useNavegacao } from "@/contexts/Navegacao";
-import { useRouter } from "next/navigation";
 import { FazerLogout } from '@/app/lib/FazerLogout';
 
 
@@ -9,7 +8,7 @@ export function Aside() {
     // Pegamos a função e o valor da nossa "nuvem"
     const { abaAtiva, setAbaAtiva } = useNavegacao();
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const router = useRouter();
+    
 
     const deslogar= async () => {
         await FazerLogout()

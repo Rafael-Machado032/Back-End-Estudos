@@ -1,4 +1,4 @@
-import React from 'react'
+import NextImage from 'next/image';
 
 export default function Beneficio() {
   return (
@@ -22,8 +22,9 @@ export default function Beneficio() {
                 <span className='text-[#7E92AC]'>Garantia de resultados, pague de acordo com o desempenho do seu projeto ou campanha.</span>
             </div>
         </div>
-        <img src="/images/mackbook.png" alt="mackbook.png" className='md:w-1/2 h-max' />
-
+        <div className='relative md:w-1/2 h-max'>
+            <NextImage src="/images/mackbook.png" alt="mackbook.png" fill />
+        </div>
     </section>
   )
 }

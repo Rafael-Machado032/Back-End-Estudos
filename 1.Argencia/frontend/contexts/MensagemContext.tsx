@@ -30,7 +30,7 @@ interface MensagemProvedorProps {
 const MensagemContexto = createContext<MensagemContextoTipo | undefined>(undefined);
 
 export function MensagemProvedor({ children, mensagensIniciais }: MensagemProvedorProps) {
-    const [mounted, setMounted] = useState(false);
+    const [mounted, setMounted] = useState(false);// Controle para saber se o componente já carregou no navegador. Isso evita o erro de "Hydration" (quando o servidor Next e o navegador tentam mostrar coisas diferentes).
     const [mensagemAberta, setMensagemAberta] = useState<Mensagem | null>(null);
 
     const [mensagemDados, setMensagemDados] = useState<Mensagem[]>(() => {
@@ -45,20 +45,20 @@ export function MensagemProvedor({ children, mensagensIniciais }: MensagemProved
     });
 
     // Evita erro de Hydration
-    useEffect(() => {
+    useEffect(() => { // Assim que o componente aparece na tela, ele muda mounted para true. O setTimeout(..., 0) garante que isso aconteça logo após a primeira renderização.
         const timer = setTimeout(() => setMounted(true), 0);
         return () => clearTimeout(timer);
     }, []);
 
     // Salva no LocalStorage para persistência/cache
-    useEffect(() => {
+    useEffect(() => { // Toda vez que a sua lista de mensagens (mensagemDados) mudar, ele salva a versão nova no navegador para você não perder os dados se der F5.
         if (mounted) {
             localStorage.setItem('mensagem_data', JSON.stringify(mensagemDados));
         }
     }, [mensagemDados, mounted]);
 
     // Sincroniza entre abas (Caso você abra o painel em duas telas)
-    useEffect(() => {
+    useEffect(() => { // Se você tiver duas abas do seu painel abertas e ler uma mensagem em uma, a outra aba percebe a mudança no localStorage e se atualiza sozinha.
         const sincronizar = (e: StorageEvent) => {
             if (e.key === 'mensagem_data' && e.newValue) {
                 setMensagemDados(JSON.parse(e.newValue));
