@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/mensagens', [MensagemController::class, 'index']); // Listar mensagens (só para admin)
     Route::delete('/mensagens/{id}', [MensagemController::class, 'destroy']);
+    Route::patch('/mensagens/{id}/lida', [MensagemController::class, 'marcarComoLida']);
 });
 
 // Rotas públicas (sem autenticação)

@@ -20,6 +20,7 @@ export async function DeletarMensagemNoServidor(id: number) {
         });
         return res.ok;
     } catch (error) {
+        console.error("Erro ao atualizar status:", error);
         return false;
     }
 }
@@ -34,6 +35,9 @@ export async function MarcarMensagemLida(id: number) {
         });
         return res.ok;
     } catch (error) {
+        console.error("Erro ao atualizar status:", error);
         return false;
     }
 }
+
+

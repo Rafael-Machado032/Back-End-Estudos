@@ -1,6 +1,6 @@
 "use client";
 import { useMensagem } from "@/contexts/MensagemContext";
-import { DeletarMensagemNoServidor } from "@/app/lib/MensagemAcoes";
+import { DeletarMensagemNoServidor, MarcarMensagemLida } from "@/app/lib/MensagemAcoes";
 
 export default function MensagemPage() {
     const { mensagemDados, setMensagemDados, mensagemAberta, setMensagemAberta } = useMensagem();
@@ -20,6 +20,25 @@ export default function MensagemPage() {
             }
         }
     };
+    const handleMensagemLida = async (msg: typeof mensagemDados[0]) => { // Recebe o objeto msg
+        // 1. Abre a mensagem no lado esquerdo imediatamente
+        setMensagemAberta({ ...msg, lida: true });
+
+        // 2. Só chama o servidor se a mensagem ainda não estiver lida
+        if (!msg.lida) {
+            const sucesso = await MarcarMensagemLida(msg.id);
+
+            if (sucesso) {
+                // 3. Atualiza a lista no Contexto
+                setMensagemDados(prev =>
+                    prev.map(m => m.id === msg.id ? { ...m, lida: true } : m)
+                );
+            } else {
+                console.error("Erro ao sincronizar com o servidor.");
+            }
+        }
+    };
+
 
     return (
         <section className='flex flex-col sm:flex-row h-full gap-4'>
@@ -53,7 +72,7 @@ export default function MensagemPage() {
                         mensagemDados.map((msg) => (
                             <div
                                 key={msg.id}
-                                onClick={() => setMensagemAberta(msg.lida ? msg : { ...msg, lida: true })} // Marca como lida ao abrir
+                                onClick={() => handleMensagemLida(msg)} // Agora passamos o objeto msg completo
                                 className={`p-4 flex justify-between items-center border rounded-lg cursor-pointer transition-all
                                     ${mensagemAberta?.id === msg.id ? 'bg-blue-100 border-blue-500 shadow-md scale-[1.02]' : 'bg-white hover:bg-gray-50'}`}
                             >

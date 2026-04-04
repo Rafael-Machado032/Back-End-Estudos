@@ -7,9 +7,29 @@ use Illuminate\Http\Request;
 
 class MensagemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // App\Http\Controllers\MensagemController.php
+
+    public function marcarComoLida($id)
+    {
+        try {
+            // Busca a mensagem ou retorna 404 se não existir
+            $mensagem = Mensagem::findOrFail($id);
+
+            // Atualiza a coluna 'lida' para true (1)
+            $mensagem->update(['lida' => true]);
+
+            return response()->json([
+                'message' => 'Mensagem marcada como lida com sucesso!',
+                'success' => true
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao atualizar mensagem',
+                'success' => false
+            ], 500);
+        }
+    }
+
     public function index()
     {
         try {
@@ -23,18 +43,6 @@ class MensagemController extends Controller
         }
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         error_log("Dados vindo do Next: " . json_encode($request->all(), JSON_PRETTY_PRINT));
@@ -53,36 +61,10 @@ class MensagemController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Mensagem $mensagem)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Mensagem $mensagem)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Mensagem $mensagem)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
-        Mensagem::destroy($id);
+        $mensagem = Mensagem::findOrFail($id); // Se não achar, dá erro 404
+        $mensagem->delete();
         return response()->json(['success' => true]);
     }
 }
