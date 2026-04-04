@@ -72,15 +72,14 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
 
   const layoutInicial = await buscarLayout();
   const depoimentosIniciais = await buscarDepoimentos();
-  const mensagemInicial = null; // Se quiser, pode criar uma função para buscar mensagens iniciais também
-  console.log("RESULTADO DA API NO SERVIDOR:", JSON.stringify(layoutInicial, null, 2));
+  
 
   return (
     <html lang="pt-BR">
       <body className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} font-roboto antialiased`}>
         <LayoutProvedor layoutInicial={layoutInicial?.layout}>
           <DepoimentoProvedor depoimentosIniciais={depoimentosIniciais}>
-            <MensagemProvedor mensagensIniciais={mensagemInicial}>
+            <MensagemProvedor>
               <Header />
               {children}
               <Footer />

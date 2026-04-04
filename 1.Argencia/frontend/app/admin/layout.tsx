@@ -9,6 +9,7 @@ import { buscarUsuarioLogado } from "../lib/BuscarUsuarioLogado";
 import { DepoimentoProvedor } from "@/contexts/DepoimentoContext";
 import { buscarDepoimentos } from "../lib/BuscarDepoimento";
 import { MensagemProvedor } from "@/contexts/MensagemContext";
+import { buscarMensagens } from "../lib/BuscarMensagem";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "../globals.css";
@@ -77,7 +78,8 @@ export default async function AdminLayout({ children, }: Readonly<{ children: Re
   const usuarioLogado = await buscarUsuarioLogado();
   const layoutInicial = await buscarLayout();
   const depoimentosIniciais = await buscarDepoimentos();
-  const mensagemInicial = null; // Se quiser, pode criar uma função para buscar mensagens iniciais também
+  const mensagemInicial = await buscarMensagens(); // Se quiser, pode criar uma função para buscar mensagens iniciais também
+  console.log("RESULTADO DA API NO SERVIDOR:", JSON.stringify(mensagemInicial, null, 2));
 
   return (
     <html lang="pt-BR">
