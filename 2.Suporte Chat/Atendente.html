@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Atendente - Dashboard</title>
+    <style>
+        :root {
+            --primary: #0f172a; /* Azul Escuro Profissional */
+            --accent: #3b82f6; /* Azul Ativo */
+            --bg-light: #f1f5f9;
+            --border: #cbd5e1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background: var(--bg-light); height: 100vh; display: flex; overflow: hidden; }
+
+        /* Barra Lateral de Chats (Lista de Clientes) */
+        .sidebar-clients {
+            width: 320px;
+            background: white;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header { padding: 20px; background: var(--primary); color: white; }
+
+        .client-list { overflow-y: auto; flex: 1; }
+        .client-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .client-item:hover { background: #f8fafc; }
+        .client-item.active { background: #e0f2fe; border-left: 4px solid var(--accent); }
+
+        .status-badge { width: 12px; height: 12px; border-radius: 50%; background: #22c55e; }
+
+        /* Área Central do Chat */
+        .chat-main { flex: 1; display: flex; flex-direction: column; background: white; }
+
+        .chat-header {
+            padding: 15px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Mensagens */
+        .messages-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bubble {
+            max-width: 60%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        /* Invertido: O que o atendente manda fica na direita (sent), o que o cliente manda fica na esquerda (received) */
+        .msg-client { align-self: flex-start; background: white; border: 1px solid var(--border); }
+        .msg-atendente { align-self: flex-end; background: var(--accent); color: white; }
+
+        /* Indicador do Cliente Digitando */
+        .client-typing {
+            font-size: 12px;
+            color: #64748b;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Rodapé de Digitação do Atendente */
+        .type-area {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            background: white;
+        }
+
+        .input-box {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            outline: none;
+            resize: none;
+            font-size: 14px;
+        }
+
+        .actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-send { background: var(--accent); color: white; }
+
+        /* Barra Lateral Direita (Info do Cliente) */
+        .sidebar-info {
+            width: 280px;
+            background: #f8fafc;
+            border-left: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        @media (max-width: 1100px) { .sidebar-info { display: none; } }
+    </style>
+</head>
+<body>
+
+    <!-- Lista de Clientes Ativos -->
+    <aside class="sidebar-clients">
+        <div class="sidebar-header">
+            <h3>Meus Atendimentos</h3>
+        </div>
+        <div class="client-list">
+            <div class="client-item active">
+                <div class="status-badge"></div>
+                <div>
+                    <strong>João Pereira</strong><br>
+                    <small>Dúvida sobre boleto...</small>
+                </div>
+            </div>
+            <div class="client-item">
+                <div style="background: #cbd5e1;" class="status-badge"></div>
+                <div>
+                    <strong>Maria Souza</strong><br>
+                    <small>Aguardando retorno</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Chat Aberto -->
+    <main class="chat-main">
+        <header class="chat-header">
+            <div>
+                <h2>João Pereira</h2>
+                <small>Online via Web Browser</small>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" style="background: #ef4444; color: white;">Finalizar</button>
+            </div>
+        </header>
+
+        <section class="messages-area">
+            <!-- Mensagem do Cliente -->
+            <div class="bubble msg-client">
+                <strong>João:</strong><br>
+                Olá, meu boleto ainda não chegou no e-mail. Pode me enviar?
+            </div>
+
+            <!-- Resposta do Atendente -->
+            <div class="bubble msg-atendente">
+                <strong>Você:</strong><br>
+                Olá João! Claro, vou gerar uma segunda via agora mesmo. Só um instante.
+            </div>
+
+            <!-- Indicador do Cliente Digitando -->
+            <div class="client-typing">
+                <span style="font-weight: bold;">João está digitando...</span>
+            </div>
+        </section>
+
+        <footer class="type-area">
+            <textarea class="input-box" placeholder="Digite sua resposta para o cliente..." rows="3"></textarea>
+            <div class="actions">
+                <div>
+                    <button class="btn" style="background: #e2e8f0;">📎 Anexar</button>
+                    <button class="btn" style="background: #e2e8f0;">⚡ Respostas Prontas</button>
+                </div>
+                <button class="btn btn-send">Enviar Mensagem (Enter)</button>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Informações do Cliente -->
+    <aside class="sidebar-info">
+        <h3>Dados do Cliente</h3>
+        <div style="margin-top: 20px; font-size: 13px; line-height: 2;">
+            <p><strong>E-mail:</strong> joao@email.com</p>
+            <p><strong>Telefone:</strong> (11) 98888-7777</p>
+            <p><strong>Plano:</strong> Premium</p>
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #ddd;">
+            <p><strong>Histórico:</strong></p>
+            <ul style="padding-left: 15px;">
+                <li>05/04 - Problema técnico</li>
+                <li>01/04 - Renovação</li>
+            </ul>
+        </div>
+    </aside>
+
+</body>
+</html>

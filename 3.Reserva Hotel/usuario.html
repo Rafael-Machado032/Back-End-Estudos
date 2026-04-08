@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Suíte Premium</title>
+    <style>
+        :root {
+            --gold: #c5a059;
+            --dark: #1a1a1a;
+            --gray: #f4f4f4;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+
+        body { background-color: var(--gray); color: var(--dark); }
+
+        /* Banner Principal */
+        .hero {
+            height: 50vh;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://unsplash.com');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero h1 { font-size: 2.5rem; text-transform: uppercase; letter-spacing: 3px; }
+
+        /* Container de Reserva */
+        .container {
+            max-width: 900px;
+            margin: -50px auto 50px;
+            padding: 0 20px;
+        }
+
+        .booking-card {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gold);
+            display: inline-block;
+        }
+
+        /* Grid do Formulário */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        /* Responsividade: Vira 1 coluna no celular */
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.8rem; }
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        
+        label { font-size: 0.9rem; font-weight: 600; color: #555; }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--gold); box-shadow: 0 0 5px rgba(197, 160, 89, 0.3); }
+
+        .full-width { grid-column: span 1; }
+        @media (min-width: 601px) { .full-width { grid-column: span 2; } }
+
+        /* Estilo do Botão */
+        .btn-reserve {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-reserve:hover { background: var(--gold); transform: translateY(-2px); }
+
+        /* Detalhes do Quarto */
+        .room-info {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            font-size: 0.85rem;
+            color: #777;
+        }
+
+        .info-item { display: flex; align-items: center; gap: 5px; }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div>
+            <h1>Luxury Experience</h1>
+            <p>Sua estadia inesquecível começa aqui</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="booking-card">
+            <h2 class="section-title">Dados da Reserva</h2>
+            
+            <form class="form-grid">
+                <!-- Datas -->
+                <div class="input-group">
+                    <label>Check-in</label>
+                    <input type="date">
+                </div>
+
+                <div class="input-group">
+                    <label>Check-out</label>
+                    <input type="date">
+                </div>
+
+                <!-- Seleção -->
+                <div class="input-group">
+                    <label>Tipo de Quarto</label>
+                    <select>
+                        <option>Suíte Master (R$ 450/noite)</option>
+                        <option>Quarto Deluxe (R$ 320/noite)</option>
+                        <option>Standard Casal (R$ 250/noite)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Hóspedes</label>
+                    <select>
+                        <option>1 Adulto</option>
+                        <option>2 Adultos</option>
+                        <option>Família (3+ pessoas)</option>
+                    </select>
+                </div>
+
+                <!-- Informações Pessoais -->
+                <div class="input-group full-width">
+                    <label>Nome do Titular</label>
+                    <input type="text" placeholder="Como consta no documento">
+                </div>
+
+                <div class="input-group">
+                    <label>E-mail</label>
+                    <input type="email" placeholder="Para confirmação">
+                </div>
+
+                <div class="input-group">
+                    <label>WhatsApp</label>
+                    <input type="tel" placeholder="(00) 00000-0000">
+                </div>
+
+                <button type="button" class="btn-reserve full-width">Confirmar Reserva Agora</button>
+            </form>
+
+            <div class="room-info">
+                <div class="info-item">☕ Café da manhã incluso</div>
+                <div class="info-item">📶 Wi-Fi 5G</div>
+                <div class="info-item">🏊 Acesso à piscina</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

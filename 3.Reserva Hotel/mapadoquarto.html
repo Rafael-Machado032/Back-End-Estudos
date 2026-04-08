@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Quartos - Hotel Manager</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --success: #22c55e; /* Disponível */
+            --warning: #f59e0b; /* Sujo/Limpeza */
+            --danger: #ef4444;  /* Ocupado */
+            --info: #3b82f6;    /* Reservado */
+            --bg: #f8fafc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar Lateral */
+        .sidebar {
+            width: 260px;
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-item {
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            list-style: none;
+            color: #94a3b8;
+        }
+        .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .menu-item.active { background: rgba(255,255,255,0.1); color: white; font-weight: bold; }
+
+        /* Conteúdo Principal */
+        .main-content { flex: 1; overflow-y: auto; padding: 30px; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Legenda */
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b; }
+        .dot { width: 12px; height: 12px; border-radius: 3px; }
+
+        /* Grid de Quartos */
+        .floor-section { margin-bottom: 30px; }
+        .floor-title { margin-bottom: 15px; font-size: 14px; color: #64748b; font-weight: bold; text-transform: uppercase; }
+        
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .room-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-top: 5px solid #ddd;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .room-card:hover { transform: scale(1.05); }
+
+        /* Estados dos Quartos */
+        .available { border-top-color: var(--success); }
+        .occupied { border-top-color: var(--danger); }
+        .dirty { border-top-color: var(--warning); }
+        .reserved { border-top-color: var(--info); }
+
+        .room-number { font-size: 18px; font-weight: bold; display: block; margin-bottom: 5px; }
+        .room-status { font-size: 11px; text-transform: uppercase; font-weight: bold; color: #94a3b8; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>Hotel Manager</h2>
+        <nav>
+            <li class="menu-item">Dashboard</li>
+            <li class="menu-item active">Mapa de Quartos</li>
+            <li class="menu-item">Reservas</li>
+            <li class="menu-item">Financeiro</li>
+            <li class="menu-item">Configurações</li>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <div>
+                <h1>Mapa de Ocupação</h1>
+                <p style="color: #64748b">Status em tempo real de todas as unidades</p>
+            </div>
+        </header>
+
+        <!-- Legenda de Cores -->
+        <div class="legend">
+            <div class="legend-item"><div class="dot" style="background: var(--success)"></div> Disponível</div>
+            <div class="legend-item"><div class="dot" style="background: var(--danger)"></div> Ocupado</div>
+            <div class="legend-item"><div class="dot" style="background: var(--warning)"></div> Limpeza</div>
+            <div class="legend-item"><div class="dot" style="background: var(--info)"></div> Reservado</div>
+        </div>
+
+        <!-- 1º Andar -->
+        <div class="floor-section">
+            <h3 class="floor-title">1º Andar - Suítes Standard</h3>
+            <div class="rooms-grid">
+                <div class="room-card available">
+                    <span class="room-number">101</span>
+                    <span class="room-status">Livre</span>
+                </div>
+                <div class="room-card occupied">
+                    <span class="room-number">102</span>
+                    <span class="room-status">Família Silva</span>
+                </div>
+                <div class="room-card dirty">
+                    <span class="room-number">103</span>
+                    <span class="room-status">Faxina</span>
+                </div>
+                <div class="room-card available">
+                    <span class="room-number">104</span>
+                    <span class="room-status">Livre</span>
+                </div>
+                <div class="room-card reserved">
+                    <span class="room-number">105</span>
+                    <span class="room-status">Reserva 14h</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2º Andar -->
+        <div class="floor-section">
+            <h3 class="floor-title">2º Andar - Suítes Luxo</h3>
+            <div class="rooms-grid">
+                <div class="room-card occupied">
+                    <span class="room-number">201</span>
+                    <span class="room-status">Ocupado</span>
+                </div>
+                <div class="room-card occupied">
+                    <span class="room-number">202</span>
+                    <span class="room-status">Ocupado</span>
+                </div>
+                <div class="room-card dirty">
+                    <span class="room-number">203</span>
+                    <span class="room-status">Faxina</span>
+                </div>
+                <div class="room-card available">
+                    <span class="room-number">204</span>
+                    <span class="room-status">Livre</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Hotel Manager</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --accent: #3b82f6;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar Lateral */
+        .sidebar {
+            width: 260px;
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-item {
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            list-style: none;
+            color: #94a3b8;
+        }
+        .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .menu-item.active { background: rgba(255,255,255,0.1); color: white; font-weight: bold; }
+
+        /* Conteúdo Principal */
+        .main-content { flex: 1; overflow-y: auto; padding: 30px; }
+
+        header { margin-bottom: 30px; }
+
+        /* Blocos de Configuração */
+        .settings-container {
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .settings-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .settings-card h3 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            align-items: center;
+        }
+
+        @media (max-width: 600px) {
+            .form-group { grid-template-columns: 1fr; gap: 5px; }
+        }
+
+        label { font-size: 14px; color: #64748b; font-weight: 500; }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        .btn-save {
+            padding: 12px 25px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            align-self: flex-end;
+        }
+
+        .btn-save:hover { opacity: 0.9; }
+
+        /* Toggle Switch (Interruptor) */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input { display: none; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px; width: 14px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>Hotel Manager</h2>
+        <nav>
+            <li class="menu-item">Dashboard</li>
+            <li class="menu-item">Mapa de Quartos</li>
+            <li class="menu-item">Reservas</li>
+            <li class="menu-item">Financeiro</li>
+            <li class="menu-item active">Configurações</li>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1>Configurações do Sistema</h1>
+            <p style="color: #64748b">Gerencie as preferências e regras do hotel</p>
+        </header>
+
+        <div class="settings-container">
+            
+            <!-- Card de Dados do Hotel -->
+            <div class="settings-card">
+                <h3>Informações da Propriedade</h3>
+                <div class="form-group">
+                    <label>Nome do Hotel</label>
+                    <input type="text" value="Luxury Experience Hotel">
+                </div>
+                <div class="form-group">
+                    <label>CNPJ / Registro</label>
+                    <input type="text" value="00.000.000/0001-00">
+                </div>
+                <div class="form-group">
+                    <label>E-mail Oficial</label>
+                    <input type="email" value="contato@hoteluxury.com">
+                </div>
+            </div>
+
+            <!-- Card de Regras de Hospedagem -->
+            <div class="settings-card">
+                <h3>Regras de Hospedagem</h3>
+                <div class="form-group">
+                    <label>Horário de Check-in</label>
+                    <input type="time" value="14:00">
+                </div>
+                <div class="form-group">
+                    <label>Horário de Check-out</label>
+                    <input type="time" value="11:00">
+                </div>
+                <div class="form-group">
+                    <label>Multa por Atraso</label>
+                    <input type="text" value="R$ 50,00">
+                </div>
+                <div class="form-group">
+                    <label>Permitir Pets?</label>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Card de Segurança -->
+            <div class="settings-card">
+                <h3>Segurança</h3>
+                <div class="form-group">
+                    <label>Alterar Senha Admin</label>
+                    <input type="password" placeholder="Nova senha">
+                </div>
+                <div class="form-group">
+                    <label>Autenticação em 2 etapas</label>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn-save">Salvar Alterações</button>
+
+        </div>
+    </main>
+
+</body>
+</html>

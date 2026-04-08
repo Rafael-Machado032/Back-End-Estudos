@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro - Hotel Manager</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --success: #22c55e; /* Lucro/Receita */
+            --danger: #ef4444;  /* Despesas */
+            --info: #3b82f6;    /* Pendente */
+            --bg: #f8fafc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar Lateral */
+        .sidebar {
+            width: 260px;
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-item {
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+            list-style: none;
+            color: #94a3b8;
+        }
+        .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .menu-item.active { background: rgba(255,255,255,0.1); color: white; font-weight: bold; }
+
+        /* Conteúdo Principal */
+        .main-content { flex: 1; overflow-y: auto; padding: 30px; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        /* Cards Financeiros */
+        .finance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card-finance {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-finance small { color: #64748b; font-size: 12px; font-weight: 600; text-transform: uppercase; }
+        .card-finance h2 { font-size: 24px; margin-top: 5px; color: var(--primary); }
+        .trend { font-size: 12px; font-weight: bold; margin-top: 10px; display: block; }
+        .up { color: var(--success); }
+        .down { color: var(--danger); }
+
+        /* Tabela de Lançamentos */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { background: #f1f5f9; padding: 15px; font-size: 13px; color: #64748b; }
+        td { padding: 15px; border-top: 1px solid #f1f5f9; font-size: 14px; }
+
+        .type-badge {
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .income { background: #dcfce7; color: #166534; }
+        .expense { background: #fee2e2; color: #991b1b; }
+
+        .btn-export {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-export:hover { background: #f1f5f9; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <h2>Hotel Manager</h2>
+        <nav>
+            <li class="menu-item">Dashboard</li>
+            <li class="menu-item">Mapa de Quartos</li>
+            <li class="menu-item">Reservas</li>
+            <li class="menu-item active">Financeiro</li>
+            <li class="menu-item">Configurações</li>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <div>
+                <h1>Fluxo de Caixa</h1>
+                <p style="color: #64748b">Controle de receitas e despesas do período</p>
+            </div>
+            <button class="btn-export">📥 Exportar Relatório</button>
+        </header>
+
+        <!-- Resumo de Caixa -->
+        <div class="finance-grid">
+            <div class="card-finance" style="border-bottom: 4px solid var(--success);">
+                <small>Receita Total (Mês)</small>
+                <h2>R$ 42.580,00</h2>
+                <span class="trend up">▲ 12% vs mês anterior</span>
+            </div>
+            <div class="card-finance" style="border-bottom: 4px solid var(--danger);">
+                <small>Despesas Operacionais</small>
+                <h2>R$ 15.210,00</h2>
+                <span class="trend down">▼ 2% economia</span>
+            </div>
+            <div class="card-finance" style="border-bottom: 4px solid var(--info);">
+                <small>Lucro Líquido</small>
+                <h2>R$ 27.370,00</h2>
+                <span class="trend up">▲ Estável</span>
+            </div>
+        </div>
+
+        <!-- Últimas Transações -->
+        <h2 style="margin-bottom: 15px; font-size: 18px;">Últimas Transações</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>08/04/2024</td>
+                        <td>Reserva Suíte 201 - Checkout</td>
+                        <td>Hospedagem</td>
+                        <td><span class="type-badge income">Receita</span></td>
+                        <td style="color: var(--success); font-weight: bold;">+ R$ 850,00</td>
+                    </tr>
+                    <tr>
+                        <td>07/04/2024</td>
+                        <td>Fornecedor de Alimentos Ltda</td>
+                        <td>Estoque/Cozinha</td>
+                        <td><span class="type-badge expense">Despesa</span></td>
+                        <td style="color: var(--danger); font-weight: bold;">- R$ 2.300,00</td>
+                    </tr>
+                    <tr>
+                        <td>07/04/2024</td>
+                        <td>Consumo Frigobar - Quarto 105</td>
+                        <td>Serviços</td>
+                        <td><span class="type-badge income">Receita</span></td>
+                        <td style="color: var(--success); font-weight: bold;">+ R$ 45,00</td>
+                    </tr>
+                    <tr>
+                        <td>06/04/2024</td>
+                        <td>Manutenção Ar Condicionado</td>
+                        <td>Manutenção</td>
+                        <td><span class="type-badge expense">Despesa</span></td>
+                        <td style="color: var(--danger); font-weight: bold;">- R$ 450,00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</body>
+</html>
