@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rafael Machado | Desenvolvedor Fullstack</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    
+    <!-- AOS Animações CSS -->
+    <link href="https://unpkg.com" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --primary: #00f2fe;
+            --accent: #7159c1;
+            --text: #e1e1e6;
+            --text-dim: #a8a8b3;
+            --card: #16161a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Hero */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            background: radial-gradient(circle at center, rgba(113, 89, 193, 0.1) 0%, transparent 70%);
+        }
+
+        .code-tag { font-family: 'Fira Code', monospace; color: var(--primary); margin-bottom: 15px; font-size: 1.1rem; }
+        h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); font-weight: 800; margin-bottom: 10px; }
+        h1 span { background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-p { font-size: 1.2rem; color: var(--text-dim); max-width: 700px; margin-bottom: 30px; }
+
+        /* Botões */
+        .btn {
+            padding: 15px 35px; border-radius: 8px; border: none; font-weight: bold;
+            text-decoration: none; transition: 0.3s; cursor: pointer; display: inline-block;
+        }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); transform: scale(1.05); }
+
+        /* Seções Gerais */
+        section { padding: 120px 10%; min-height: 60vh; }
+        h2 { font-size: 2.5rem; margin-bottom: 40px; position: relative; }
+        h2::after { content: ''; position: absolute; left: 0; bottom: -10px; width: 50px; height: 4px; background: var(--primary); }
+
+        /* Sobre */
+        .sobre-container { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+        .tag { background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 4px; border: 1px solid var(--border); font-size: 0.85rem; }
+
+        /* Projetos */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card {
+            background: var(--card); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px; overflow: hidden; transition: 0.4s;
+        }
+        .card:hover { border-color: var(--primary); transform: translateY(-10px); }
+        .img-placeholder { width: 100%; height: 200px; background: #222; position: relative; }
+        .card-body { padding: 25px; }
+
+        /* Footer */
+        footer { padding: 80px 10%; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        @media (max-width: 768px) {
+            .sobre-container { grid-template-columns: 1fr; }
+            section { padding: 80px 5%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <header>
+        <div class="code-tag" data-aos="fade-down">console.log("Olá, Mundo!");</div>
+        <h1 data-aos="zoom-in">Rafael <span>Machado</span></h1>
+        <p class="hero-p" data-aos="fade-up" data-aos-delay="200">
+            Desenvolvedor Fullstack focado em soluções robustas com <b>Next.js</b> e <b>Laravel</b>. 
+            Transformando problemas complexos em interfaces limpas e eficientes.
+        </p>
+        <div data-aos="fade-up" data-aos-delay="400">
+            <a href="#projetos" class="btn btn-primary">Ver Projetos</a>
+            <a href="#contato" class="btn" style="color: var(--text);">Contatos</a>
+        </div>
+    </header>
+
+    <!-- SOBRE -->
+    <section id="sobre">
+        <div class="sobre-container">
+            <div data-aos="fade-right">
+                <h2>Minha Trajetória</h2>
+                <p>Comecei na informática industrial, onde aprendi que software e hardware precisam falar a mesma língua. De criar sistemas de pesagem em C++ até configurar redes MikroTik do zero, minha base é resolver problemas reais.</p>
+                <br>
+                <p>Hoje, aplico essa bagagem técnica para construir aplicações web modernas. Sou formado em Análise e Desenvolvimento de Sistemas e apaixonado pela agilidade do <b>Next.js</b> integrada à robustez do <b>Laravel</b>.</p>
+            </div>
+            <div data-aos="fade-left" class="card-body" style="background: var(--card); border-radius: 16px;">
+                <h3 style="margin-bottom: 15px;">Stack Técnica</h3>
+                <div class="tech-tags">
+                    <span class="tag">Next.js</span> <span class="tag">React</span> <span class="tag">TypeScript</span>
+                    <span class="tag">Laravel (PHP)</span> <span class="tag">MySQL / PostgreSQL</span>
+                    <span class="tag">Redes & Infra</span> <span class="tag">Tailwind CSS</span>
+                </div>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: var(--text-dim);">
+                    "Não apenas escrevo código; busco entender o problema do cliente e entregar a solução mais legível e escalável possível."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJETOS -->
+    <section id="projetos" style="background: rgba(255,255,255,0.02);">
+        <h2 data-aos="fade-right">Projetos em Destaque</h2>
+        <div class="grid">
+            <!-- Projeto 1 -->
+            <div class="card" data-aos="fade-up">
+                <div class="img-placeholder">
+                    <img src="https://placeholder.com" alt="Projeto" style="width: 100%;">
+                </div>
+                <div class="card-body">
+                    <span class="code-tag" style="font-size: 0.7rem;">FULLSTACK</span>
+                    <h3>Painel ADM Customizável</h3>
+                    <p>Site com CMS próprio onde o cliente altera layouts, depoimentos e recebe mensagens via formulário direto no painel.</p>
+                </div>
+            </div>
+
+            <!-- Projeto 2 -->
+            <div class="card" data-aos="fade-up" data-aos-delay="200">
+                <div class="img-placeholder">
+                    <img src="https://placeholder.com" alt="Projeto" style="width: 100%;">
+                </div>
+                <div class="card-body">
+                    <span class="code-tag" style="font-size: 0.7rem;">INDUSTRIAL</span>
+                    <h3>Controle de Silos (C++)</h3>
+                    <p>Software técnico para registro de caminhões e controle de carregamento por peso integrado a hardware.</p>
+                </div>
+            </div>
+
+            <!-- Projeto 3 -->
+            <div class="card" data-aos="fade-up" data-aos-delay="400">
+                <div class="img-placeholder">
+                    <img src="https://placeholder.com" alt="Projeto" style="width: 100%;">
+                </div>
+                <div class="card-body">
+                    <span class="code-tag" style="font-size: 0.7rem;">EM DESENVOLVIMENTO</span>
+                    <h3>Sistemas de Agendamento</h3>
+                    <p>Criando soluções para dores reais de empresas de serviços, baseadas na minha experiência de campo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTATO -->
+    <footer id="contato">
+        <h2 data-aos="zoom-in">Vamos conversar?</h2>
+        <p data-aos="fade-up">Estou em busca da minha primeira oportunidade oficial na área de desenvolvimento para somar com minha experiência técnica.</p>
+        <br>
+        <div data-aos="fade-up" data-aos-delay="200">
+            <a href="mailto:rafael.machado@email.com" class="btn btn-primary">Enviar E-mail</a>
+            <p style="margin-top: 20px; font-family: 'Fira Code'; font-size: 0.9rem;">
+                rafael_machado.dev // 2024
+            </p>
+        </div>
+    </footer>
+
+    <!-- AOS Script -->
+    <script src="https://unpkg.com"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
+    </script>
+</body>
+</html>

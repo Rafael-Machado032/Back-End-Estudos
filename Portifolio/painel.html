@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Portfólio Pro</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --accent: #22c55e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 40px;
+        }
+
+        /* Painel Admin */
+        .admin-panel {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 16px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn-add {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Seção de Download do Currículo (Separada) */
+        .cv-section {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--accent);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cv-link {
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* Grid de Cards */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transition: 0.3s;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            background: #0f172a;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            margin: 8px 6px 0 0;
+        }
+
+        .preview-box {
+            border: 2px dashed #4b5563;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header style="margin-bottom: 40px;">
+            <h1>Meu Painel de Controle</h1>
+        </header>
+
+        <div class="main-grid">
+            <!-- FORMULÁRIO -->
+            <div class="admin-panel">
+                <h2>Gerenciar Conteúdo</h2>
+
+                <label>Tipo de Item</label>
+                <select id="tipo" onchange="update()">
+                    <option value="Projeto">🚀 Projeto</option>
+                    <option value="Diploma">🎓 Diploma / Certificado</option>
+                </select>
+
+                <label>Título</label>
+                <input type="text" id="titulo" placeholder="Ex: App Web Incrível" oninput="update()">
+
+                <label>Tecnologias (Separadas por vírgula)</label>
+                <input type="text" id="techs" placeholder="Ex: React, Firebase, Tailwind" oninput="update()">
+
+                <label>Descrição Curta</label>
+                <textarea id="desc" rows="3" oninput="update()"></textarea>
+
+                <label>URL da Imagem de Capa</label>
+                <input type="text" id="img" placeholder="https://imagem.com" oninput="update()">
+
+                <label>Atualizar Currículo (PDF/Word)</label>
+                <input type="file" id="cv-file" accept=".pdf,.doc,.docx" onchange="updateCV()">
+
+                <button class="btn-add" onclick="salvarItem()">Publicar no Portfólio</button>
+            </div>
+
+            <!-- EXIBIÇÃO -->
+            <div class="display-section">
+
+                <!-- SEÇÃO DE CURRÍCULO SEPARADA -->
+                <div id="cv-display-area" style="display: none;">
+                    <h3 style="font-size: 0.9rem; color: #94a3b8;">Currículo Disponível:</h3>
+                    <div class="cv-section">
+                        <span id="cv-name" style="font-weight: 500;">nome-do-arquivo.pdf</span>
+                        <a href="#" id="cv-download-link" class="cv-link" download>Download CV</a>
+                    </div>
+                </div>
+
+                <div class="preview-box">
+                    <p style="color: #64748b; font-size: 0.8rem; margin-bottom: 10px;">👁️ Preview do Card:</p>
+                    <div id="preview-render"></div>
+                </div>
+
+                <h2>Projetos e Diplomas</h2>
+                <div class="portfolio-grid" id="lista-portfolio"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCVUrl = "";
+
+        // Atualiza apenas o currículo de forma separada
+        function updateCV() {
+            const fileInput = document.getElementById('cv-file');
+            const displayArea = document.getElementById('cv-display-area');
+            const nameSpan = document.getElementById('cv-name');
+            const downloadLink = document.getElementById('cv-download-link');
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                currentCVUrl = URL.createObjectURL(file);
+
+                nameSpan.innerText = file.name;
+                downloadLink.href = currentCVUrl;
+                downloadLink.setAttribute('download', file.name);
+                displayArea.style.display = 'block';
+            }
+        }
+
+        // Gera as tags de tecnologia
+        function gerarTags(texto) {
+            if (!texto) return '';
+            return texto.split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('');
+        }
+
+        // Atualiza o preview do card
+        function update() {
+            const titulo = document.getElementById('titulo').value || "Título do Item";
+            const tipo = document.getElementById('tipo').value;
+            const techs = document.getElementById('techs').value;
+            const desc = document.getElementById('desc').value || "Sua descrição aparecerá aqui...";
+            const img = document.getElementById('img').value || "https://placeholder.com";
+
+            document.getElementById('preview-render').innerHTML = `
+            <div class="card">
+                <img src="${img}" class="card-img">
+                <div class="card-body">
+                    <small style="color:var(--secondary); font-weight:bold; text-transform:uppercase; font-size:0.7rem">${tipo}</small>
+                    <h3 style="margin:8px 0">${titulo}</h3>
+                    <p style="font-size:0.85rem; color:#94a3b8; line-height:1.5">${desc}</p>
+                    <div style="margin-top:10px">${gerarTags(techs)}</div>
+                </div>
+            </div>
+        `;
+        }
+
+        // Publica o card na lista
+        function salvarItem() {
+            const titulo = document.getElementById('titulo').value;
+            if (!titulo) return alert("Por favor, digite um título.");
+
+            const cardHtml = document.getElementById('preview-render').innerHTML;
+            const div = document.createElement('div');
+            div.className = "card-container";
+            div.innerHTML = cardHtml;
+
+            document.getElementById('lista-portfolio').prepend(div);
+
+            // Limpa campos de texto
+            document.getElementById('titulo').value = "";
+            document.getElementById('techs').value = "";
+            document.getElementById('desc').value = "";
+            document.getElementById('img').value = "";
+            update();
+        }
+
+        // Inicializa o preview
+        update();
+    </script>
+
+</body>
+
+</html>
