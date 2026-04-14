@@ -12,7 +12,7 @@ export default function Cont_Projeto() {
                 <span className="text-[#00f2ff] bg-[#00424572] px-4 rounded-4xl">Next.js + Tailwind</span>
                 <h3 className="text-xl">SaaS Platform UI</h3>
                 <p className="text-[#aaaaaa]">Dashboard administrativo com gráficos dinâmicos e sistema de gestão de usuários integrado.</p>
-                <div className="flex justify-center items-center gap-4 mt-6">
+                <div className=" w-full flex justify-center items-center gap-4 mt-6">
                     <Demo href={"https://github.com"} />
                     <Github href={"https://github.com"} />
                 </div>
