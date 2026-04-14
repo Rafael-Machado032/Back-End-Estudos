@@ -27,3 +27,17 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* Efeitos */
+/* Efeito de gradiente */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.animate-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 4s linear infinite;
+}
+
+
