@@ -1,94 +1,54 @@
-'use client'; // 1. Sempre 'use client' pois o contexto usa estado (useState)
+'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-// 1. O Único Molde (serve para o Banco e para o Usuário)
-interface Depoimento { //Interface do usuario
-    id: number;
-    foto_url: string;
-    foto_url_completa?: string; // URL completa que vem do Laravel (asset) - Accessor
+import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+
+interface Curriculo {
+    curriculo_url_servidor?: string;
 }
 
-// 2. O Contrato do Contexto
-interface DepoimentoContextoTipo { //Contrato do que o contexto vai usar
-    depoimentoDados: Depoimento[]; // [] Porque pode ter vários depoimentos e não apenas um
-    setDepoimentoDados: (novosDados: Depoimento[]) => void //O setDados é uma função para receber dados e guardar no usuario o void não retorna nada
+interface CurriculoContextoTipo {
+    curriculoDados: Curriculo | null;
+    setCurriculoDados: (novosDados: Curriculo | null) => void;
 }
 
-// 3. As Props do Provedor
-interface DepoimentoProvedorProps {
-    children: ReactNode;
-    // IMPORTANTE: Aqui tem que ser um Array [] ou null, porque o contexto espera um array de depoimentos ou nada, e não um único depoimento
-    depoimentosIniciais?: Depoimento[] | null; // O '?' torna opcional
-}
+const CurriculoContexto = createContext<CurriculoContextoTipo | undefined>(undefined);
 
+export function CurriculoProvedor({ children, curriculoIniciais }: { children: ReactNode, curriculoIniciais?: Curriculo | null }) {
 
-//Conexao que vai usar o nosso contrato ou vazio
-const DepoimentoContexto = createContext<DepoimentoContextoTipo | undefined>(undefined);
-
-//Provedor e a função que vai abraçar
-export function DepoimentoProvedor({ children, depoimentosIniciais }:  DepoimentoProvedorProps ) {
-    const [mounted, setMounted] = useState(false);
-    const [depoimentoDados, setDepoimentoDados] = useState<Depoimento[]>(() => {
-        // 1. Prioridade Máxima: O que o servidor (Next) acabou de buscar no Laravel
-        if (depoimentosIniciais) {
-            return depoimentosIniciais;
-        }
-        // Prioridade 2: LocalStorage (Fallback/Cache local)
-        if (typeof window !== 'undefined') {// Verifica se estamos no cliente
-            const salvo = localStorage.getItem('depoimento_data');
-            return salvo ? JSON.parse(salvo) : [];
-        }
-        return [];
+    const [curriculoDados, setCurriculoDados] = useState<Curriculo | null>(() => {
+        if (typeof window === 'undefined') return curriculoIniciais || null;
+        try {
+            const salvo = localStorage.getItem('@Nome_App:chave_lista'); // Chave específica
+            return salvo ? JSON.parse(salvo) : (curriculoIniciais || null);
+        } catch { return curriculoIniciais || null; }
     });
 
+    // 🚀 SINCRONIZAÇÃO: Garante que se o Laravel mudar, o site atualiza na hora
+    const [prevCurriculoIniciais, setPrevCurriculoIniciais] = useState(curriculoIniciais);
 
-    // 2. useEffect apenas para dizer que o componente montou (evita erro de Hydration)
-    useEffect(() => {
-        // O setTimeout com 0 tira o setState do fluxo crítico de renderização
-        const timer = setTimeout(() => setMounted(true), 0);
-        return () => clearTimeout(timer); // Limpeza básica
-    }, []);
-
-    // 2. Salva sempre que 'dados' mudar (mas pula a primeira vez se não estiver montado)
-    useEffect(() => {
-        if (mounted) {
-            localStorage.setItem('depoimento_data', JSON.stringify(depoimentoDados));
+    if (curriculoIniciais !== prevCurriculoIniciais) {
+        setPrevCurriculoIniciais(curriculoIniciais);
+        // Compara se o que veio do servidor é diferente do que está no estado
+        if (JSON.stringify(curriculoIniciais) !== JSON.stringify(curriculoDados)) {
+            setCurriculoDados(curriculoIniciais || null);
         }
-    }, [depoimentoDados, mounted]);
-    // Evita o erro de Hydration: não renderiza o conteúdo real até que o cliente esteja pronto
+    }
 
     useEffect(() => {
-        // Escuta mudanças no localStorage vindas de outras abas/layouts
-        const sincronizar = (e: StorageEvent) => {
-            if (e.key === 'depoimento_data' && e.newValue) {
-                setDepoimentoDados(JSON.parse(e.newValue));
-            }
-        };
-        window.addEventListener('storage', sincronizar);
-        return () => window.removeEventListener('storage', sincronizar);
-    }, []);
+        if (curriculoDados) {
+            localStorage.setItem('@Nome_App:chave_lista', JSON.stringify(curriculoDados));
+        } else {
+            localStorage.removeItem('@Nome_App:chave_lista');
+        }
+    }, [curriculoDados]);
 
+    const curriculoContextoValor = useMemo(() => ({ curriculoDados, setCurriculoDados }), [curriculoDados]);
 
-    if (!mounted) {
-        return null; // Ou um esqueleto/loading
-    }
-    // Adicione isso dentro do useEffect de montagem no seu LayoutContext.tsx
-
-    console.log("Depoimentos QUE CHEGARAM NO CONTEXTO:", depoimentosIniciais);
-
-    return (
-        // Enviamos o valor para quem estiver lá dentro
-        <DepoimentoContexto.Provider value={{  depoimentoDados, setDepoimentoDados }}>
-            {children}
-        </DepoimentoContexto.Provider>
-    );
+    return <CurriculoContexto.Provider value={curriculoContextoValor}>{children}</CurriculoContexto.Provider>;
 }
 
-// Avisa se o contexto esta dentro do provedor se estiver fora da erro
-export const useDepoimento = () => {
-    const context = useContext(DepoimentoContexto);
-    if (!context) {
-        throw new Error("useDepoimento deve ser usado dentro de um DepoimentoProvedor");
-    }
+export const useCurriculo = () => {
+    const context = useContext(CurriculoContexto);
+    if (!context) throw new Error("useCurriculo deve ser usado dentro de um Provedor");
     return context;
 };
