@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
+import { CurriculoProvedor } from "@/context/CurriculoContext";
+import { FormacaoProvedor } from "@/context/FormacaoContext";
+import { ProjetoProvedor } from "@/context/ProjetoContext";
+import { BuscarCurriculoAction } from "@/api/CurriculoAPI";
+import { BuscarFormacaoAction } from "@/api/FormacaoAPI";
+import { BuscarProjetosAction } from "@/api/ProjetoAPI";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,15 +60,22 @@ export const viewport = { //A cor da barra do mobile com a cor do site
   ],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
+
+  const buscarCurriculo = await BuscarCurriculoAction();
+  const buscarFormacao = await BuscarFormacaoAction();
+  const buscarProjeto = await BuscarProjetosAction();
+
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        {children}
+        <CurriculoProvedor curriculoIniciais={buscarCurriculo}>
+          <FormacaoProvedor formacaoInicial={buscarFormacao}>
+            <ProjetoProvedor projetoInicial={buscarProjeto}>
+              {children}
+            </ProjetoProvedor>
+          </FormacaoProvedor>
+        </CurriculoProvedor>
       </body>
     </html>
   );
