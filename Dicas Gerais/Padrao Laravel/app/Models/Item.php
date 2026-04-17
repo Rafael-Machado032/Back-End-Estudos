@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Item extends Model
 {
-    protected $fillable = ['nome', 'lista', 'arquivo'];
+    protected $fillable = ['coluna_titulo', 'coluna_json', 'coluna_arquivo'];
 
     // Cast para transformar o JSON do banco em Array PHP automaticamente
-    protected $casts = [
-        'lista' => 'array',
+    protected $casts = [ //Funçaõ para array
+        'coluna_json' => 'array',
     ];
 
     // Accessor Moderno (Laravel 9+) para retornar a URL completa
-    protected function arquivo(): Attribute
+    protected function colunaArquivo(): Attribute //Funcão para arquivos
     {
         return Attribute::make(
             get: fn($value) => $value ? asset('storage/' . $value) : null,

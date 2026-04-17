@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Formacao;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class FormacaoController extends Controller
 {
@@ -12,7 +13,7 @@ class FormacaoController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(Formacao::all(), 200);
     }
 
     /**
@@ -28,17 +29,45 @@ class FormacaoController extends Controller
      */
     public function store(Request $request)
     {
+        // 1. Validação (Garante que o certificado é um PDF)
+        $validado = $request->validate([
+            'titulo_form' => 'required|string',
+            'tecnologia_form' => 'required|array',
+            'descricao_form' => 'required|string',
+            'certificado_form' => 'required|file|mimes:pdf|max:5120', // Máx 5MB
+        ]);
+
         try {
-            $request->validate([
-                'titulo_form' => 'required|string',
-                'tecnologia_form' => 'required|string',
-                'descricao_form' => 'required|string',
-                'certificado_form' => 'required|string',
+            $path = null;
+
+            // 2. Upload do PDF para a pasta 'certificados' dentro de 'public'
+            if ($request->hasFile('certificado_form')) {
+                $path = $request->file('certificado_form')->store('certificados', 'public');
+            }
+
+            // 3. Salvando no Banco (Mapeando os campos)
+            $dadosFormacao = Formacao::create([
+                'titulo'      => $validado['titulo_form'],
+                'tecnologia' => $validado['tecnologia_form'],
+                'descricao'   => $validado['descricao_form'],
+                'certificado' => $path, // Aqui salva o caminho do PDF: "certificados/xyz.pdf"
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Isso vai imprimir no seu terminal EXATAMENTE o que deu errado
-            error_log(print_r($e->errors(), true));
-            throw $e; // Reança o erro para manter o comportamento padrão
+
+            return response()->json([
+                'message' => 'Formação cadastrada com sucesso!',
+                'data'    => $dadosFormacao
+            ], 201);
+
+        } catch (\Exception $e) {
+            // Se der erro no banco, apaga o PDF que subiu para não sobrar lixo
+            if ($path) {
+                Storage::disk('public')->delete($path);
+            }
+
+            return response()->json([
+                'error'   => 'Erro ao salvar formação.',
+                'details' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
         }
     }
 
@@ -47,7 +76,7 @@ class FormacaoController extends Controller
      */
     public function show(Formacao $formacao)
     {
-        //
+        return response()->json($formacao, 200);
     }
 
     /**

@@ -27,7 +27,10 @@ class DepoimentoController extends Controller
 
         $depoimento->save();
 
-        return response()->json(['success' => true, 'depoimento' => $depoimento]);
+        return response()->json([
+            'success' => true,
+            'depoimento' => $depoimento
+        ]);
     }
 
     // 2. ATUALIZAR EXISTENTE (EditarDepoimentoNoServidor)
