@@ -75,7 +75,7 @@ export async function EditarCurriculoAction(id: string | number, formData: FormD
 export async function DeletarCurriculoAction(id: string | number) {
     try {
         const headers = await getAuthHeaders();
-        const res = await fetch(`${urlBase}/item/${id}`, {
+        const res = await fetch(`${urlBase}/curriculo/${id}`, {
             method: 'DELETE',
             headers: headers
         });
