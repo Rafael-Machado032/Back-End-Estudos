@@ -26,13 +26,19 @@ Gera uma chave api unica para ter acesso a api do backend ("Obrigatorio")
 **Instalando e Configurando CORS**
 Serve para não bloquear no navegador entre o NEXT e Laravel
 `php artisan install:api`
-Cria o arquivo routes/api.php (onde vamos colocar a rota de upload).
-Instala o Laravel Sanctum (que cuida da segurança da API).
+Cria Arquivos de Rota: Gera o arquivo routes/api.php para que você possa definir seus endpoints.
+Instala o Laravel Sanctum: Ele adiciona automaticamente o pacote Sanctum para autenticação baseada em tokens.
+Configura o Middleware: Adiciona as configurações necessárias para que as rotas de API funcionem corretamente com autenticação. 
+`php artisan config:publish cors`
 Cria o arquivo config/cors.php automaticamente.
 
 No cors.php modifique:
 - 'allowed_origins_patterns' => ['http://localhost:3000'],    // URL padrão do Next.js
 - 'supports_credentials' => true,                             //Liberar o uso de cookies de sessão ("para autenticação baseado em cookies" )
+
+**Abrindo a Porta para gravação de Arquivos**
+    `php artisan storage:link`
+    Cria um "atalho" da pasta Privada para a Pública. Essencial para o Next.js conseguir exibir as fotos no navegador ou arquivos.
 
 **Banco de Dados**
 1. Criando a "Receita" da Tabela
@@ -88,11 +94,11 @@ No cors.php modifique:
     Selecione o arquivo.
     database\database.sqlite
 
-3. Construindo a Tabela no Banco
+2. Construindo a Tabela no Banco
     `php artisan migrate`
     Executa os scripts. Na primeira vez, cria o arquivo do banco (.sqlite) e as tabelas físicas.
 
-4. O Gerente dos Dados (Model)
+3. O Gerente dos Dados (Model)
     `php artisan make:model NomeNoSingular`
     - app/Models/
     É a ponte. Ele traduz os comandos do Next.js (PHP) para a linguagem do banco (SQL). É quem salva, deleta e busca.
@@ -109,12 +115,12 @@ No cors.php modifique:
         public $timestamps = true; //Autoriza registrar a data de criação
     }
 
-3. O Cérebro da Lógica (Controller)
+4. O Cérebro da Lógica (Controller)
     `php artisan make:controller NomeController`
     - app/Http/Controllers/
     Valida se os dados estão certos, decide em qual pasta do HD salvar o arquivo e responde para o Next.js se deu certo ou errado.
 
-4. Criar Controller, Model e Tabela
+5. Criar Controller, Model e Tabela
     `php artisan make:model NomeDoModelo -mcr`
     -m (Migration): Cria o arquivo para você criar a tabela no Banco de Dados.
     -c (Controller): Cria o arquivo onde ficará a lógica (seu atualizar, salvar, etc).
@@ -122,7 +128,7 @@ No cors.php modifique:
     Depois de feito a tabela colocando os campos execulte
     `php artisan migrate`
 
-5. Criar Pacote Completo
+6. Criar Pacote Completo
     `php artisan make:model Nome -all`
     -m (Migration): Cria o arquivo para gerar a tabela no banco.
     -c (Controller): Cria o arquivo de lógica.
@@ -131,11 +137,6 @@ No cors.php modifique:
     -s (Seeder): Cria o arquivo para inserir dados iniciais no banco.
     -p (Policy): Cria as regras de quem pode acessar o quê.
     -R (Requests): Cria arquivos de validação (FormRequests) para o seu Controller.
-
-
-7. Abrindo a Porta das Imagens
-    `php artisan storage:link`
-    Cria um "atalho" da pasta Privada para a Pública. Essencial para o Next.js conseguir exibir as fotos no navegador.
 
 8. Ligando o Motor
     `php artisan serve`
