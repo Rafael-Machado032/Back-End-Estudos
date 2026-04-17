@@ -28,7 +28,15 @@ class CurriculoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'curriculo_form' => 'required|string',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Isso vai imprimir no seu terminal EXATAMENTE o que deu errado
+            error_log(print_r($e->errors(), true));
+            throw $e; // Reança o erro para manter o comportamento padrão
+        }
     }
 
     /**

@@ -28,7 +28,18 @@ class FormacaoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'titulo_form' => 'required|string',
+                'tecnologia_form' => 'required|string',
+                'descricao_form' => 'required|string',
+                'certificado_form' => 'required|string',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Isso vai imprimir no seu terminal EXATAMENTE o que deu errado
+            error_log(print_r($e->errors(), true));
+            throw $e; // Reança o erro para manter o comportamento padrão
+        }
     }
 
     /**
