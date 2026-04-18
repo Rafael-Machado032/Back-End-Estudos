@@ -30,7 +30,7 @@ class FormacaoController extends Controller
     public function store(Request $request)
     {
         // 1. Validação (Garante que o certificado é um PDF)
-        $validado = $request->validate([
+        $validated = $request->validate([
             'titulo_form' => 'required|string',
             'tecnologia_form' => 'required|array',
             'descricao_form' => 'required|string',
@@ -47,9 +47,9 @@ class FormacaoController extends Controller
 
             // 3. Salvando no Banco (Mapeando os campos)
             $dadosFormacao = Formacao::create([
-                'titulo'      => $validado['titulo_form'],
-                'tecnologia' => $validado['tecnologia_form'],
-                'descricao'   => $validado['descricao_form'],
+                'titulo'      => $validated['titulo_form'],
+                'tecnologia' => $validated['tecnologia_form'],
+                'descricao'   => $validated['descricao_form'],
                 'certificado' => $path, // Aqui salva o caminho do PDF: "certificados/xyz.pdf"
             ]);
 
@@ -92,7 +92,28 @@ class FormacaoController extends Controller
      */
     public function update(Request $request, Formacao $formacao)
     {
-        //
+        $validated = $request->validate([
+            'titulo_form' => 'required|string',
+            'tecnologia_form' => 'required|array',
+            'descricao_form' => 'required|string',
+            'certificado_form' => 'required|file|mimes:pdf|max:5120', // Máx 5MB
+        ]);
+
+        if ($request->hasFile('certificado_form')) {
+            // Usa o nome real da coluna: 'coluna_arquivo'
+            Storage::disk('public')->delete($formacao->getRawOriginal('certificado'));
+            $path = $request->file('certificado_form')->store('certificados', 'public');
+
+            // Mapeia para os nomes do banco antes de atualizar
+            $formacao->certificado = $path;
+        }
+
+        $formacao->titulo = $validated['titulo_form'] ?? $formacao->titulo;
+        $formacao->tecnologia = $validated['tecnologia_form'] ?? $formacao->tecnologia;
+        $formacao->descricao = $validated['descricao_form'] ?? $formacao->descricao;
+        $formacao->save();
+
+        return response()->json(['message' => 'Atualizado!', 'data' => $formacao], 200);
     }
 
     /**
@@ -100,6 +121,11 @@ class FormacaoController extends Controller
      */
     public function destroy(Formacao $formacao)
     {
-        //
+        if ($formacao->getRawOriginal('certificado')) {
+            Storage::disk('public')->delete($formacao->getRawOriginal('certificado'));
+        }
+
+        $formacao->delete();
+        return response()->json(['message' => 'Removido com sucesso'], 200);
     }
 }

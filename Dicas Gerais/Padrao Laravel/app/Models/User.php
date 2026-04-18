@@ -1,27 +1,41 @@
-<?php
+<?php //Arquivo Modificado
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    use HasFactory, Notifiable, HasApiTokens;
+    //HasFactory: Permite criar "Fábricas" para gerar usuários falsos (útil para testes).
+    //Notifiable: Permite enviar notificações para o usuário (e-mail, SMS, etc).
+    //HasApiTokens: Permite que o seu usuário gere "Tokens" (senhas digitais temporárias).
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'foto_perfil'
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    // Isso faz o Laravel incluir o 'foto_url' no JSON automaticamente
+    protected $appends = ['foto_url_completa'];
+
+    // No arquivo App\Models\User.php
+    public function getFotoUrlCompletaAttribute()
+    {
+        return $this->foto_perfil ? asset('storage/' . $this->foto_perfil) : null;
+    }
+
     protected function casts(): array
     {
         return [
