@@ -63,5 +63,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/curriculo/{item}', [CurriculoController::class, 'destroy']);
     Route::delete('/formacoes/{item}', [FormacaoController::class, 'destroy']);
     Route::delete('/projetos/{item}', [ProjetoController::class, 'destroy']);
-    
 });
