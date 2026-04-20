@@ -18,7 +18,7 @@ async function getAuthHeaders() {
 // 1. BUSCAR (SEM AUTENTICAÇÃO - Público)
 export async function BuscarCurriculoAction() {
     try {
-        const res = await fetch(`${urlBase}/item`, {
+        const res = await fetch(`${urlBase}/curriculo`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' },
             cache: 'no-store' // Garante dado fresco do Laravel
@@ -35,7 +35,7 @@ export async function BuscarCurriculoAction() {
 export async function CriarCurriculoAction(formData: FormData) {
     try {
         const headers = await getAuthHeaders(); // Pega o token
-        const res = await fetch(`${urlBase}/item`, {
+        const res = await fetch(`${urlBase}/curriculo`, {
             method: 'POST',
             body: formData,
             headers: headers
@@ -43,7 +43,7 @@ export async function CriarCurriculoAction(formData: FormData) {
 
         if (!res.ok) return { success: false };
 
-        revalidatePath('/admin/item');
+        revalidatePath('/admin/curriculo');
         return { success: true, data: await res.json() };
     } catch {
         return { success: false };
@@ -56,7 +56,7 @@ export async function EditarCurriculoAction(id: string | number, formData: FormD
         const headers = await getAuthHeaders();
         formData.append('_method', 'PUT');
 
-        const res = await fetch(`${urlBase}/item/${id}`, {
+        const res = await fetch(`${urlBase}/curriculo/${id}`, {
             method: 'POST',
             body: formData,
             headers: headers
@@ -64,7 +64,7 @@ export async function EditarCurriculoAction(id: string | number, formData: FormD
 
         if (!res.ok) return { success: false };
 
-        revalidatePath('/admin/item');
+        revalidatePath('/admin/curriculo');
         return { success: true };
     } catch {
         return { success: false };
