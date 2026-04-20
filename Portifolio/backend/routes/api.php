@@ -3,10 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ItemController; // O exemplo do seu CRUD
+use App\Http\Controllers\CurriculoController;
+use App\Http\Controllers\FormacaoController;
+use App\Http\Controllers\ProjetoController;
 
 /*
-
 |--------------------------------------------------------------------------
 | Rotas Públicas (Site / Visitante)
 |--------------------------------------------------------------------------
@@ -20,8 +21,9 @@ Route::get('/login', function () {
 })->name('login');
 
 // Rotas de visualização do site
-Route::get('/itens', [ItemController::class, 'index']);
-Route::get('/itens/{item}', [ItemController::class, 'show']);
+Route::get('/formacoes', [FormacaoController::class, 'index']);
+Route::get('/projetos', [ProjetoController::class, 'index']);
+Route::get('/curriculo/{item}', [CurriculoController::class, 'show']);
 
 /*
 
@@ -46,13 +48,20 @@ Route::middleware('auth:sanctum')->group(function () {
     /* --- CRUD DO ITEM --- */
 
     // Cadastrar (POST)
-    Route::post('/itens', [ItemController::class, 'store']);
+    Route::post('/curriculo', [CurriculoController::class, 'store']);
+    Route::post('/formacoes', [FormacaoController::class, 'store']);
+    Route::post('/projetos', [ProjetoController::class, 'store']);
 
     // Atualizar (Usamos POST aqui para o upload de arquivos funcionar 100%)
     // No Front-end, você envia como FormData e adiciona o campo _method = 'PUT' se quiser,
     // mas chamando essa rota POST o Laravel receberá os arquivos corretamente.
-    Route::post('/itens/{item}', [ItemController::class, 'update']);
+    Route::post('/curriculo/{item}', [CurriculoController::class, 'update']);
+    Route::post('/formacoes/{item}', [FormacaoController::class, 'update']);
+    Route::post('/projetos/{item}', [ProjetoController::class, 'update']);
 
     // Excluir (DELETE)
-    Route::delete('/itens/{item}', [ItemController::class, 'destroy']);
+    Route::delete('/curriculo/{item}', [CurriculoController::class, 'destroy']);
+    Route::delete('/formacoes/{item}', [FormacaoController::class, 'destroy']);
+    Route::delete('/projetos/{item}', [ProjetoController::class, 'destroy']);
+    
 });
