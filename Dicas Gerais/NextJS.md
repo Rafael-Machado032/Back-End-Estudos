@@ -33,3 +33,13 @@
 ```bash
     npm start
 ```
+
+## Limpeza de cach
+1. Para limpar o cash exclui a pasta .next e node_modules depois da exclusão execute o comando npm instal para reinstalar os modulos.
+```bash
+    npm install
+```
+O comando abaixo ja faz esse procedimento.
+```bash
+    rd /s /q .next && rd /s /q node_modules && npm install
+```

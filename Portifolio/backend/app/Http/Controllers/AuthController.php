@@ -12,17 +12,15 @@ class AuthController extends Controller
     {
         // 1. Validação (Essencial para não dar erro 500)
         $request->validate([
-            'email' => 'required|email',
             'password' => 'required',
         ]);
 
         // 2. Busca o usuário
-        $user = User::where('email', $request->email)->first();
-
+        $user = User::first();
         // 3. Verifica senha
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'E-mail ou senha incorretos.'
+                'message' => 'senha incorreta no servidor.'
             ], 401);
         }
 
@@ -37,7 +35,6 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
-                'email' => $user->email,
             ]
         ]);
     }

@@ -7,12 +7,7 @@ const API_URL = process.env.API_URL;
 
 // --- LOGIN ---
 export async function ActionLogin(formData: FormData) {
-    const email = formData.get('email')?.toString(); // Garante que é string
-    const password = formData.get('password')?.toString();
-
-    if (!email || !password) {
-        return { success: false, message: 'Preencha todos os campos' };
-    }
+    const password = formData.get('senha_form')?.toString();
 
     try {
         const res = await fetch(`${API_URL}/login`, {
@@ -21,7 +16,7 @@ export async function ActionLogin(formData: FormData) {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ password }),
         });
 
         const dados = await res.json();

@@ -98,7 +98,13 @@ No cors.php modifique:
     `php artisan migrate`
     Executa os scripts. Na primeira vez, cria o arquivo do banco (.sqlite) e as tabelas físicas.
 
-3. O Gerente dos Dados (Model)
+3. Inserindo dados por comando direto no console
+    `php artisan tinker`
+    - User::create(['name' => 'Admin', 'email' => 'admin@admin.com', 'password' => bcrypt('123456')]);
+    Insere o primeiro usuario no banco de dados
+
+**Manipulando Dados**
+1. O Gerente dos Dados (Model)
     `php artisan make:model NomeNoSingular`
     - app/Models/
     É a ponte. Ele traduz os comandos do Next.js (PHP) para a linguagem do banco (SQL). É quem salva, deleta e busca.
@@ -115,12 +121,12 @@ No cors.php modifique:
         public $timestamps = true; //Autoriza registrar a data de criação
     }
 
-4. O Cérebro da Lógica (Controller)
+2. O Cérebro da Lógica (Controller)
     `php artisan make:controller NomeController`
     - app/Http/Controllers/
     Valida se os dados estão certos, decide em qual pasta do HD salvar o arquivo e responde para o Next.js se deu certo ou errado.
 
-5. Criar Controller, Model e Tabela
+3. Criar Controller, Model e Tabela
     `php artisan make:model NomeDoModelo -mcr`
     -m (Migration): Cria o arquivo para você criar a tabela no Banco de Dados.
     -c (Controller): Cria o arquivo onde ficará a lógica (seu atualizar, salvar, etc).
@@ -128,7 +134,7 @@ No cors.php modifique:
     Depois de feito a tabela colocando os campos execulte
     `php artisan migrate`
 
-6. Criar Pacote Completo
+4. Criar Pacote Completo
     `php artisan make:model Nome -all`
     -m (Migration): Cria o arquivo para gerar a tabela no banco.
     -c (Controller): Cria o arquivo de lógica.
@@ -138,11 +144,10 @@ No cors.php modifique:
     -p (Policy): Cria as regras de quem pode acessar o quê.
     -R (Requests): Cria arquivos de validação (FormRequests) para o seu Controller.
 
-8. Ligando o Motor
+**Execultando Projeto**
+1. Ligando o Motor
     `php artisan serve`
     Ativa o servidor. Sem ele rodando, o Next.js não consegue "conversar" com o banco de dados.
 
-9. Usar comando direto no console
-    `php artisan tinker`
-    - User::create(['name' => 'Admin', 'email' => 'admin@admin.com', 'password' => bcrypt('123456')]);
-    Insere o primeiro usuario no banco de dados
+
+
