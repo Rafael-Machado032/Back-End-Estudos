@@ -13,24 +13,24 @@ interface CurriculoContextoTipo {
 
 const CurriculoContexto = createContext<CurriculoContextoTipo | undefined>(undefined);
 
-export function CurriculoProvedor({ children, curriculoIniciais }: { children: ReactNode, curriculoIniciais?: Curriculo | null }) {
+export function CurriculoProvedor({ children, curriculoInicial }: { children: ReactNode, curriculoInicial?: Curriculo | null }) {
 
     const [curriculoDados, setCurriculoDados] = useState<Curriculo | null>(() => {
-        if (typeof window === 'undefined') return curriculoIniciais || null;
+        if (typeof window === 'undefined') return curriculoInicial || null;
         try {
             const salvo = localStorage.getItem('@Nome_App:chave_lista'); // Chave específica
-            return salvo ? JSON.parse(salvo) : (curriculoIniciais || null);
-        } catch { return curriculoIniciais || null; }
+            return salvo ? JSON.parse(salvo) : (curriculoInicial || null);
+        } catch { return curriculoInicial || null; }
     });
 
     // 🚀 SINCRONIZAÇÃO: Garante que se o Laravel mudar, o site atualiza na hora
-    const [prevCurriculoIniciais, setPrevCurriculoIniciais] = useState(curriculoIniciais);
+    const [prevCurriculoInicial, setPrevCurriculoInicial] = useState(curriculoInicial);
 
-    if (curriculoIniciais !== prevCurriculoIniciais) {
-        setPrevCurriculoIniciais(curriculoIniciais);
+    if (curriculoInicial !== prevCurriculoInicial) {
+        setPrevCurriculoInicial(curriculoInicial);
         // Compara se o que veio do servidor é diferente do que está no estado
-        if (JSON.stringify(curriculoIniciais) !== JSON.stringify(curriculoDados)) {
-            setCurriculoDados(curriculoIniciais || null);
+        if (JSON.stringify(curriculoInicial) !== JSON.stringify(curriculoDados)) {
+            setCurriculoDados(curriculoInicial || null);
         }
     }
 

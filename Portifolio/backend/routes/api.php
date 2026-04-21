@@ -23,7 +23,7 @@ Route::get('/login', function () {
 // Rotas de visualização do site
 Route::get('/formacoes', [FormacaoController::class, 'index']);
 Route::get('/projetos', [ProjetoController::class, 'index']);
-Route::get('/curriculo/{item}', [CurriculoController::class, 'show']);
+Route::get('/curriculo/{id}', [CurriculoController::class, 'show']);
 
 /*
 

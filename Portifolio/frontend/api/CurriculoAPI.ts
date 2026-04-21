@@ -18,16 +18,20 @@ async function getAuthHeaders() {
 // 1. BUSCAR (SEM AUTENTICAÇÃO - Público)
 export async function BuscarCurriculoAction() {
     try {
-        const res = await fetch(`${urlBase}/curriculo`, {
+        const res = await fetch(`${urlBase}/curriculo/1`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' },
             cache: 'no-store' // Garante dado fresco do Laravel
         });
 
-        if (!res.ok) return [];
-        return await res.json();
+        if (!res.ok) return null;
+        const dadosDoBanco = await res.json();
+
+        return {
+            curriculo_url_servidor: dadosDoBanco.curriculo_url
+        };
     } catch {
-        return [];
+        return null;
     }
 }
 
@@ -43,8 +47,15 @@ export async function CriarCurriculoAction(formData: FormData) {
 
         if (!res.ok) return { success: false };
 
-        revalidatePath('/admin/curriculo');
-        return { success: true, data: await res.json() };
+        const dadosDoBanco = await res.json();
+
+        revalidatePath('/', 'layout');
+
+        return {
+            success: true,
+            curriculo_url_servidor: dadosDoBanco.curriculo_url
+        };
+
     } catch {
         return { success: false };
     }
@@ -64,7 +75,7 @@ export async function EditarCurriculoAction(id: string | number, formData: FormD
 
         if (!res.ok) return { success: false };
 
-        revalidatePath('/admin/curriculo');
+        revalidatePath('/', 'layout');
         return { success: true };
     } catch {
         return { success: false };
@@ -81,7 +92,7 @@ export async function DeletarCurriculoAction(id: string | number) {
         });
 
         if (res.ok) {
-            revalidatePath('/admin/item');
+            revalidatePath('/', 'layout');
             return { success: true };
         }
         return { success: false };

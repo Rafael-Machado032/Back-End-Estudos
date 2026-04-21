@@ -3,7 +3,10 @@ import Typewriter from "typewriter-effect"
 import BaixarCV from "../button/BaixarCV"
 import WhatsApp from "../button/WhatsApp"
 
+
 export default function Hero() {
+    
+
     return (
         <header className='flex flex-col justify-center items-center gap-3 h-screen text-center px-4 bg-radial bg-[radial-gradient(circle_at_center,rgba(113,89,193,0.1)_0%,transparent_70%)]'>
             <div className="font-fira text-[#00f2fe] mb-3.75 text-[1.1rem]">

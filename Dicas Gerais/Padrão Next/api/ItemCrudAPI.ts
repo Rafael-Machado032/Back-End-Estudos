@@ -18,14 +18,41 @@ async function getAuthHeaders() {
 // 1. BUSCAR (SEM AUTENTICAÇÃO - Público)
 export async function BuscarItensAction() {
     try {
-        const res = await fetch(`${urlBase}/item`, {
+        const res = await fetch(`${urlBase}/item/`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            cache: 'no-store' // Garante dado fresco do Laravel
+        });
+
+        if (!res.ok) return null;
+
+        const dadosDoBanco = await res.json();
+
+        return {
+            dadosContexto: dadosDoBanco, //data pode mudar para a variavel que tem no contexto
+        };
+    } catch {
+        return null;
+    }
+}
+
+// 1. BUSCAR (SEM AUTENTICAÇÃO - Público)
+export async function BuscarUmItenEspecificoAction(id: string | number) {
+    try {
+        const res = await fetch(`${urlBase}/item/${id}`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' },
             cache: 'no-store' // Garante dado fresco do Laravel
         });
 
         if (!res.ok) return [];
-        return await res.json();
+
+        const dadosDoBanco = await res.json();
+
+        return {
+            id: dadosDoBanco.id,
+            dadosContexto: dadosDoBanco, //data pode mudar para a variavel que tem no contexto
+        };
     } catch {
         return [];
     }
@@ -43,8 +70,10 @@ export async function CriarItemAction(formData: FormData) {
 
         if (!res.ok) return { success: false };
 
-        revalidatePath('/admin/item');
-        return { success: true, data: await res.json() };
+        const dadosDoBanco = await res.json();
+
+        revalidatePath('/', 'layout'); //Serve para atualizar a página após a criação do item, garantindo que o novo item apareça na listagem.
+        return { success: true, dadosContexto: dadosDoBanco };
     } catch {
         return { success: false };
     }
@@ -64,7 +93,7 @@ export async function EditarItemAction(id: string | number, formData: FormData) 
 
         if (!res.ok) return { success: false };
 
-        revalidatePath('/admin/item');
+        revalidatePath('/', 'layout');
         return { success: true };
     } catch {
         return { success: false };
@@ -81,7 +110,7 @@ export async function DeletarItemAction(id: string | number) {
         });
 
         if (res.ok) {
-            revalidatePath('/admin/item');
+            revalidatePath('/', 'layout');
             return { success: true };
         }
         return { success: false };
