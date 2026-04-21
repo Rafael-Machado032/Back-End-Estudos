@@ -46,10 +46,8 @@ export default function Aside() {
     }
 
     return (
-        <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0">
-            <header className="w-full max-w-7xl py-10">
-                <h1 className="text-3xl font-bold">Meu Painel de Controle</h1>
-            </header>
+        <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
+            
             <form action={publicar} className='flex flex-col gap-4 w-full max-w-100 bg-[#1e293b] p-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]'>
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-2'>Gerenciar Conteúdo</h2>
                 <div className='flex flex-col gap-1'>

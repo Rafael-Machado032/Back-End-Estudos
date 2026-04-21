@@ -4,10 +4,13 @@ import Cont_FormacaoADM from "../Container/Cont_FormacaoADM"
 import Cont_ProjetoADM from "../Container/Cont_ProjetoADM"
 import { useCurriculo } from "@/context/CurriculoContext"
 
+
+
 export default function Principal() {
     const { curriculoDados } = useCurriculo();
     return (
-        <div className='w-full md:w-2/3 px-8 ml-6 flex flex-col gap-4 mt-36'>
+        <div className='w-full md:w-2/3 px-8 ml-6 flex flex-col gap-4 mt-42'>
+            
             <div >
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Currículo Disponível</h2>
                 {curriculoDados?.curriculo_url_servidor != null ? (
@@ -25,7 +28,6 @@ export default function Principal() {
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Projetos</h2>
                 <Cont_ProjetoADM />
             </div>
-            
         </div>
     )
 }
