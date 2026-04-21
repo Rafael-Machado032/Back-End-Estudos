@@ -7,8 +7,12 @@ const API_URL = process.env.API_URL;
 
 // --- LOGIN ---
 export async function ActionLogin(formData: FormData) {
-    const email = formData.get('email');
-    const password = formData.get('password');
+    const email = formData.get('email')?.toString(); // Garante que é string
+    const password = formData.get('password')?.toString();
+
+    if (!email || !password) {
+        return { success: false, message: 'Preencha todos os campos' };
+    }
 
     try {
         const res = await fetch(`${API_URL}/login`, {
@@ -36,7 +40,7 @@ export async function ActionLogin(formData: FormData) {
 
             // Opcional: Salvar dados básicos do user em um cookie não-httpOnly 
             // para o Front-end ler o nome/foto sem precisar do context no início
-            cookieStore.set('user_name', dados.user.name, { path: '/', maxAge: 60 * 60 * 24 * 7 });
+            cookieStore.set('user_name', encodeURIComponent(dados.user.name), { path: '/', maxAge: 60 * 60 * 24 * 7 });
 
         } else {
             return { success: false, message: dados.message || 'Credenciais inválidas' };
