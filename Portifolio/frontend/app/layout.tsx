@@ -81,7 +81,7 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${roboto.variable} ${montserrat.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <CurriculoProvedor curriculoIniciais={buscarCurriculo}>
+        <CurriculoProvedor curriculoInicial={buscarCurriculo}>
           <FormacaoProvedor formacaoInicial={buscarFormacao}>
             <ProjetoProvedor projetoInicial={buscarProjeto}>
               {children}

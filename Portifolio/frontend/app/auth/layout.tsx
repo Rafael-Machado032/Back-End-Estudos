@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Fira_Code, Roboto, Montserrat } from "next/font/google";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -11,6 +11,21 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+const firaCode = Fira_Code({
+  variable: "--font-fira-code",
+  subsets: ["latin"]
+})
+
+const roboto = Roboto({
+  variable: "--font-roboto-regular",
+  subsets: ["latin"]
+})
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat-regular",
+  subsets: ["latin"],
+})
 
 
 export const metadata: Metadata = { //}Meta Tags steads aqui
@@ -58,7 +73,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${roboto.variable} ${montserrat.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         {children}
       </body>
