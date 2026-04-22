@@ -6,13 +6,13 @@ import { useFormacao } from "@/context/FormacaoContext";
 import { useProjeto } from "@/context/ProjetoContext";
 import { CriarProjetoAction } from "@/api/ProjetoAPI";
 import { CriarFormacaoAction } from "@/api/FormacaoAPI";
-import { CriarCurriculoAction } from "@/api/CurriculoAPI";
+import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
 
     const [tipo, setTipo] = useState("Projeto");
 
-    const { setCurriculoDados } = useCurriculo();
+    const { setCurriculoDados, curriculoDados } = useCurriculo();
     const { setFormacaoDados } = useFormacao();
     const { setProjetoDados } = useProjeto();
 
@@ -31,7 +31,7 @@ export default function Aside() {
         const layout = formData.get("layout_form") as File;
         const certificado = formData.get("certificado_form") as File;
         const curriculo = formData.get("curriculo_form") as File;
-        
+
 
         if (tipo === "Projeto") {
             if (!titulo || !tecnologias || !descricao || !demostracao || !github || !layout) {
@@ -57,10 +57,18 @@ export default function Aside() {
 
             return alert("Preencha todos os campos do diploma.");
         } else {
-            console.log(curriculo);
             if (curriculo && curriculo.size > 0) {
-                const resposta = await CriarCurriculoAction(formData);
-                
+
+                let resposta=null;
+
+                if (!curriculoDados?.curriculo_url_servidor) {
+                    resposta = await CriarCurriculoAction(formData);
+                } else {
+                    resposta = await EditarCurriculoAction(1, formData);
+                    console.log("Resposta do editar",resposta);
+                    
+                }
+
                 if (resposta.success) {
                     setCurriculoDados({ curriculo_url_servidor: resposta.curriculo_url_servidor });
                     return alert("Currículo atualizado com sucesso!");
@@ -70,7 +78,7 @@ export default function Aside() {
             } else {
                 return alert("Selecione um arquivo de currículo.");
             }
-            
+
         }
     }
 

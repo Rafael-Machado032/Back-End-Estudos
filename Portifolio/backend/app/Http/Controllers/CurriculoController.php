@@ -31,7 +31,7 @@ class CurriculoController extends Controller
     {
         // 1. REGRAS DE VALIDAÇÃO
         // Troque as chaves pelos nomes dos campos do seu formulário/frontend
-        
+
         $request->validate([
             'curriculo_form' => 'required|file|mimes:pdf,doc,docx|max:5120', // Máx 5MB
         ]);
@@ -108,7 +108,10 @@ class CurriculoController extends Controller
 
         $curriculo->save();
 
-        return response()->json(['message' => 'Atualizado!', 'dados' => $curriculo], 200);
+        return response()->json([
+            'message' => 'Atualizado!',
+            'dados' => $curriculo
+        ], 200);
     }
 
     /**

@@ -75,8 +75,17 @@ export async function EditarCurriculoAction(id: string | number, formData: FormD
 
         if (!res.ok) return { success: false };
 
+        const dadosDoBanco = await res.json();
+
+        console.log("Resposta do servidor",dadosDoBanco);
+        
+
         revalidatePath('/', 'layout');
-        return { success: true };
+        return {
+            success: true,
+            curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url,
+        };
+
     } catch {
         return { success: false };
     }
