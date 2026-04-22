@@ -57,6 +57,7 @@ export default function Aside() {
 
             return alert("Preencha todos os campos do diploma.");
         } else {
+            console.log(curriculo);
             if (curriculo && curriculo.size > 0) {
                 const resposta = await CriarCurriculoAction(formData);
                 
