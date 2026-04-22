@@ -1,4 +1,6 @@
-## No arquivo laravel.log
+## Laravel
+
+*No arquivo laravel.log*
 Imprimir informações no log do Laravel (que geralmente fica em storage/logs/laravel.log), você usa a Facade Log.
 
 Importe o log
@@ -13,8 +15,18 @@ e insira
     Log::warning('Acesso suspeito detectado');
     Log::debug('Conteúdo da variável:', $dados); // Ótimo para arrays
 ```
-## No console
+*No console*
 ```php
-error_log('Dados recebidos do Next.js: ' . json_encode($request->all())); //Mensagem Simples com variaveis simples sem array
-dump($request->all()); // Ideal para objetos e arrays
+    error_log('Dados recebidos do Next.js: ' . json_encode($request->all())); //Mensagem Simples com variaveis simples sem array
+    dump($request->all()); // Ideal para objetos e arrays
 ```
+## Next
+
+*Ver formData*
+```tsx
+    formData.forEach((value, key) => {
+        console.log(key, value);
+    });
+```
+
+

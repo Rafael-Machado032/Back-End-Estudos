@@ -31,6 +31,7 @@ class CurriculoController extends Controller
     {
         // 1. REGRAS DE VALIDAÇÃO
         // Troque as chaves pelos nomes dos campos do seu formulário/frontend
+        
         $request->validate([
             'curriculo_form' => 'required|file|mimes:pdf,doc,docx|max:5120', // Máx 5MB
         ]);
@@ -39,9 +40,12 @@ class CurriculoController extends Controller
             $path = null;
 
             // 2. LÓGICA DE UPLOAD
+
             if ($request->hasFile('curriculo_form')) {
-                // 'pasta_destino' é onde o arquivo vai ficar no storage/app/public
-                $path = $request->file('curriculo_form')->store('curriculo', 'public');
+                $file = $request->file('curriculo_form');
+                $nomeOriginal = $file->getClientOriginalName();
+                // storeAs garante que use o nome que você passou
+                $path = $file->storeAs('curriculo', $nomeOriginal, 'public');
             }
 
             // 3. PERSISTÊNCIA (SALVAR NO BANCO)
@@ -52,7 +56,7 @@ class CurriculoController extends Controller
 
             return response()->json([
                 'message' => 'Criado com sucesso!',
-                'data'    => $dadosCurriculo
+                'dados'    => $dadosCurriculo, // Retorna a linha criada, incluindo o caminho do arquivo
             ], 201);
         } catch (\Exception $e) {
             // 4. CLEANUP (LIMPEZA)
@@ -104,7 +108,7 @@ class CurriculoController extends Controller
 
         $curriculo->save();
 
-        return response()->json(['message' => 'Atualizado!', 'data' => $curriculo], 200);
+        return response()->json(['message' => 'Atualizado!', 'dados' => $curriculo], 200);
     }
 
     /**

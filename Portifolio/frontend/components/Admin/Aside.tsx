@@ -4,12 +4,15 @@ import { useState } from "react"
 import { useCurriculo } from "@/context/CurriculoContext"
 import { useFormacao } from "@/context/FormacaoContext";
 import { useProjeto } from "@/context/ProjetoContext";
+import { CriarProjetoAction } from "@/api/ProjetoAPI";
+import { CriarFormacaoAction } from "@/api/FormacaoAPI";
+import { CriarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
 
     const [tipo, setTipo] = useState("Projeto");
 
-    const { setCurriculoDados, } = useCurriculo();
+    const { setCurriculoDados } = useCurriculo();
     const { setFormacaoDados } = useFormacao();
     const { setProjetoDados } = useProjeto();
 
@@ -18,7 +21,8 @@ export default function Aside() {
         setTipo(e.target.value);
     }
 
-    const publicar = (formData: FormData) =>{
+    const publicar = async (formData: FormData) => {
+
         const titulo = formData.get("titulo_form") as string;
         const tecnologias = formData.get("tecnologias_form") as string;
         const descricao = formData.get("descricao_form") as string;
@@ -27,27 +31,51 @@ export default function Aside() {
         const layout = formData.get("layout_form") as File;
         const certificado = formData.get("certificado_form") as File;
         const curriculo = formData.get("curriculo_form") as File;
-
-        if(tipo === "Projeto"){
-            if(!titulo || !tecnologias || !descricao || !demostracao || !github || !layout) return alert("Preencha todos os campos do projeto.");
-            // Aqui você chamaria a função para enviar os dados do projeto para o servidor
-            // Exemplo: await SalvarProjetoNoServidor({ titulo, tecnologias, descricao, demostracao, github, layout });
-            // E depois atualizar o estado global de projetos
-            // setProjetoDados(prev => [...prev, novoProjeto]);
-        } else if(tipo === "Diploma"){
-            if(!titulo || !tecnologias || !descricao || !certificado) return alert("Preencha todos os campos do diploma.");
-            // Similar ao projeto, mas para diploma
-        } else {
-            if(!curriculo) return alert("Selecione um arquivo de currículo.");
-            // Similar ao projeto, mas para currículo
-        }
-
         
+
+        if (tipo === "Projeto") {
+            if (!titulo || !tecnologias || !descricao || !demostracao || !github || !layout) {
+                const resposta = await CriarProjetoAction(formData);
+                if (resposta.success) {
+                    setProjetoDados(resposta.data);
+                    alert("Projeto criado com sucesso!");
+                } else {
+                    alert("Erro ao criar projeto");
+                }
+            }
+            return alert("Preencha todos os campos do projeto.");
+        } else if (tipo === "Diploma") {
+            if (!titulo || !tecnologias || !descricao || !certificado) {
+                const resposta = await CriarFormacaoAction(formData);
+                if (resposta.success) {
+                    setFormacaoDados(resposta.data);
+                    alert("Formação criada com sucesso!");
+                } else {
+                    alert("Erro ao criar formação");
+                }
+            }
+
+            return alert("Preencha todos os campos do diploma.");
+        } else {
+            if (curriculo && curriculo.size > 0) {
+                const resposta = await CriarCurriculoAction(formData);
+                
+                if (resposta.success) {
+                    setCurriculoDados({ curriculo_url_servidor: resposta.curriculo_url_servidor });
+                    return alert("Currículo atualizado com sucesso!");
+                } else {
+                    return alert("Erro ao atualizar currículo");
+                }
+            } else {
+                return alert("Selecione um arquivo de currículo.");
+            }
+            
+        }
     }
 
     return (
         <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
-            
+
             <form action={publicar} className='flex flex-col gap-4 w-full max-w-100 bg-[#1e293b] p-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]'>
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-2'>Gerenciar Conteúdo</h2>
                 <div className='flex flex-col gap-1'>
@@ -96,7 +124,7 @@ export default function Aside() {
                     <div className="flex flex-col gap-4">
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
-                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" />
                         </div>
 
                         <div className='flex flex-col gap-2'>

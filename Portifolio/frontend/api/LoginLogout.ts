@@ -72,5 +72,5 @@ export async function ActionLogout() {
     cookieStore.delete('token');
     cookieStore.delete('user_name');
 
-    redirect('/login');
+    redirect('/auth');
 }

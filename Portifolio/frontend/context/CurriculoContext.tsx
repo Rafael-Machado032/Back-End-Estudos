@@ -44,6 +44,8 @@ export function CurriculoProvedor({ children, curriculoInicial }: { children: Re
 
     const curriculoContextoValor = useMemo(() => ({ curriculoDados, setCurriculoDados }), [curriculoDados]);
 
+    
+
     return <CurriculoContexto.Provider value={curriculoContextoValor}>{children}</CurriculoContexto.Provider>;
 }
 

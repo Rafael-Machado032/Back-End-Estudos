@@ -28,7 +28,7 @@ export async function BuscarCurriculoAction() {
         const dadosDoBanco = await res.json();
 
         return {
-            curriculo_url_servidor: dadosDoBanco.curriculo_url
+            curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url
         };
     } catch {
         return null;
@@ -53,7 +53,7 @@ export async function CriarCurriculoAction(formData: FormData) {
 
         return {
             success: true,
-            curriculo_url_servidor: dadosDoBanco.curriculo_url
+            curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url,
         };
 
     } catch {

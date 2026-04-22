@@ -34,6 +34,14 @@ class ItemController extends Controller
                 $caminhoArquivo = $request->file('campo_arquivo')->store('pasta_destino', 'public');
             }
 
+            // Se quiser usar o nome original do arquivo, pode usar storeAs:
+            // if ($request->hasFile('campo_arquivo')) {
+            //     $file = $request->file('campo_arquivo');
+            //     $nomeOriginal = $file->getClientOriginalName();
+            //     // storeAs garante que use o nome que você passou
+            //     $path = $file->storeAs('pasta_destino', $nomeOriginal, 'public');
+            // }
+
             // 3. PERSISTÊNCIA (SALVAR NO BANCO)
             // Mapeie: 'coluna_no_banco' => $dadosValidados['campo_do_form']
             $registro = Item::create([
