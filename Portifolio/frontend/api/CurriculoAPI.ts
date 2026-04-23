@@ -65,8 +65,6 @@ export async function CriarCurriculoAction(formData: FormData) {
 export async function EditarCurriculoAction(id: string | number, formData: FormData) {
     try {
         const headers = await getAuthHeaders();
-        formData.append('_method', 'PUT');
-
         const res = await fetch(`${urlBase}/curriculo/${id}`, {
             method: 'POST',
             body: formData,

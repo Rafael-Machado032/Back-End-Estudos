@@ -1,6 +1,6 @@
 'use client'
 import Publicar from "../button/Publicar"
-import { useState } from "react"
+import { useState } from "react";
 import { useCurriculo } from "@/context/CurriculoContext"
 import { useFormacao } from "@/context/FormacaoContext";
 import { useProjeto } from "@/context/ProjetoContext";
@@ -9,17 +9,25 @@ import { CriarFormacaoAction } from "@/api/FormacaoAPI";
 import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
+    // 1. Modifique o useState para buscar do localStorage ao iniciar
+    const [tipo, setTipo] = useState<string>(() => {
+        if (typeof window !== 'undefined') {
+            const salvo = localStorage.getItem('@App:tipo_selecionado');
+            return salvo || "Projeto"; // Retorna o salvo ou o padrão
+        }
+        return "Projeto";
+    });
 
-    const [tipo, setTipo] = useState("Projeto");
+    // 2. Atualize a função Selecionar para salvar a escolha
+    const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const valor = e.target.value;
+        setTipo(valor);
+        localStorage.setItem('@App:tipo_selecionado', valor);
+    };
 
     const { setCurriculoDados, curriculoDados } = useCurriculo();
     const { setFormacaoDados } = useFormacao();
     const { setProjetoDados } = useProjeto();
-
-
-    const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setTipo(e.target.value);
-    }
 
     const publicar = async (formData: FormData) => {
 
@@ -59,14 +67,14 @@ export default function Aside() {
         } else {
             if (curriculo && curriculo.size > 0) {
 
-                let resposta=null;
+                let resposta = null;
 
                 if (!curriculoDados?.curriculo_url_servidor) {
                     resposta = await CriarCurriculoAction(formData);
                 } else {
                     resposta = await EditarCurriculoAction(1, formData);
-                    console.log("Resposta do editar",resposta);
-                    
+                    console.log("Resposta do editar", resposta);
+
                 }
 
                 if (resposta.success) {
@@ -89,7 +97,7 @@ export default function Aside() {
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-2'>Gerenciar Conteúdo</h2>
                 <div className='flex flex-col gap-1'>
                     <label className='text-[#94a3b8] text-sm font-bold'>Tipo de Item</label>
-                    <select onChange={Selecionar} className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4'>
+                    <select onChange={Selecionar} value={tipo} className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4'>
                         <option value="Projeto">🚀 Projeto</option>
                         <option value="Diploma">🎓 Diploma / Certificado</option>
                         <option value="Curriculo"> 📄 Currículo</option>
