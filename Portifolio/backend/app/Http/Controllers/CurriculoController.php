@@ -32,6 +32,7 @@ class CurriculoController extends Controller
             // 3. PERSISTÊNCIA (SALVAR NO BANCO)
             // Mapeie: 'coluna_no_banco' => $dadosValidados['campo_do_form']
             $dadosCurriculo = Curriculo::create([
+                'id' => "1",
                 'curriculo_url' => $path,
             ]);
 
@@ -55,25 +56,23 @@ class CurriculoController extends Controller
 
     public function update(Request $request, Curriculo $curriculo){
 
-        error_log('Dados recebidos do Next.js: ' . json_encode($request->all())); //Mensagem Simples com variaveis simples sem array
-        dump($request->all()); // Ideal para objetos e arrays
-
         $request->validate([
             'curriculo_form' => 'required|file|mimes:pdf,doc,docx|max:5120', // Máx 5MB
         ]);
 
         if ($request->hasFile('curriculo_form')) {
-            // Usa o nome real da coluna: 'coluna_arquivo'
             Storage::disk('public')->delete($curriculo->getRawOriginal('curriculo_url'));
-            $path = $request->file('curriculo_form')->store('curriculo', 'public');
-
-            // Mapeia para os nomes do banco antes de atualizar
+            $file = $request->file('curriculo_form');
+            $nomeOriginal = $file->getClientOriginalName();
+            // storeAs garante que use o nome que você passou
+            $path = $file->storeAs('curriculo', $nomeOriginal, 'public');
             $curriculo->curriculo_url = $path;
         }
 
         $curriculo->save();
 
         return response()->json([
+            'debug_request' => $request->all(),
             'message' => 'Atualizado!',
             'dados' => $curriculo
         ], 200);

@@ -58,6 +58,32 @@ export async function BuscarUmItenEspecificoAction(id: string | number) {
     }
 }
 
+// 1. Adicione um parâmetro (ex: 'termo' ou 'pagina')
+export async function BuscarItemPorFiltroAction(termo = '', pagina = 1) { // A pagina = 1 é padrão se não for passado ele retorna sempre primeira pagina
+    try {
+        // 2. Monte a URL com os filtros. Ex: /item?nome=joao&page=1
+        const urlComFiltro = `${urlBase}/item?nome=${termo}&page=${pagina}`;
+
+        const res = await fetch(urlComFiltro, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+            cache: 'no-store'
+        });
+
+        if (!res.ok) return null;
+
+        const dadosDoBanco = await res.json();
+
+        return {
+            // Com paginate(), seus itens estarão em dadosDoBanco.data
+            dadosContexto: dadosDoBanco,
+        };
+    } catch {
+        return null;
+    }
+}
+
+
 // 2. CRIAR (COM AUTENTICAÇÃO - Privado)
 export async function CriarItemAction(formData: FormData) {
     try {
