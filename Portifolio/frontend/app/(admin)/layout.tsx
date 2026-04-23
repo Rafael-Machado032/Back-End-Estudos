@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fira_Code, Roboto, Montserrat } from "next/font/google";
+import { Geist, Geist_Mono, Fira_Code, Montserrat } from "next/font/google";
 import "../globals.css";
 import { CurriculoProvedor } from "@/context/CurriculoContext";
 import { FormacaoProvedor } from "@/context/FormacaoContext";
@@ -25,10 +25,6 @@ const firaCode = Fira_Code({
   subsets: ["latin"]
 })
 
-const roboto = Roboto({
-  variable: "--font-roboto-regular",
-  subsets: ["latin"]
-})
 
 const montserrat = Montserrat({
   variable: "--font-montserrat-regular",
@@ -82,7 +78,7 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
   const buscarProjeto = await BuscarProjetosAction();
 
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${roboto.variable} ${montserrat.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${montserrat.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <CurriculoProvedor curriculoInicial={buscarCurriculo}>
           <FormacaoProvedor formacaoInicial={buscarFormacao}>
