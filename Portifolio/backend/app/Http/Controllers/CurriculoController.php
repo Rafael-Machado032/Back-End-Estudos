@@ -8,25 +8,6 @@ use Illuminate\Support\Facades\Storage;
 
 class CurriculoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         // 1. REGRAS DE VALIDAÇÃO
@@ -72,27 +53,11 @@ class CurriculoController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Curriculo $curriculo)
-    {
-        return response()->json($curriculo, 200);
-    }
+    public function update(Request $request, Curriculo $curriculo){
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Curriculo $curriculo)
-    {
-        //
-    }
+        error_log('Dados recebidos do Next.js: ' . json_encode($request->all())); //Mensagem Simples com variaveis simples sem array
+        dump($request->all()); // Ideal para objetos e arrays
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Curriculo $curriculo)
-    {
         $request->validate([
             'curriculo_form' => 'required|file|mimes:pdf,doc,docx|max:5120', // Máx 5MB
         ]);
@@ -114,11 +79,4 @@ class CurriculoController extends Controller
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Curriculo $curriculo)
-    {
-        //
-    }
 }

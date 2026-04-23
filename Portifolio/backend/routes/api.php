@@ -55,12 +55,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Atualizar (Usamos POST aqui para o upload de arquivos funcionar 100%)
     // No Front-end, você envia como FormData e adiciona o campo _method = 'PUT' se quiser,
     // mas chamando essa rota POST o Laravel receberá os arquivos corretamente.
-    Route::post('/curriculo/{item}', [CurriculoController::class, 'update']);
-    Route::post('/formacoes/{item}', [FormacaoController::class, 'update']);
-    Route::post('/projetos/{item}', [ProjetoController::class, 'update']);
+    Route::post('/curriculo/{id}', [CurriculoController::class, 'update']);
+    Route::post('/formacoes/{id}', [FormacaoController::class, 'update']);
+    Route::post('/projetos/{id}', [ProjetoController::class, 'update']);
 
     // Excluir (DELETE)
-    Route::delete('/curriculo/{item}', [CurriculoController::class, 'destroy']);
-    Route::delete('/formacoes/{item}', [FormacaoController::class, 'destroy']);
-    Route::delete('/projetos/{item}', [ProjetoController::class, 'destroy']);
+    Route::delete('/curriculo/{id}', [CurriculoController::class, 'destroy']);
+    Route::delete('/formacoes/{id}', [FormacaoController::class, 'destroy']);
+    Route::delete('/projetos/{id}', [ProjetoController::class, 'destroy']);
 });
