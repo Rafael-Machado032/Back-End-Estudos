@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 interface Curriculo {
     curriculo_url_servidor?: string;
@@ -14,39 +14,29 @@ interface CurriculoContextoTipo {
 const CurriculoContexto = createContext<CurriculoContextoTipo | undefined>(undefined);
 
 export function CurriculoProvedor({ children, curriculoInicial }: { children: ReactNode, curriculoInicial?: Curriculo | null }) {
+    // 1. Criamos o estado inicial
+    const [curriculoDados, setCurriculoDados] = useState<Curriculo | null>(curriculoInicial || null);
 
-    const [curriculoDados, setCurriculoDados] = useState<Curriculo | null>(() => {
-        if (typeof window === 'undefined') return curriculoInicial || null;
-        try {
-            const salvo = localStorage.getItem('@Nome_App:chave_lista'); // Chave específica
-            return salvo ? JSON.parse(salvo) : (curriculoInicial || null);
-        } catch { return curriculoInicial || null; }
-    });
+    // 2. SINCRONIZAÇÃO PROFISSIONAL: 
+    // Se o curriculoInicial mudar (vindo do servidor), 
+    // o React detecta e atualiza o estado durante a renderização, sem precisar de Effect.
+    const [prevInicial, setPrevInicial] = useState(curriculoInicial);
 
-    // 🚀 SINCRONIZAÇÃO: Garante que se o Laravel mudar, o site atualiza na hora
-    const [prevCurriculoInicial, setPrevCurriculoInicial] = useState(curriculoInicial);
-
-    if (curriculoInicial !== prevCurriculoInicial) {
-        setPrevCurriculoInicial(curriculoInicial);
-        // Compara se o que veio do servidor é diferente do que está no estado
-        if (JSON.stringify(curriculoInicial) !== JSON.stringify(curriculoDados)) {
-            setCurriculoDados(curriculoInicial || null);
-        }
+    if (curriculoInicial !== prevInicial) {
+        setPrevInicial(curriculoInicial);
+        setCurriculoDados(curriculoInicial || null);
     }
 
-    useEffect(() => {
-        if (curriculoDados) {
-            localStorage.setItem('@Nome_App:chave_lista', JSON.stringify(curriculoDados));
-        } else {
-            localStorage.removeItem('@Nome_App:chave_lista');
-        }
-    }, [curriculoDados]);
+    const curriculoContextoValor = useMemo(() => ({
+        curriculoDados,
+        setCurriculoDados
+    }), [curriculoDados]);
 
-    const curriculoContextoValor = useMemo(() => ({ curriculoDados, setCurriculoDados }), [curriculoDados]);
-
-    
-
-    return <CurriculoContexto.Provider value={curriculoContextoValor}>{children}</CurriculoContexto.Provider>;
+    return (
+        <CurriculoContexto.Provider value={curriculoContextoValor}>
+            {children}
+        </CurriculoContexto.Provider>
+    );
 }
 
 export const useCurriculo = () => {

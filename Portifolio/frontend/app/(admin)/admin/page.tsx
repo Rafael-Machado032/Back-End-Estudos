@@ -12,7 +12,6 @@ export default function Home() {
                     <Aside />
                     <Principal />
                 </div>
-                
             </div>
         </main>
     );
