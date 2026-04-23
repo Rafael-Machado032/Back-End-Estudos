@@ -26,7 +26,6 @@ export async function BuscarCurriculoAction() {
 
         if (!res.ok) return null;
         const dadosDoBanco = await res.json();
-
         return {
             curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url
         };

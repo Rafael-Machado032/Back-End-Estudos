@@ -10,19 +10,12 @@ import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI"
 
 export default function Aside() {
     // 1. Modifique o useState para buscar do localStorage ao iniciar
-    const [tipo, setTipo] = useState<string>(() => {
-        if (typeof window !== 'undefined') {
-            const salvo = localStorage.getItem('@App:tipo_selecionado');
-            return salvo || "Projeto"; // Retorna o salvo ou o padrão
-        }
-        return "Projeto";
-    });
+    const [tipo, setTipo] = useState<string>("Projeto");
 
     // 2. Atualize a função Selecionar para salvar a escolha
     const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const valor = e.target.value;
         setTipo(valor);
-        localStorage.setItem('@App:tipo_selecionado', valor);
     };
 
     const { setCurriculoDados, curriculoDados } = useCurriculo();
@@ -74,19 +67,17 @@ export default function Aside() {
                 } else {
                     resposta = await EditarCurriculoAction(1, formData);
                     console.log("Resposta do editar", resposta);
-
                 }
-
+                
                 if (resposta.success) {
                     setCurriculoDados({ curriculo_url_servidor: resposta.curriculo_url_servidor });
-                    return alert("Currículo atualizado com sucesso!");
+                    alert("Currículo atualizado com sucesso!");
                 } else {
-                    return alert("Erro ao atualizar currículo");
+                    alert("Erro ao atualizar currículo");
                 }
             } else {
-                return alert("Selecione um arquivo de currículo.");
+                alert("Selecione um arquivo de currículo.");
             }
-
         }
     }
 

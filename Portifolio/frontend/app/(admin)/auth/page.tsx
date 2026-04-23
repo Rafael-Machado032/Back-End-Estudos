@@ -35,7 +35,6 @@ export default function Home() {
                         <input className="border border-[#374151] bg-[#1f2937] rounded-lg py-2 px-4" name="senha_form" type="password" placeholder="Senha" />
                         <Login/>
                         {erro ? <p className="text-[#ef4444]">{respostaUsuario}</p>:null}
-                        
                     </form>
                 </div>
             </div>

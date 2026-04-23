@@ -78,4 +78,12 @@ class CurriculoController extends Controller
         ], 200);
     }
 
+    public function show(Curriculo $curriculo)
+    {
+        return response()->json([
+            'message' => 'Curriculo encontrado!',
+            'dados' => $curriculo
+        ], 200);
+    }
+
 }

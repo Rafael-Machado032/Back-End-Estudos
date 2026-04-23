@@ -69,7 +69,7 @@ class ItemController extends Controller
 
             return response()->json([
                 'message' => 'Criado com sucesso!',
-                'data'    => $registro // Não esquesa que de usar .data para pegar as irfomações do item criado
+                'dados'    => $registro // Não esquesa que de usar .dados para pegar as irfomações do item criado
             ], 201);
         } catch (\Exception $e) {
             // 4. CLEANUP (LIMPEZA)
@@ -89,7 +89,10 @@ class ItemController extends Controller
     // Mostra um item específico
     public function show(Item $item)
     {
-        return response()->json($item, 200);
+        return response()->json([
+            'message' => 'Item encontrado!',
+            'dados' => $item
+        ], 200);
     }
 
     // Atualiza um item
@@ -126,7 +129,7 @@ class ItemController extends Controller
 
         return response()->json([
             'message' => 'Atualizado!', 
-            'data' => $item
+            'dados' => $item
         ], 200);
     }
 

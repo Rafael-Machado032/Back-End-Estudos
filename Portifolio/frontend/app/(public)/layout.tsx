@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fira_Code, Roboto, Montserrat } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { CurriculoProvedor } from "@/context/CurriculoContext";
 import { FormacaoProvedor } from "@/context/FormacaoContext";
 import { ProjetoProvedor } from "@/context/ProjetoContext";
