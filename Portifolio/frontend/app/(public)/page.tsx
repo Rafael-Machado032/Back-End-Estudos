@@ -1,3 +1,4 @@
+import Header from "@/components/Portifolio/header";
 import Hero from "@/components/Portifolio/Hero";
 import Trajetoria from "@/components/Portifolio/Trajetoria";
 import Formacao from "@/components/Portifolio/Formacao";
@@ -9,6 +10,7 @@ import Contato from "@/components/Portifolio/Contato";
 export default function Home() {
   return (
     <main>
+      <Header/>
       <Hero />
       <Trajetoria />
       <Formacao />

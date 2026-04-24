@@ -1,5 +1,6 @@
 import WhatsApp2 from "../button/WhatsApp2"
 import Linkedin from "../button/LinkedIn"
+import Github from "../button/Github"
 
 export default function Contato() {
     return (
@@ -12,7 +13,9 @@ export default function Contato() {
                     <div className="flex gap-4">
                         <WhatsApp2 />
                         <Linkedin href="https://www.linkedin.com/in/rafael-machado-b0a99078/" />
+                        <Github href="https://github.com/Rafael-Machado032" />
                     </div>
+                    <p>Telefone: (51) 98043-2207</p>
                     <p>rafael_machado.dev // 2026</p>
                 </div>
             </div>

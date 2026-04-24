@@ -1,5 +1,5 @@
 // import NextImage from "next/image"
-import Github from "../button/Github"
+import GithubProjeto from "../button/GithubProjeto"
 import Demo from "../button/Demo"
 
 export default function Cont_Projeto() {
@@ -14,7 +14,7 @@ export default function Cont_Projeto() {
                 <p className="text-[#aaaaaa]">Dashboard administrativo com gráficos dinâmicos e sistema de gestão de usuários integrado.</p>
                 <div className=" w-full flex justify-center items-center gap-4 mt-6">
                     <Demo href={"https://github.com"} />
-                    <Github href={"https://github.com"} />
+                    <GithubProjeto href={"https://github.com"} />
                 </div>
 
 
