@@ -38,13 +38,31 @@ Confira nossa [documentação de deployment do Next.js](https://nextjs.org/docs/
 
 ## Instalando Efeitos
 
-Foi instalado o efeito "Type Writer" com o comando 
+*Type Writer Effect*
+Efeito "Type Writer" onde digita os codicos Olá, Mundo! com o comando 
 ```bash
     npm install typewriter-effect
 ```
-Use o "import Typewriter from 'typewriter-effect';"
+No arquivo use o import
+```tsx
+    import Typewriter from 'typewriter-effect';
+```
 
-Foi intalado botão do github
+*Lucide*
+Biblioteca de ícones
 ```bash
     npm i lucide-react
+```
+No arquivo use o import
+```tsx
+    import { Nome_Do_Icone } from 'lucide-react';
+```
+
+*Motion*
+Criar efeito scroll onde aparece os elementos
+```bash
+    npm install motion
+```
+```tsx
+    import { motion } from "motion/react"
 ```
