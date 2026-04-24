@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 interface Formacao {
     id: string;
@@ -18,37 +18,33 @@ interface FormacaoContextoTipo {
 
 const FormacaoContexto = createContext<FormacaoContextoTipo | undefined>(undefined);
 
-export function FormacaoProvedor({ children, formacaoInicial }: { children: ReactNode, formacaoInicial?: Formacao[] }) {
+export function FormacaoProvedor({ children, formacaoInicial = [] }: { children: ReactNode, formacaoInicial?: Formacao[] }) {
+    // 1. Estado nasce com a lista do Laravel ou um array vazio (evita quebra no .map)
+    const [formacaoDados, setFormacaoDados] = useState<Formacao[]>(formacaoInicial);
 
-    const [formacaoDados, setFormacaoDados] = useState<Formacao[]>(() => {
-        if (typeof window === 'undefined') return formacaoInicial || [];
-        try {
-            const salvo = localStorage.getItem('@Portifolio:Formacao');
-            return salvo ? JSON.parse(salvo) : (formacaoInicial || []);
-        } catch { return formacaoInicial || []; }
-    });
-
-    // Sincronização: Se o dado no Laravel mudar, o site atualiza
+    // 2. SINCRONIZAÇÃO PROFISSIONAL
+    // Se o banco mudar (ex: busca com filtro ou nova página), o estado reflete isso
     const [prevFormacaoInicial, setPrevFormacaoInicial] = useState(formacaoInicial);
 
     if (formacaoInicial !== prevFormacaoInicial) {
         setPrevFormacaoInicial(formacaoInicial);
+        // Só atualiza se houver mudança real para evitar re-renders infinitos
         if (JSON.stringify(formacaoInicial) !== JSON.stringify(formacaoDados)) {
-            setFormacaoDados(formacaoInicial || []);
+            setFormacaoDados(formacaoInicial);
         }
     }
 
-    useEffect(() => {
-        localStorage.setItem('@Portifolio:Formacao', JSON.stringify(formacaoDados));
-    }, [formacaoDados]);
-
-    // 2. O useMemo agora só passa a lista e a função de atualizar
-    const formacaoContextoValor = useMemo(() => ({
+    // 3. Memorização para performance
+    const FormacaoContextoValor = useMemo(() => ({
         formacaoDados,
         setFormacaoDados
     }), [formacaoDados]);
 
-    return <FormacaoContexto.Provider value={formacaoContextoValor}>{children}</FormacaoContexto.Provider>;
+    return (
+        <FormacaoContexto.Provider value={FormacaoContextoValor}>
+            {children}
+        </FormacaoContexto.Provider>
+    );
 }
 
 export const useFormacao = () => {

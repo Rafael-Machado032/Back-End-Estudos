@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 interface Projeto {
     id: string;
@@ -20,37 +20,33 @@ interface ProjetoContextoTipo {
 
 const ProjetoContexto = createContext<ProjetoContextoTipo | undefined>(undefined);
 
-export function ProjetoProvedor({ children, projetoInicial }: { children: ReactNode, projetoInicial?: Projeto[] }) {
+export function ProjetoProvedor({ children, projetoInicial = [] }: { children: ReactNode, projetoInicial?: Projeto[] }) {
+    // 1. Estado nasce com a lista do Laravel ou um array vazio (evita quebra no .map)
+    const [projetoDados, setProjetoDados] = useState<Projeto[]>(projetoInicial);
 
-    const [projetoDados, setProjetoDados] = useState<Projeto[]>(() => {
-        if (typeof window === 'undefined') return projetoInicial || [];
-        try {
-            const salvo = localStorage.getItem('@Portifolio:Projeto');
-            return salvo ? JSON.parse(salvo) : (projetoInicial || []);
-        } catch { return projetoInicial || []; }
-    });
-
-    // Sincronização: Se o dado no Laravel mudar, o site atualiza
+    // 2. SINCRONIZAÇÃO PROFISSIONAL
+    // Se o banco mudar (ex: busca com filtro ou nova página), o estado reflete isso
     const [prevProjetoInicial, setPrevProjetoInicial] = useState(projetoInicial);
 
     if (projetoInicial !== prevProjetoInicial) {
         setPrevProjetoInicial(projetoInicial);
+        // Só atualiza se houver mudança real para evitar re-renders infinitos
         if (JSON.stringify(projetoInicial) !== JSON.stringify(projetoDados)) {
-            setProjetoDados(projetoInicial || []);
+            setProjetoDados(projetoInicial);
         }
     }
 
-    useEffect(() => {
-        localStorage.setItem('@Portifolio:Projeto', JSON.stringify(projetoDados));
-    }, [projetoDados]);
-
-    // 2. O useMemo agora só passa a lista e a função de atualizar
-    const contextoValor = useMemo(() => ({
+    // 3. Memorização para performance
+    const projetoContextoValor = useMemo(() => ({
         projetoDados,
         setProjetoDados
     }), [projetoDados]);
 
-    return <ProjetoContexto.Provider value={contextoValor}>{children}</ProjetoContexto.Provider>;
+    return (
+        <ProjetoContexto.Provider value={projetoContextoValor}>
+            {children}
+        </ProjetoContexto.Provider>
+    );
 }
 
 export const useProjeto = () => {
