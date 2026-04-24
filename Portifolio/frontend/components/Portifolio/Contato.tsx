@@ -4,7 +4,7 @@ import Github from "../button/Github"
 
 export default function Contato() {
     return (
-        <footer className='flex justify-center px-6 py-30 text-[#e1e1e6] bg-[#111111c5] bg-radial bg-[radial-gradient(circle_at_center,rgba(113,89,193,0.1)_0%,transparent_70%)]'>
+        <footer className='flex justify-center px-6 py-30 text-[#e1e1e6] bg-[#111111c5] bg-radial bg-[radial-gradient(circle_at_center,rgba(113,89,193,0.1)_0%,transparent_70%)]' id="contato">
             <div className='flex flex-col gap-4'>
                 <h2 className='text-4xl font-bold text-center'>Vamos Conversar?</h2>
                 <p>Estou em busca de oportunidade na área de desenvolvimento para somar com minha experiência técnica.</p>

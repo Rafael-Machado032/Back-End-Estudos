@@ -4,7 +4,7 @@ import Cont_Projeto from "../Container/Cont_Projeto";
 
 export default function Projeto() {
     return (
-        <section className='flex justify-center px-6 py-10 text-[#e1e1e6] overflow-hidden'>
+        <section className='flex justify-center px-6 py-10 text-[#e1e1e6] overflow-hidden' id="projetos" >
             <div className='max-w-7xl w-full'>
                 <h2 className='text-4xl font-bold after:content-[""] after:block after:w-12 after:h-1 after:bg-[#00f2fe] after:mt-2 mb-10'>
                     Projetos em Destaque

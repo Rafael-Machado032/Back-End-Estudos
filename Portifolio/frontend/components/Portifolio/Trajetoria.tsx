@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 
 export default function Trajetoria() {
     return (
-        <section className='flex justify-center px-6 py-40 text-[#e1e1e6] overflow-hidden'>
+        <section className='flex justify-center px-6 py-40 text-[#e1e1e6] overflow-hidden' id="trajetoria">
             <div className='flex justify-center items-center max-w-7xl flex-col md:flex-row gap-10'>
 
                 {/* Lado Esquerdo - Vem da esquerda */}

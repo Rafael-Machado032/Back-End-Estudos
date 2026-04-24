@@ -29,7 +29,7 @@ export default function Formacao() {
 
 
     return (
-        <section className='flex justify-center px-6 py-20 text-[#e1e1e6] bg-[#111111c5] bg-radial bg-[radial-gradient(circle_at_center,rgba(113,89,193,0.1)_0%,transparent_70%)]'>
+        <section className='flex justify-center px-6 py-20 text-[#e1e1e6] bg-[#111111c5] bg-radial bg-[radial-gradient(circle_at_center,rgba(113,89,193,0.1)_0%,transparent_70%)]' id="formacao">
             <div className='max-w-7xl w-full'>
                 <motion.h2
                     initial={{ opacity: 0, x: -20 }}
