@@ -22,10 +22,12 @@ export default function Principal() {
                     </div>
                 ): null}
             </div>
+
             <div>
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Diploma / Certificado</h2>
                 <Cont_FormacaoADM />
             </div>
+            
             <div>
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Projetos</h2>
                 <Cont_ProjetoADM />

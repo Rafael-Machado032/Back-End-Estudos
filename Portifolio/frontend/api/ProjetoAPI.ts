@@ -43,8 +43,13 @@ export async function CriarProjetoAction(formData: FormData) {
 
         if (!res.ok) return { success: false };
 
+        const dadosDoBanco = await res.json();
+
         revalidatePath('/admin/projeto');
-        return { success: true, data: await res.json() };
+        return { 
+            success: true, 
+            dados: dadosDoBanco.dados 
+        };
     } catch {
         return { success: false };
     }
@@ -64,8 +69,13 @@ export async function EditarProjetoAction(id: string | number, formData: FormDat
 
         if (!res.ok) return { success: false };
 
+        const dadosDoBanco = await res.json();
+
         revalidatePath('/admin/projeto');
-        return { success: true };
+        return { 
+            success: true, 
+            dados: dadosDoBanco.dados 
+        };
     } catch {
         return { success: false };
     }

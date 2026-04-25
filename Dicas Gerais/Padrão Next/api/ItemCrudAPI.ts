@@ -24,15 +24,16 @@ export async function BuscarItensAction() {
             cache: 'no-store' // Garante dado fresco do Laravel
         });
 
-        if (!res.ok) return null;
+        if (!res.ok) return { success: false };
 
         const dadosDoBanco = await res.json();
 
         return {
-            dadosContexto: dadosDoBanco, //data pode mudar para a variavel que tem no contexto
+            success: true,
+            dadosContexto: dadosDoBanco.dados, //data pode mudar para a variavel que tem no contexto
         };
     } catch {
-        return null;
+        return { success: false };
     }
 }
 
@@ -45,16 +46,17 @@ export async function BuscarUmItenEspecificoAction(id: string | number) {
             cache: 'no-store' // Garante dado fresco do Laravel
         });
 
-        if (!res.ok) return [];
+        if (!res.ok) return { success: false };
 
         const dadosDoBanco = await res.json();
 
         return {
-            id: dadosDoBanco.id,
-            dadosContexto: dadosDoBanco, //data pode mudar para a variavel que tem no contexto
+            success: true,
+            id: dadosDoBanco.dados.id,
+            dadosContexto: dadosDoBanco.dados, //data pode mudar para a variavel que tem no contexto
         };
     } catch {
-        return [];
+        return { success: false };
     }
 }
 
@@ -70,16 +72,17 @@ export async function BuscarItemPorFiltroAction(termo = '', pagina = 1) { // A p
             cache: 'no-store'
         });
 
-        if (!res.ok) return null;
+        if (!res.ok) return { success: false };
 
         const dadosDoBanco = await res.json();
 
         return {
+            success: true,
             // Com paginate(), seus itens estarão em dadosDoBanco.data
-            dadosContexto: dadosDoBanco,
+            dadosContexto: dadosDoBanco.dados,
         };
     } catch {
-        return null;
+        return { success: false };
     }
 }
 
@@ -99,7 +102,10 @@ export async function CriarItemAction(formData: FormData) {
         const dadosDoBanco = await res.json();
 
         revalidatePath('/', 'layout'); //Serve para atualizar a página após a criação do item, garantindo que o novo item apareça na listagem.
-        return { success: true, dadosContexto: dadosDoBanco };
+        return {
+            success: true,
+            dadosContexto: dadosDoBanco.dados
+        };
     } catch {
         return { success: false };
     }
@@ -119,8 +125,13 @@ export async function EditarItemAction(id: string | number, formData: FormData) 
 
         if (!res.ok) return { success: false };
 
+        const dadosDoBanco = await res.json();
+
         revalidatePath('/', 'layout');
-        return { success: true };
+        return {
+            success: true,
+            dadosContexto: dadosDoBanco.dados
+        };
     } catch {
         return { success: false };
     }

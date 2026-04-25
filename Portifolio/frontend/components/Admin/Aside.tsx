@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useCurriculo } from "@/context/CurriculoContext"
 import { useFormacao } from "@/context/FormacaoContext";
 import { useProjeto } from "@/context/ProjetoContext";
-import { CriarProjetoAction } from "@/api/ProjetoAPI";
-import { CriarFormacaoAction } from "@/api/FormacaoAPI";
+import { CriarProjetoAction, EditarProjetoAction } from "@/api/ProjetoAPI";
+import { CriarFormacaoAction, EditarFormacaoAction } from "@/api/FormacaoAPI";
 import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
     // 1. Modifique o useState para buscar do localStorage ao iniciar
     const [tipo, setTipo] = useState<string>("Projeto");
+    const [editar, setEditar] = useState<boolean>(false);
 
     // 2. Atualize a função Selecionar para salvar a escolha
     const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -33,42 +34,54 @@ export default function Aside() {
         const certificado = formData.get("certificado_form") as File;
         const curriculo = formData.get("curriculo_form") as File;
 
+        let resposta = null
 
         if (tipo === "Projeto") {
             if (!titulo || !tecnologias || !descricao || !demostracao || !github || !layout) {
-                const resposta = await CriarProjetoAction(formData);
+
+                if (!editar){
+                    resposta = await CriarProjetoAction(formData);
+                } else {
+                    resposta = await EditarProjetoAction(1, formData);
+                }
+
                 if (resposta.success) {
-                    setProjetoDados(resposta.data);
+                    setProjetoDados(resposta.dados);
                     alert("Projeto criado com sucesso!");
                 } else {
                     alert("Erro ao criar projeto");
                 }
+            } else {
+                alert("Preencha todos os campos do projeto.");
             }
-            return alert("Preencha todos os campos do projeto.");
         } else if (tipo === "Diploma") {
             if (!titulo || !tecnologias || !descricao || !certificado) {
-                const resposta = await CriarFormacaoAction(formData);
+
+                if (!editar) {
+                    resposta = await CriarFormacaoAction(formData);
+                } else {
+                    resposta = await EditarFormacaoAction(1, formData);
+                }
+
                 if (resposta.success) {
-                    setFormacaoDados(resposta.data);
+                    setFormacaoDados(resposta.dados);
                     alert("Formação criada com sucesso!");
                 } else {
                     alert("Erro ao criar formação");
                 }
+            } else {
+                alert("Preencha todos os campos do diploma.");
             }
 
-            return alert("Preencha todos os campos do diploma.");
         } else {
             if (curriculo && curriculo.size > 0) {
-
-                let resposta = null;
 
                 if (!curriculoDados?.curriculo_url_servidor) {
                     resposta = await CriarCurriculoAction(formData);
                 } else {
                     resposta = await EditarCurriculoAction(1, formData);
-                    console.log("Resposta do editar", resposta);
                 }
-                
+
                 if (resposta.success) {
                     setCurriculoDados({ curriculo_url_servidor: resposta.curriculo_url_servidor });
                     alert("Currículo atualizado com sucesso!");

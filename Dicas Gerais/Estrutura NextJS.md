@@ -1,3 +1,4 @@
+## Pasta do Projeto
 **Rotas**
 app/
 1. layout.js: O "esqueleto" do seu site (header, footer). Tudo que você colocar aqui aparece em todas as páginas.
@@ -28,3 +29,7 @@ hooks/
 **Tipagem de Dados**
 types/
 1. Definir o "formato" dos dados que vêm do Laravel. Exemplo: Um "Usuario" tem id, nome e email. (Usa no Typescript)
+
+## Criar Componente
+*rfc*
+1. Export Default Function

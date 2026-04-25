@@ -24,10 +24,16 @@ export async function BuscarFormacaoAction() {
             cache: 'no-store' // Garante dado fresco do Laravel
         });
 
-        if (!res.ok) return [];
-        return await res.json();
+        if (!res.ok) return { success: false };
+
+        const dadosDoBanco = await res.json();
+
+        return {
+            success: true,
+            dados: dadosDoBanco.dados
+        };
     } catch {
-        return [];
+        return { success: false };
     }
 }
 
@@ -43,8 +49,13 @@ export async function CriarFormacaoAction(formData: FormData) {
 
         if (!res.ok) return { success: false };
 
+        const dadosDoBanco = await res.json();
+
         revalidatePath('/admin/item');
-        return { success: true, data: await res.json() };
+        return {
+            success: true,
+            dados: dadosDoBanco.dados // Retorna os dados do banco para atualizar o estado};
+        };
     } catch {
         return { success: false };
     }
@@ -54,7 +65,6 @@ export async function CriarFormacaoAction(formData: FormData) {
 export async function EditarFormacaoAction(id: string | number, formData: FormData) {
     try {
         const headers = await getAuthHeaders();
-        formData.append('_method', 'PUT');
 
         const res = await fetch(`${urlBase}/formacao/${id}`, {
             method: 'POST',
@@ -64,8 +74,13 @@ export async function EditarFormacaoAction(id: string | number, formData: FormDa
 
         if (!res.ok) return { success: false };
 
+        const dadosDoBanco = await res.json();
+        
         revalidatePath('/admin/item');
-        return { success: true };
+        return {
+            success: true,
+            dados: dadosDoBanco.dados
+        };
     } catch {
         return { success: false };
     }
