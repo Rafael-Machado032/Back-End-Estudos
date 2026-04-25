@@ -2,10 +2,25 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react'; // Instale com: npm install lucide-react
+import { useActiveSection } from '@/hooks/useActiveSection'; // Importado hook para monitorar a seção ativa
 
 export default function Header() {
+    useActiveSection(['inicio', 'trajetoria', 'projetos', 'formacao', 'contato']);// Chama o hook para monitorar as seções
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenu, setMobileMenu] = useState(false);
+
+    const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+        e.preventDefault();
+        const element = document.getElementById(id);
+
+        if (element) {
+            // Rola suavemente
+            element.scrollIntoView({ behavior: 'smooth' });
+
+            // Atualiza a URL sem o # (ou apenas com o último ID)
+            window.history.pushState(null, '', `#${id}`);
+        }
+    };
 
     // Monitora o scroll para mostrar/esconder o fundo da navbar
     useEffect(() => {
@@ -19,8 +34,8 @@ export default function Header() {
     const links = [
         { name: 'Início', href: '#inicio' },
         { name: 'Trajetória', href: '#trajetoria' },
-        { name: 'Projetos', href: '#projetos' },
         { name: 'Formação', href: '#formacao' },
+        { name: 'Projetos', href: '#projetos' },
         { name: 'Contato', href: '#contato' },
     ];
 
@@ -42,6 +57,7 @@ export default function Header() {
                         <li key={link.name}>
                             <a
                                 href={link.href}
+                                onClick={(e) => handleScroll(e, link.href.slice(1))}
                                 className="text-sm font-medium text-[#a8a8b3] hover:text-[#00f2fe] transition-colors"
                             >
                                 {link.name}
@@ -73,7 +89,7 @@ export default function Header() {
                                 <li key={link.name}>
                                     <a
                                         href={link.href}
-                                        onClick={() => setMobileMenu(false)}
+                                        onClick={(e) => handleScroll(e, link.href.slice(1))}
                                         className="text-lg text-[#a8a8b3]"
                                     >
                                         {link.name}

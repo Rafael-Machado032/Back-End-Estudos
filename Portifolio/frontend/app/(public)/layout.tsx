@@ -8,16 +8,10 @@ import { BuscarCurriculoAction } from "@/api/CurriculoAPI";
 import { BuscarFormacaoAction } from "@/api/FormacaoAPI";
 import { BuscarProjetosAction } from "@/api/ProjetoAPI";
 
-
-
-
-
 const firaCode = Fira_Code({
   variable: "--font-fira-code",
   subsets: ["latin"]
 })
-
-
 
 const montserrat = Montserrat({
   variable: "--font-montserrat-regular",
