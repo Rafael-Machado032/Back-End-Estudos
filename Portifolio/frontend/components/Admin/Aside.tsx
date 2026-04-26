@@ -11,7 +11,7 @@ import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI"
 export default function Aside() {
     // 1. Modifique o useState para buscar do localStorage ao iniciar
     const [tipo, setTipo] = useState<string>("Projeto");
-    const [editar, setEditar] = useState<boolean>(false);
+    const [editar] = useState<boolean>(false);
 
     // 2. Atualize a função Selecionar para salvar a escolha
     const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
