@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
-interface Projeto {
+export interface Projeto { //exporto para usar em outros arquivos, resolver o tipo do projetoDados
     id: string;
     titulo: string;
     tecnologia: string;

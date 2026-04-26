@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
-interface Formacao {
+export interface Formacao { //exporto para usar em outros arquivos, resolver o tipo do projetoDados
     id: string;
     titulo: string;
     tecnologia: string;
