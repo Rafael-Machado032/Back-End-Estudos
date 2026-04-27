@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Projeto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Cloudinary\Api\Upload\UploadApi;
 
 class ProjetoController extends Controller
 {
@@ -26,7 +27,17 @@ class ProjetoController extends Controller
         ]);
 
         try {
-            $path = null;
+            // 1. Configuração do Print Automático
+            $cloudName = "dxmrolrys"; // Seu Cloud Name
+            $nomeCapa = 'capa_' . time() . '.jpg';
+            $pathCapa = 'projetos/' . $nomeCapa;
+
+            // URL de Fetch do Cloudinary (abre o site e gera o print 1200x800)
+            $urlFetch = "https://cloudinary.com{$cloudName}/image/fetch/w_1200,h_800,c_fill,f_jpg/" . $validated['demonstracao_form'];
+
+            // 2. Baixa o print para a sua pasta local storage/app/public/projetos
+            $conteudoPrint = file_get_contents($urlFetch);
+            Storage::disk('public')->put($pathCapa, $conteudoPrint);
 
             // 3. Salvando no Banco (Mapeando os campos)
             $dadosProjeto = Projeto::create([
@@ -35,7 +46,7 @@ class ProjetoController extends Controller
                 'descricao' => $validated['descricao_form'],
                 'demonstracao_url' => $validated['demonstracao_form'],
                 'github_url' => $validated['github_form'],
-                'layout_url' => $path, // Aqui salva o caminho do PDF: "certificados/xyz.pdf"
+                'layout_url' => $pathCapa, // Aqui salva o caminho do PDF: "certificados/xyz.pdf"
             ]);
 
             return response()->json([
@@ -43,11 +54,6 @@ class ProjetoController extends Controller
                 'data' => $dadosProjeto
             ], 201);
         } catch (\Exception $e) {
-            // Se der erro no banco, apaga o PDF que subiu para não sobrar lixo
-            if ($path) {
-                Storage::disk('public')->delete($path);
-            }
-
             return response()->json([
                 'error' => 'Erro ao salvar projeto.',
                 'details' => config('app.debug') ? $e->getMessage() : null
@@ -75,13 +81,20 @@ class ProjetoController extends Controller
             'github_form' => 'required|string',
         ]);
 
-        if ($request->hasFile('layout_form')) {
-            // Usa o nome real da coluna: 'coluna_arquivo'
-            Storage::disk('public')->delete($projeto->getRawOriginal('layout_form'));
-            $path = $request->file('layout_form')->store('projetos', 'public');
+        // Se a URL do projeto mudou, gera um novo print
+        if ($validated['demonstracao_form'] !== $projeto->demonstracao_url) {
+            // Apaga a capa antiga
+            if ($projeto->layout_url) {
+                Storage::disk('public')->delete($projeto->layout_url);
+            }
 
-            // Mapeia para os nomes do banco antes de atualizar
-            $projeto->layout_url = $path;
+            $cloudName = "dxmrolrys";
+            $nomeCapa = 'capa_' . time() . '.jpg';
+            $pathCapa = 'projetos/' . $nomeCapa;
+            $urlFetch = "https://cloudinary.com{$cloudName}/image/fetch/w_1200,h_800,c_fill,f_jpg/" . $validated['demonstracao_form'];
+
+            Storage::disk('public')->put($pathCapa, file_get_contents($urlFetch));
+            $projeto->layout_url = $pathCapa;
         }
 
         $projeto->titulo = $validated['titulo_form'] ?? $projeto->titulo;
@@ -101,14 +114,10 @@ class ProjetoController extends Controller
     public function destroy(Projeto $projeto)
     /*(Exclusão)*/
     {
-        // Ajustado para 'coluna_arquivo'
-        if ($projeto->getRawOriginal('layout_url')) {
-            Storage::disk('public')->delete($projeto->getRawOriginal('layout_url'));
+        if ($projeto->layout_url) {
+            Storage::disk('public')->delete($projeto->layout_url);
         }
-
         $projeto->delete();
-        return response()->json([
-            'message' => 'Removido com sucesso'
-        ], 200);
+        return response()->json(['message' => 'Removido com sucesso'], 200);
     }
 }
