@@ -17,6 +17,7 @@ return new class extends Migration
             $table->json('tecnologia');
             $table->text('descricao');
             $table->string('certificado_url');
+            $table->string('capa_url')->nullable();
             $table->timestamps();
         });
     }

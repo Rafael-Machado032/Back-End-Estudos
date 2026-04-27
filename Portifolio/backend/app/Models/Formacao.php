@@ -12,7 +12,8 @@ class Formacao extends Model
         'titulo',
         'tecnologia',
         'descricao',
-        'certificado'
+        'certificado_url',
+        'capa_url',
     ];
 
     // 2. ESSENCIAL: transforma a lista de array para JSON e vice-versa
@@ -22,6 +23,14 @@ class Formacao extends Model
 
     // 3. Accessor para o campo 'certificado'
     protected function certificado(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $value ? asset('storage/' . $value) : null,
+        );
+    }
+
+    // 4. Accessor para o campo 'capa'
+    protected function capa(): Attribute
     {
         return Attribute::make(
             get: fn($value) => $value ? asset('storage/' . $value) : null,

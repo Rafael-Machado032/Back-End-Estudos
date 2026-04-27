@@ -36,7 +36,7 @@ A maneira mais fácil de fazer deploy da sua app Next.js é usar a [Plataforma V
 Confira nossa [documentação de deployment do Next.js](https://nextjs.org/docs/app/building-your-application/deploying) para mais detalhes.
 *
 
-## Instalando Efeitos
+## Instalações de Efeitos
 
 *Type Writer Effect*
 Efeito "Type Writer" onde digita os codicos Olá, Mundo! com o comando 

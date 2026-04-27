@@ -6,11 +6,12 @@ import Deletar from "../button/Deletar"
 import { Projeto } from "@/context/ProjetoContext"
 
 export default function Cont_ProjetoADM({ projetoDados }: { projetoDados: Projeto }) {
+    
     return (
         <div className="max-w-70 rounded-2xl bg-[#222222] border-[#00f1fe00] border">
             <div className="flex justify-end gap-2 p-4 w-full ">
-                <Editar dados={projetoDados}/>
-                <Deletar id={projetoDados.id} />
+                <Editar id={projetoDados.id} tipo="projeto"/>
+                <Deletar id={projetoDados.id}  tipo="projeto"/>
             </div>
             <div>
                 {/* <NextImage src={""} alt="Next.js Dashboard" width={100} height={150} /> */}
