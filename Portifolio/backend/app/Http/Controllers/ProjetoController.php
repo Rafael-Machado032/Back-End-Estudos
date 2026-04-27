@@ -73,7 +73,6 @@ class ProjetoController extends Controller
             'descricao_form' => 'required|string',
             'demonstracao_form' => 'required|string',
             'github_form' => 'required|string',
-            'layout_form' => 'required|file|image|mimes:jpeg,jpg,png,webp,svg|max:5120', // Máx 5MB
         ]);
 
         if ($request->hasFile('layout_form')) {
