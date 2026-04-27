@@ -110,7 +110,9 @@ class ItemController extends Controller
             $caminho = $request->file('campo_arquivo')->store('pasta_destino', 'public');
 
             // Mapeia para os nomes do banco antes de atualizar
-            $item->coluna_arquivo = $caminho;
+            if (isset($caminho)) { //Garante que só atualizamos o caminho se um novo arquivo foi processado
+                $item->coluna_arquivo = $caminho;
+            }
         }
 
         // Se quiser usar o nome original do arquivo, pode usar storeAs:

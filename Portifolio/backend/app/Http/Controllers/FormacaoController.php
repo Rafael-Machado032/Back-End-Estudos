@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Formacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Spatie\PdfToImage\Pdf;
+use Cloudinary\Api\Upload\UploadApi;
 
 class FormacaoController extends Controller
 {
@@ -33,12 +33,20 @@ class FormacaoController extends Controller
             if ($request->hasFile('certificado_form')) {
                 $pathPDF = $request->file('certificado_form')->store('certificados', 'public');
 
+                // 2. Envia uma cópia temporária para o Cloudinary para gerar a capa
+                $upload = (new UploadApi())->upload(storage_path('app/public/' . $pathPDF), [
+                    'resource_type' => 'auto'
+                ]);
+
+                // 3. Pega a URL da capa (JPG) no Cloudinary
+                $urlCapaCloudinary = str_replace('.pdf', '.jpg', $upload['secure_url']);
+
                 // 2. Define o caminho da imagem (corrigindo o nome da função)
                 $pathImagem = str_replace('.pdf', '.jpg', $pathPDF);
 
-                // Gerar a imagem JPG a partir do PDF usando Spatie\PdfToImage
-                $capaPDF = new Pdf(storage_path('app/public/' . $pathPDF)); // Usa o caminho completo do PDF para carregar na biblioteca
-                $capaPDF->saveImage(storage_path('app/public/' . $pathImagem));
+                // 5. BAIXA a imagem da nuvem para o seu storage local
+                $imagemConteudo = file_get_contents($urlCapaCloudinary);
+                Storage::disk('public')->put($pathImagem, $imagemConteudo);
             }
 
             // 3. Salvando no Banco (Mapeando os campos)
@@ -96,14 +104,25 @@ class FormacaoController extends Controller
                 // 2. SALVAR NOVO PDF
                 $pathPDF = $request->file('certificado_form')->store('certificados', 'public');
 
+                // 3. GERAR NOVA CAPA VIA CLOUDINARY
+                $upload = (new UploadApi())->upload(storage_path('app/public/' . $pathPDF), [
+                    'resource_type' => 'auto'
+                ]);
+
+                $urlCapaCloudinary = str_replace('.pdf', '.jpg', $upload['secure_url']);
+
                 // 3. GERAR NOVA CAPA (Igual ao store)
                 $pathImagem = str_replace('.pdf', '.jpg', $pathPDF);
-                $capaPDF = new Pdf(storage_path('app/public/' . $pathPDF));
-                $capaPDF->saveImage(storage_path('app/public/' . $pathImagem));
 
-                // Atualiza os caminhos no objeto
-                $formacao->certificado_url = $pathPDF;
-                $formacao->capa_url = $pathImagem;
+                // 4. BAIXA A NOVA IMAGEM PARA O STORAGE LOCAL
+                $imagemConteudo = file_get_contents($urlCapaCloudinary);
+                Storage::disk('public')->put($pathImagem, $imagemConteudo);
+
+                // Garante que só atualizamos o caminho se um novo arquivo foi processado
+                if (isset($pathPDF)) {
+                    $formacao->certificado_url = $pathPDF;
+                    $formacao->capa_url = $pathImagem;
+                }
             }
 
             // 4. ATUALIZAR DEMAIS CAMPOS

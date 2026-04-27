@@ -59,10 +59,22 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Instalação de Efeitos
 
-Transforma pdf em imagem para exibição dos cards
+*Cloudinary*
+Transforma pdf e url em imagem para exibição dos cards
+Cloudinary PHP SDK é api que faz conversão do pdf e url em imagem
 ```bash
-composer require spatie/pdf-to-image
+    composer require cloudinary/cloudinary_php
 ```
+Não foi instalado para laravel pois por enquato não é compativel com a versão novo
+No arquivo .env 
+```ini
+    CLOUDINARY_URL=cloudinary://sua_key:seu_secret@seu_cloud_name
+```
+Esse comando retorna a imagem do pdf
 ```php
-use Spatie\PdfToImage\Pdf;
+    use Cloudinary\Api\Upload\UploadApi;
+
+    $upload = (new UploadApi())->upload(storage_path('app/public/' . $pathPDF), [
+        'resource_type' => 'auto'
+    ]);
 ```
