@@ -62,3 +62,6 @@ Transforma pdf em imagem para exibição dos cards
 ```bash
 composer require spatie/pdf-to-image
 ```
+```php
+use Spatie\PdfToImage\Pdf;
+```
