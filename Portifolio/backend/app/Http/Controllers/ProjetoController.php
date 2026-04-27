@@ -8,27 +8,11 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjetoController extends Controller
 {
-    /**
-     *  Lista todos os registros.
-     */
     public function index()
     /*(Leitura Geral)*/
     {
         return response()->json(Projeto::all(), 200);
     }
-
-    /**
-     * Retorna a página HTML com o formulário para criar um projeto.
-     */
-    public function create()
-    /*(Página de Formulário - Não se usa em API)*/
-    {
-        //
-    }
-
-    /**
-     * Recebe os dados do formulário (nome, imagem, link) e salva no banco de dados.
-     */
 
     public function store(Request $request)
     {
@@ -39,16 +23,10 @@ class ProjetoController extends Controller
             'descricao_form' => 'required|string',
             'demonstracao_form' => 'required|string',
             'github_form' => 'required|string',
-            'layout_form' => 'required|file|image|mimes:jpeg,jpg,png,webp,svg|max:5120', // Máx 5MB
         ]);
 
         try {
             $path = null;
-
-            // 2. Upload do PDF para a pasta 'certificados' dentro de 'public'
-            if ($request->hasFile('layout_form')) {
-                $path = $request->file('layout_form')->store('projetos', 'public');
-            }
 
             // 3. Salvando no Banco (Mapeando os campos)
             $dadosProjeto = Projeto::create([
@@ -86,18 +64,6 @@ class ProjetoController extends Controller
         return response()->json($projeto, 200);
     }
 
-    /**
-     * Retorna a página HTML com o formulário de edição preenchido.
-     */
-    public function edit(Projeto $projeto)
-    /*(Página de Edição - Não se usa em API)*/
-    {
-        //
-    }
-
-    /**
-     *  Recebe os novos dados de um projeto que já existe e atualiza no banco.
-     */
     public function update(Request $request, Projeto $projeto)
     /*(Atualização)*/
     {
@@ -133,9 +99,6 @@ class ProjetoController extends Controller
         ], 200);
     }
 
-    /**
-     * Deleta o registro do banco de dados.
-     */
     public function destroy(Projeto $projeto)
     /*(Exclusão)*/
     {
