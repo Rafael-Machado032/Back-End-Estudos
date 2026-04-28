@@ -24,19 +24,6 @@ export function ProjetoProvedor({ children, projetoInicial = [] }: { children: R
     // 1. Estado nasce com a lista do Laravel ou um array vazio (evita quebra no .map)
     const [projetoDados, setProjetoDados] = useState<Projeto[]>(projetoInicial);
 
-    // 2. SINCRONIZAÇÃO PROFISSIONAL
-    // Se o banco mudar (ex: busca com filtro ou nova página), o estado reflete isso
-    const [prevProjetoInicial, setPrevProjetoInicial] = useState(projetoInicial);
-
-    if (projetoInicial !== prevProjetoInicial) {
-        setPrevProjetoInicial(projetoInicial);
-        // Só atualiza se houver mudança real para evitar re-renders infinitos
-        if (JSON.stringify(projetoInicial) !== JSON.stringify(projetoDados)) {
-            setProjetoDados(projetoInicial);
-        }
-    }
-
-    // 3. Memorização para performance
     const projetoContextoValor = useMemo(() => ({
         projetoDados,
         setProjetoDados

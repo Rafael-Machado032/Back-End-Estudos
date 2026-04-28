@@ -18,20 +18,7 @@ export function ItemProvedor({ children, itemIniciais }: { children: ReactNode, 
     // 1. Estado inicial nasce estritamente do que vem do servidor (Laravel)
     // Isso garante que o primeiro render seja idêntico no servidor e no cliente
     const [itemDados, setItemDados] = useState<Item | null>(itemIniciais || null);
-
-    // 2. SINCRONIZAÇÃO DE RENDERIZAÇÃO
-    // Se a prop 'itemIniciais' mudar (ex: após um router.refresh()), 
-    // o React atualiza o estado durante o ciclo de render, sem precisar de useEffect.
-    const [prevItemIniciais, setPrevItemIniciais] = useState(itemIniciais);
-
-    if (itemIniciais !== prevItemIniciais) {
-        setPrevItemIniciais(itemIniciais);
-        // Atualiza o estado apenas se o valor for realmente diferente
-        if (JSON.stringify(itemIniciais) !== JSON.stringify(itemDados)) {
-            setItemDados(itemIniciais || null);
-        }
-    }
-
+    // com o revalidatePath na api sempre vai ser chamado itemIniciais, não tendo nescessidade de usar sicronização, isso tem que ser chamado no layout
     // 3. Memorização do valor do contexto para performance
     const itemContextoValor = useMemo(() => ({ 
         itemDados, 

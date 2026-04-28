@@ -17,16 +17,6 @@ export function CurriculoProvedor({ children, curriculoInicial }: { children: Re
     // 1. Criamos o estado inicial
     const [curriculoDados, setCurriculoDados] = useState<Curriculo | null>(curriculoInicial || null);
 
-    // 2. SINCRONIZAÇÃO PROFISSIONAL: 
-    // Se o curriculoInicial mudar (vindo do servidor), 
-    // o React detecta e atualiza o estado durante a renderização, sem precisar de Effect.
-    const [prevInicial, setPrevInicial] = useState(curriculoInicial);
-
-    if (curriculoInicial !== prevInicial) {
-        setPrevInicial(curriculoInicial);
-        setCurriculoDados(curriculoInicial || null);
-    }
-
     const curriculoContextoValor = useMemo(() => ({
         curriculoDados,
         setCurriculoDados

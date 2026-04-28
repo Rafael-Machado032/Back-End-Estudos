@@ -21,9 +21,9 @@ export default function Aside() {
     const [demo, setDemo] = useState("");
     const [github, setGithub] = useState("");
     
-    const { setCurriculoDados, curriculoDados } = useCurriculo();
-    const { setFormacaoDados, formacaoDados } = useFormacao();
-    const { setProjetoDados, projetoDados } = useProjeto();
+    const { curriculoDados } = useCurriculo();
+    const { formacaoDados } = useFormacao();
+    const { projetoDados } = useProjeto();
     const { itemDados, setItemDados } = useItem();
 
     // 2. Atualize a função Selecionar para salvar a escolha
@@ -69,7 +69,7 @@ export default function Aside() {
                 }
 
                 if (resposta.success) {
-                    setProjetoDados(resposta.dados);
+                    
                     alert("Projeto criado com sucesso!");
                 } else {
                     alert("Erro ao criar projeto");
@@ -92,7 +92,6 @@ export default function Aside() {
                     }
                 }
                 if (resposta.success) {
-                    setFormacaoDados(resposta.dados);
                     alert("Formação criada com sucesso!");
                 } else {
                     alert("Erro ao criar formação");
@@ -110,7 +109,6 @@ export default function Aside() {
                 }
 
                 if (resposta.success) {
-                    setCurriculoDados({ curriculo_url_servidor: resposta.curriculo_url_servidor });
                     alert("Currículo atualizado com sucesso!");
                 } else {
                     alert("Erro ao atualizar currículo");

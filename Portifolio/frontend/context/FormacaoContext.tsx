@@ -23,25 +23,12 @@ export function FormacaoProvedor({ children, formacaoInicial = [] }: { children:
     // 1. Estado nasce com a lista do Laravel ou um array vazio (evita quebra no .map)
     const [formacaoDados, setFormacaoDados] = useState<Formacao[]>(formacaoInicial);
 
-    // 2. SINCRONIZAÇÃO PROFISSIONAL
-    // Se o banco mudar (ex: busca com filtro ou nova página), o estado reflete isso
-    const [prevFormacaoInicial, setPrevFormacaoInicial] = useState(formacaoInicial);
-
-    if (formacaoInicial !== prevFormacaoInicial) {
-        setPrevFormacaoInicial(formacaoInicial);
-        // Só atualiza se houver mudança real para evitar re-renders infinitos
-        if (JSON.stringify(formacaoInicial) !== JSON.stringify(formacaoDados)) {
-            setFormacaoDados(formacaoInicial);
-        }
-    }
-
     // 3. Memorização para performance
     const FormacaoContextoValor = useMemo(() => ({
         formacaoDados,
         setFormacaoDados,
     }), [formacaoDados]);
     
-
     return (
         <FormacaoContexto.Provider value={FormacaoContextoValor}>
             {children}
