@@ -32,7 +32,6 @@ export default function Aside() {
         setTipo(valor);
     };
 
-
     // 2. Limpeza dos campos após publicar/sucesso
     const limparFormulario = () => {
         setTitulo("");
@@ -79,9 +78,12 @@ export default function Aside() {
                 alert("Preencha todos os campos do projeto.");
             }
         } else if (tipo === "Diploma") {
-            if (titulo && tecnologias && descricao && certificado) {
-
+            if (titulo && tecnologias && descricao) {
                 if (!itemDados?.editar) {
+                    if(!certificado || certificado.size === 0){
+                        alert("Selecione um arquivo de certificado.");
+                        return;
+                    }
                     resposta = await CriarFormacaoAction(formData);
                 } else {
                     resposta = await EditarFormacaoAction(itemDados.id, formData);
@@ -123,15 +125,21 @@ export default function Aside() {
         if (itemDados?.editar) {
             const preencherEditar = () => {
                 let dados = null;
-                if (itemDados?.tipo == "formacao") {
+                if (itemDados.tipo === "formacao") {
+                    // Sincroniza o Select com o valor correto
+                    setTipo("Diploma");
+
                     dados = formacaoDados.find((item) => item.id === itemDados.id);
                     if (dados) {
                         setTitulo(dados.titulo || "");
                         setTecnologias(dados.tecnologia || "");
                         setDescricao(dados.descricao || "");
                     }
-                } else {
-                    dados = projetoDados.find((item) => item.id === itemDados?.id);
+                } else if (itemDados.tipo === "projeto") {
+                    // Sincroniza o Select com o valor correto
+                    setTipo("Projeto");
+
+                    dados = projetoDados.find((item) => item.id === itemDados.id);
                     if (dados) {
                         setTitulo(dados.titulo || "");
                         setTecnologias(dados.tecnologia || "");
@@ -141,13 +149,12 @@ export default function Aside() {
                     }
                 }
             };
-            queueMicrotask(() => { // Garante que o setState seja chamado após a renderização atual
-                setTipo(itemDados.tipo!);
-                preencherEditar()
-            });
+
+            // Use setTimeout ou deixe direto se não houver conflito de render
+            preencherEditar();
         }
-        // Adicionamos 'editar' aqui para satisfazer o Hook e garantir a lógica
     }, [itemDados, formacaoDados, projetoDados]);
+
     return (
         <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
 
@@ -166,44 +173,44 @@ export default function Aside() {
                     <div className="flex flex-col gap-4">
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: App Web Incrível" value={titulo} />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: App Web Incrível" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
                         </div>
 
                         <div className='flex flex-col gap-2'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} onChange={(e) => setTecnologias(e.target.value)} />
                         </div>
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
-                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um app web incrível feito com React e Firebase" value={descricao}></textarea>
+                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um app web incrível feito com React e Firebase" value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
                         </div>
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>URL do projeto</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="demostracao_form" type="text" placeholder="https://imagem.com" value={demo} />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="demostracao_form" type="text" placeholder="https://imagem.com" value={demo} onChange={(e) => setDemo(e.target.value)} />
                         </div>
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>URL do Github</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="github_form" type="text" placeholder="https://github.com/usuario/repo" value={github} />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="github_form" type="text" placeholder="https://github.com/usuario/repo" value={github} onChange={(e) => setGithub(e.target.value)} />
                         </div>
                     </div>
                 ) : tipo === "Diploma" ? (
                     <div className="flex flex-col gap-4">
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" value={titulo} />
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
                         </div>
 
                         <div className='flex flex-col gap-2'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} onChange={(e) => setTecnologias(e.target.value)} />
                         </div>
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
-                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um curso web voltado para React e Firebase" value={descricao}></textarea>
+                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um curso web voltado para React e Firebase" value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
                         </div>
 
                         <div className='flex flex-col gap-1'>
