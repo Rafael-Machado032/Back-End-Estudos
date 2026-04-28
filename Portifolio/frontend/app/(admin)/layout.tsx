@@ -4,6 +4,7 @@ import "../globals.css";
 import { CurriculoProvedor } from "@/context/CurriculoContext";
 import { FormacaoProvedor } from "@/context/FormacaoContext";
 import { ProjetoProvedor } from "@/context/ProjetoContext";
+import { ItemProvedor } from "@/context/IdEditar";
 import { BuscarCurriculoAction } from "@/api/CurriculoAPI";
 import { BuscarFormacaoAction } from "@/api/FormacaoAPI";
 import { BuscarProjetosAction } from "@/api/ProjetoAPI";
@@ -81,9 +82,11 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${montserrat.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <CurriculoProvedor curriculoInicial={buscarCurriculo}>
-          <FormacaoProvedor formacaoInicial={buscarFormacao}>
-            <ProjetoProvedor projetoInicial={buscarProjeto}>
-              {children}
+          <FormacaoProvedor formacaoInicial={buscarFormacao.dados}>
+            <ProjetoProvedor projetoInicial={buscarProjeto.dados}>
+              <ItemProvedor>
+                {children}
+              </ItemProvedor>
             </ProjetoProvedor>
           </FormacaoProvedor>
         </CurriculoProvedor>

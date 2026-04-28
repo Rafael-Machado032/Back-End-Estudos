@@ -1,9 +1,10 @@
 'use client'
 import Publicar from "../button/Publicar"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCurriculo } from "@/context/CurriculoContext"
 import { useFormacao } from "@/context/FormacaoContext";
 import { useProjeto } from "@/context/ProjetoContext";
+import { useItem } from "@/context/IdEditar";
 import { CriarProjetoAction, EditarProjetoAction } from "@/api/ProjetoAPI";
 import { CriarFormacaoAction, EditarFormacaoAction } from "@/api/FormacaoAPI";
 import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
@@ -11,7 +12,18 @@ import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI"
 export default function Aside() {
     // 1. Modifique o useState para buscar do localStorage ao iniciar
     const [tipo, setTipo] = useState<string>("Projeto");
-    const [editar] = useState<boolean>(false);
+
+    // ESTADOS PARA OS INPUTS (Para o usuário ver o que está editando)
+    const [titulo, setTitulo] = useState("");
+    const [tecnologias, setTecnologias] = useState("");
+    const [descricao, setDescricao] = useState("");
+    const [demo, setDemo] = useState("");
+    const [github, setGithub] = useState("");
+    
+    const { setCurriculoDados, curriculoDados } = useCurriculo();
+    const { setFormacaoDados, formacaoDados } = useFormacao();
+    const { setProjetoDados, projetoDados } = useProjeto();
+    const { itemDados, setItemDados } = useItem();
 
     // 2. Atualize a função Selecionar para salvar a escolha
     const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -19,9 +31,16 @@ export default function Aside() {
         setTipo(valor);
     };
 
-    const { setCurriculoDados, curriculoDados } = useCurriculo();
-    const { setFormacaoDados } = useFormacao();
-    const { setProjetoDados } = useProjeto();
+
+    // 2. Limpeza dos campos após publicar/sucesso
+    const limparFormulario = () => {
+        setTitulo("");
+        setTecnologias("");
+        setDescricao("");
+        setDemo("");
+        setGithub("");
+        setItemDados({ id: "", editar: false });
+    };
 
     const publicar = async (formData: FormData) => {
 
@@ -30,19 +49,23 @@ export default function Aside() {
         const descricao = formData.get("descricao_form") as string;
         const demostracao = formData.get("demostracao_form") as string;
         const github = formData.get("github_form") as string;
-        const layout = formData.get("layout_form") as File;
         const certificado = formData.get("certificado_form") as File;
         const curriculo = formData.get("curriculo_form") as File;
 
         let resposta = null
+        let idItem =null
 
         if (tipo === "Projeto") {
-            if (!titulo || !tecnologias || !descricao || !demostracao || !github || !layout) {
+            if (titulo && tecnologias && descricao && demostracao && github) {
 
-                if (!editar){
+                if (!itemDados?.editar){
                     resposta = await CriarProjetoAction(formData);
                 } else {
-                    resposta = await EditarProjetoAction(1, formData);
+                    idItem = itemDados.id
+                    resposta = await EditarProjetoAction(idItem, formData);
+                    if(resposta.success){
+                        limparFormulario();
+                    }
                 }
 
                 if (resposta.success) {
@@ -55,12 +78,15 @@ export default function Aside() {
                 alert("Preencha todos os campos do projeto.");
             }
         } else if (tipo === "Diploma") {
-            if (!titulo || !tecnologias || !descricao || !certificado) {
+            if (titulo && tecnologias && descricao && certificado) {
 
-                if (!editar) {
+                if (!itemDados?.editar) {
                     resposta = await CriarFormacaoAction(formData);
                 } else {
-                    resposta = await EditarFormacaoAction(1, formData);
+                    resposta = await EditarFormacaoAction(itemDados.id, formData);
+                    if (resposta.success) {
+                        limparFormulario();
+                    }
                 }
 
                 if (resposta.success) {
@@ -93,7 +119,35 @@ export default function Aside() {
             }
         }
     }
-
+    useEffect(() => {
+        if (itemDados?.editar) {
+            const preencherEditar = () => {
+                let dados = null;
+                if (itemDados?.tipo == "formacao") {
+                    dados = formacaoDados.find((item) => item.id === itemDados.id);
+                    if (dados) {
+                        setTitulo(dados.titulo || "");
+                        setTecnologias(dados.tecnologia || "");
+                        setDescricao(dados.descricao || "");
+                    }
+                } else {
+                    dados = projetoDados.find((item) => item.id === itemDados?.id);
+                    if (dados) {
+                        setTitulo(dados.titulo || "");
+                        setTecnologias(dados.tecnologia || "");
+                        setDescricao(dados.descricao || "");
+                        setDemo(dados.projeto_url_demo || "");
+                        setGithub(dados.projeto_url_github || "");
+                    }
+                }
+            };
+            queueMicrotask(() => { // Garante que o setState seja chamado após a renderização atual
+                setTipo(itemDados.tipo!);
+                preencherEditar()
+            });
+        }
+        // Adicionamos 'editar' aqui para satisfazer o Hook e garantir a lógica
+    }, [itemDados, formacaoDados, projetoDados]);
     return (
         <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
 
@@ -112,50 +166,44 @@ export default function Aside() {
                     <div className="flex flex-col gap-4">
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: App Web Incrível" />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: App Web Incrível" value={titulo} />
                         </div>
 
                         <div className='flex flex-col gap-2'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} />
                         </div>
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
-                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um app web incrível feito com React e Firebase"></textarea>
+                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um app web incrível feito com React e Firebase" value={descricao}></textarea>
                         </div>
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>URL do projeto</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="demostracao_form" type="text" placeholder="https://imagem.com" />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="demostracao_form" type="text" placeholder="https://imagem.com" value={demo} />
                         </div>
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>URL do Github</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="github_form" type="text" placeholder="https://github.com/usuario/repo" />
-                        </div>
-
-                        <div className='flex flex-col gap-1'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>Print do projeto</label>
-                            <input type="file" accept=".pdf" name="layout_form"
-                                className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="github_form" type="text" placeholder="https://github.com/usuario/repo" value={github} />
                         </div>
                     </div>
                 ) : tipo === "Diploma" ? (
                     <div className="flex flex-col gap-4">
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" value={titulo} />
                         </div>
 
                         <div className='flex flex-col gap-2'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} />
                         </div>
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
-                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um curso web voltado para React e Firebase"></textarea>
+                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um curso web voltado para React e Firebase" value={descricao}></textarea>
                         </div>
 
                         <div className='flex flex-col gap-1'>

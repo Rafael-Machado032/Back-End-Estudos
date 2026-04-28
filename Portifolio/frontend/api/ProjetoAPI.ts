@@ -24,10 +24,16 @@ export async function BuscarProjetosAction() {
             cache: 'no-store' // Garante dado fresco do Laravel
         });
 
-        if (!res.ok) return [];
-        return await res.json();
+        if (!res.ok) return { success: false };
+
+        const dadosDoBanco = await res.json();
+
+        return {
+            success: true,
+            dados: dadosDoBanco.dados
+        };
     } catch {
-        return [];
+        return { success: false };
     }
 }
 
