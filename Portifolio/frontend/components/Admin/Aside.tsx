@@ -91,7 +91,6 @@ export default function Aside() {
                         limparFormulario();
                     }
                 }
-
                 if (resposta.success) {
                     setFormacaoDados(resposta.dados);
                     alert("Formação criada com sucesso!");
@@ -149,7 +148,6 @@ export default function Aside() {
                     }
                 }
             };
-
             // Use setTimeout ou deixe direto se não houver conflito de render
             preencherEditar();
         }
