@@ -10,6 +10,7 @@ import { CriarFormacaoAction, EditarFormacaoAction } from "@/api/FormacaoAPI";
 import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
+    
     // 1. Modifique o useState para buscar do localStorage ao iniciar
     const [tipo, setTipo] = useState<string>("Projeto");
 
@@ -39,7 +40,7 @@ export default function Aside() {
         setDescricao("");
         setDemo("");
         setGithub("");
-        setItemDados({ id: "", editar: false });
+        setItemDados({ id: "", tipo: "", editar: false });
     };
 
     const publicar = async (formData: FormData) => {
@@ -98,7 +99,6 @@ export default function Aside() {
             } else {
                 alert("Preencha todos os campos do diploma.");
             }
-
         } else {
             if (curriculo && curriculo.size > 0) {
 

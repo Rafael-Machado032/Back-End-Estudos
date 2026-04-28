@@ -40,6 +40,7 @@ export function FormacaoProvedor({ children, formacaoInicial = [] }: { children:
         formacaoDados,
         setFormacaoDados,
     }), [formacaoDados]);
+    
 
     return (
         <FormacaoContexto.Provider value={FormacaoContextoValor}>
