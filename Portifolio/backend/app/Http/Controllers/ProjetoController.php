@@ -6,6 +6,7 @@ use App\Models\Projeto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Cloudinary\Api\Upload\UploadApi;
+use Illuminate\Support\Facades\Log;
 
 class ProjetoController extends Controller
 {
@@ -17,6 +18,7 @@ class ProjetoController extends Controller
 
     public function store(Request $request)
     {
+        Log::info('Dados recebidos do Next.js:', $request->all());
         // 1. Validação (Garante que o certificado é um PDF)
         $validated = $request->validate([
             'titulo_form' => 'required|string',

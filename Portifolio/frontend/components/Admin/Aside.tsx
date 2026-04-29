@@ -56,6 +56,8 @@ export default function Aside() {
             if (titulo && tecnologias && descricao && demo && github) {
 
                 if (!itemDados?.editar) {
+                    console.log("");
+                    
                     resposta = await CriarProjetoAction(formData);
                 } else {
                     idItem = itemDados.id
@@ -64,9 +66,7 @@ export default function Aside() {
                         limparFormulario();
                     }
                 }
-
                 if (resposta.success) {
-
                     alert("Projeto criado com sucesso!");
                 } else {
                     alert("Erro ao criar projeto");
