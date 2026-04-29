@@ -1,5 +1,6 @@
 'use client'
 import Publicar from "../button/Publicar"
+import LimparCancelar from "../button/LimparCancelar"
 import { useState, useEffect } from "react";
 import { useCurriculo } from "@/context/CurriculoContext"
 import { useFormacao } from "@/context/FormacaoContext";
@@ -223,6 +224,7 @@ export default function Aside() {
                     </div>
                 )}
                 <Publicar />
+                <LimparCancelar onClick={limparFormulario} editar={itemDados?.editar || false} />
             </form>
         </aside>
     )
