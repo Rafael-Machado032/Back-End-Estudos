@@ -181,7 +181,7 @@ export default function Aside() {
 
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>URL do projeto</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="demostracao_form" type="text" placeholder="https://imagem.com" value={demo} onChange={(e) => setDemo(e.target.value)} />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="demonstracao_form" type="text" placeholder="https://imagem.com" value={demo} onChange={(e) => setDemo(e.target.value)} />
                         </div>
 
                         <div className='flex flex-col gap-1'>

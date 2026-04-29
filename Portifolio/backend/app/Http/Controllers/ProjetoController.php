@@ -20,7 +20,7 @@ class ProjetoController extends Controller
         // 1. Validação (Garante que o certificado é um PDF)
         $validated = $request->validate([
             'titulo_form' => 'required|string',
-            'tecnologia_form' => 'required|string',
+            'tecnologias_form' => 'required|string',
             'descricao_form' => 'required|string',
             'demonstracao_form' => 'required|string',
             'github_form' => 'required|string',
@@ -50,11 +50,13 @@ class ProjetoController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Formação cadastrada com sucesso!',
+                'debug'   => $request->all(), // Retorna o q chegou no next
+                'message' => 'Projeto cadastrado com sucesso!',
                 'data' => $dadosProjeto
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
+                'debug'   => $request->all(), // Retorna o q chegou no next
                 'error' => 'Erro ao salvar projeto.',
                 'details' => config('app.debug') ? $e->getMessage() : null
             ], 500);

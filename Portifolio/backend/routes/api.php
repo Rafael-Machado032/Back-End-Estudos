@@ -49,18 +49,18 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Cadastrar (POST)
     Route::post('/curriculo', [CurriculoController::class, 'store']);
-    Route::post('/formacoes', [FormacaoController::class, 'store']);
-    Route::post('/projetos', [ProjetoController::class, 'store']);
+    Route::post('/formacao', [FormacaoController::class, 'store']);
+    Route::post('/projeto', [ProjetoController::class, 'store']);
 
     // Atualizar (Usamos POST aqui para o upload de arquivos funcionar 100%)
     // No Front-end, você envia como FormData e adiciona o campo _method = 'PUT' se quiser,
     // mas chamando essa rota POST o Laravel receberá os arquivos corretamente.
     Route::post('/curriculo/{curriculo}', [CurriculoController::class, 'update']);
-    Route::post('/formacoes/{formacao}', [FormacaoController::class, 'update']);
-    Route::post('/projetos/{projeto}', [ProjetoController::class, 'update']);
+    Route::post('/formacao/{formacao}', [FormacaoController::class, 'update']);
+    Route::post('/projeto/{projeto}', [ProjetoController::class, 'update']);
 
     // Excluir (DELETE)
     Route::delete('/curriculo/{curriculo}', [CurriculoController::class, 'destroy']);
-    Route::delete('/formacoes/{formacao}', [FormacaoController::class, 'destroy']);
-    Route::delete('/projetos/{projeto}', [ProjetoController::class, 'destroy']);
+    Route::delete('/formacao/{formacao}', [FormacaoController::class, 'destroy']);
+    Route::delete('/projeto/{projeto}', [ProjetoController::class, 'destroy']);
 });

@@ -18,7 +18,7 @@ async function getAuthHeaders() {
 // 1. BUSCAR (SEM AUTENTICAÇÃO - Público)
 export async function BuscarProjetosAction() {
     try {
-        const res = await fetch(`${urlBase}/projeto`, {
+        const res = await fetch(`${urlBase}/projetos`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' },
             cache: 'no-store' // Garante dado fresco do Laravel
@@ -52,6 +52,8 @@ export async function CriarProjetoAction(formData: FormData) {
         const dadosDoBanco = await res.json();
 
         revalidatePath('/admin/projeto');
+        console.log("Resposta do servidor", dadosDoBanco.debug);
+        
         return { 
             success: true, 
             dados: dadosDoBanco.dados 
