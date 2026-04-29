@@ -11,7 +11,7 @@ import { CriarFormacaoAction, EditarFormacaoAction } from "@/api/FormacaoAPI";
 import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
-    
+
     // 1. Modifique o useState para buscar do localStorage ao iniciar
     const [tipo, setTipo] = useState<string>("Projeto");
 
@@ -21,7 +21,7 @@ export default function Aside() {
     const [descricao, setDescricao] = useState("");
     const [demo, setDemo] = useState("");
     const [github, setGithub] = useState("");
-    
+
     const { curriculoDados } = useCurriculo();
     const { formacaoDados } = useFormacao();
     const { projetoDados } = useProjeto();
@@ -29,6 +29,7 @@ export default function Aside() {
 
     // 2. Atualize a função Selecionar para salvar a escolha
     const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        limparFormulario(); // Limpa os campos ao mudar de tipo
         const valor = e.target.value;
         setTipo(valor);
     };
@@ -49,23 +50,23 @@ export default function Aside() {
         const curriculo = formData.get("curriculo_form") as File;
 
         let resposta = null
-        let idItem =null
+        let idItem = null
 
         if (tipo === "Projeto") {
             if (titulo && tecnologias && descricao && demo && github) {
 
-                if (!itemDados?.editar){
+                if (!itemDados?.editar) {
                     resposta = await CriarProjetoAction(formData);
                 } else {
                     idItem = itemDados.id
                     resposta = await EditarProjetoAction(idItem, formData);
-                    if(resposta.success){
+                    if (resposta.success) {
                         limparFormulario();
                     }
                 }
 
                 if (resposta.success) {
-                    
+
                     alert("Projeto criado com sucesso!");
                 } else {
                     alert("Erro ao criar projeto");
@@ -76,7 +77,7 @@ export default function Aside() {
         } else if (tipo === "Diploma") {
             if (titulo && tecnologias && descricao) {
                 if (!itemDados?.editar) {
-                    if(!certificado || certificado.size === 0){
+                    if (!certificado || certificado.size === 0) {
                         alert("Selecione um arquivo de certificado.");
                         return;
                     }
@@ -162,7 +163,7 @@ export default function Aside() {
                 </div>
 
                 {tipo === "Projeto" ? (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4" key={"bloco-projeto"}>
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
                             <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: App Web Incrível" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
@@ -189,10 +190,10 @@ export default function Aside() {
                         </div>
                     </div>
                 ) : tipo === "Diploma" ? (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4" key={"bloco-diploma"}>
                         <div className='flex flex-col gap-1'>
                             <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
-                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
+                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
                         </div>
 
                         <div className='flex flex-col gap-2'>
@@ -205,14 +206,15 @@ export default function Aside() {
                             <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um curso web voltado para React e Firebase" value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
                         </div>
 
-                        <div className='flex flex-col gap-1'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>Certificado</label>
-                            <input type="file" accept=".pdf" name="certificado_form"
-                                className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
-                        </div>
+                        {itemDados?.editar ? null :
+                            <div className='flex flex-col gap-1'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>Certificado</label>
+                                <input type="file" accept=".pdf" name="certificado_form"
+                                    className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
+                            </div>}
                     </div>
                 ) : (
-                    <div className='flex flex-col gap-1'>
+                    <div className='flex flex-col gap-1' key={"bloco-curriculo"}>
                         <label className='text-[#94a3b8] text-sm font-bold'>Atualizar Currículo (PDF/Word)</label>
                         <input type="file" accept=".pdf,.doc,.docx" name="curriculo_form"
                             className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
