@@ -18,7 +18,7 @@ async function getAuthHeaders() {
 // 1. BUSCAR (SEM AUTENTICAÇÃO - Público)
 export async function BuscarCurriculoAction() {
     try {
-        const res = await fetch(`${urlBase}/curriculo/1`, {
+        const res = await fetch(`${urlBase}/curriculos/1`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' },
             cache: 'no-store' // Garante dado fresco do Laravel

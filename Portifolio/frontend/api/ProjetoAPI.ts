@@ -67,7 +67,7 @@ export async function CriarProjetoAction(formData: FormData) {
 export async function EditarProjetoAction(id: string | number, formData: FormData) {
     try {
         const headers = await getAuthHeaders();
-        formData.append('_method', 'PUT');
+
 
         const res = await fetch(`${urlBase}/projeto/${id}`, {
             method: 'POST',

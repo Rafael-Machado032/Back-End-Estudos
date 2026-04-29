@@ -4,8 +4,6 @@ const nextConfig: NextConfig = {
   // Mantém o que você já tinha
   allowedDevOrigins: ['169.254.83.107'],
 
-  
-
   // ADICIONE ISSO AQUI:
   images: {
     remotePatterns: [
