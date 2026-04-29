@@ -45,11 +45,6 @@ export default function Aside() {
 
     const publicar = async (formData: FormData) => {
 
-        const titulo = formData.get("titulo_form") as string;
-        const tecnologias = formData.get("tecnologias_form") as string;
-        const descricao = formData.get("descricao_form") as string;
-        const demostracao = formData.get("demostracao_form") as string;
-        const github = formData.get("github_form") as string;
         const certificado = formData.get("certificado_form") as File;
         const curriculo = formData.get("curriculo_form") as File;
 
@@ -57,7 +52,7 @@ export default function Aside() {
         let idItem =null
 
         if (tipo === "Projeto") {
-            if (titulo && tecnologias && descricao && demostracao && github) {
+            if (titulo && tecnologias && descricao && demo && github) {
 
                 if (!itemDados?.editar){
                     resposta = await CriarProjetoAction(formData);
