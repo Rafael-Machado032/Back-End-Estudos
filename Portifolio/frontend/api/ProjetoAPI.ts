@@ -47,18 +47,18 @@ export async function CriarProjetoAction(formData: FormData) {
             headers: headers
         });
 
-        if (!res.ok) return { success: false };
-
         const dadosDoBanco = await res.json();
 
         revalidatePath('/admin/projeto');
-        console.log("Resposta do servidor", dadosDoBanco.debug);
-        
+        console.log("Resposta do servidor", dadosDoBanco);
+
+        if (!res.ok) return { success: false };
         return { 
             success: true, 
             dados: dadosDoBanco.dados 
         };
-    } catch {
+    } catch (err) {
+        console.error("Erro na Action:", err);
         return { success: false };
     }
 }

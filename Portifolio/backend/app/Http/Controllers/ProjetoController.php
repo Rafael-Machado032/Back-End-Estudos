@@ -6,6 +6,8 @@ use App\Models\Projeto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Cloudinary\Cloudinary;
+
 
 class ProjetoController extends Controller
 {
@@ -17,7 +19,6 @@ class ProjetoController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Dados recebidos do Next.js:', $request->all());
         // 1. Validação (Garante que o certificado é um PDF)
         $validated = $request->validate([
             'titulo_form' => 'required|string',
@@ -32,17 +33,27 @@ class ProjetoController extends Controller
             $nomeCapa = 'capa_' . time() . '.jpg';
             $pathCapa = 'projetos/' . $nomeCapa;
 
-            // CORREÇÃO: URL correta do Cloudinary para Fetch
-            $urlFetch = "https://res.cloudinary.com/{$cloudName}/image/fetch/w_1200,h_800,c_fill,f_jpg/" . $validated['demonstracao_form'];
+            // 1. Instancia o objeto Cloudinary (As chaves do .env devem estar corretas)
+            $cld = new Cloudinary([
+                'cloud' => [
+                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+                    'api_key'    => env('CLOUDINARY_API_KEY'),
+                    'api_secret' => env('CLOUDINARY_API_SECRET'),
+                ],
+                'url' => [
+                    'secure' => true // Garante que a URL seja HTTPS
+                ]
+            ]);
 
-            // Baixa a imagem
-            $conteudoPrint = @file_get_contents($urlFetch);
+            // 2. Gera a URL ASSINADA
+            $url = $cld->image($validated['demonstracao_form'])
+                ->deliveryType('url2png')
+                ->signUrl(true) // <-- ISSO GERA A ASSINATURA OBRIGATÓRIA
+                ->addTransformation('w_1280,h_800,c_fill')
+                ->toUrl();
 
-            if ($conteudoPrint === false) {
-                throw new \Exception("Não foi possível gerar o print da URL informada.");
-            }
-
-            Storage::disk('public')->put($pathCapa, $conteudoPrint);
+            
+            Storage::disk('public')->put($pathCapa, file_get_contents($url));
 
             // CORREÇÃO: Mapeando os nomes exatos da validação
             $dadosProjeto = Projeto::create([
