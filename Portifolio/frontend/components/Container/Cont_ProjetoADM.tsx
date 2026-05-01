@@ -17,7 +17,7 @@ export default function Cont_ProjetoADM({ projetoDados }: { projetoDados: Projet
                 <NextImage className="rounded-t-2xl" src={projetoDados.layout_url} alt="Next.js Dashboard" fill unoptimized priority />
             </div>
             <div className="flex flex-col items-start gap-2 p-4">
-                <span className="text-[#00f2ff] bg-[#00424572] px-4 rounded-4xl">Next.js + Tailwind</span>
+                <span className="text-[#00f2ff] bg-[#00424572] px-4 rounded-4xl">{projetoDados.tecnologia.split(',').map(t => t.trim()).join(' + ')}</span>
                 <h3 className="text-lg">{projetoDados?.titulo}</h3>
                 <p className="text-[#aaaaaa] text-sm">{projetoDados?.descricao}</p>
                 <div className=" w-full flex justify-center items-center gap-1 mt-6">
