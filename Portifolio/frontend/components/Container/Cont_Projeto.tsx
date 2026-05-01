@@ -1,5 +1,5 @@
 // import NextImage from "next/image"
-import GithubProjeto from "../button/GithubProjeto"
+import GithubProjeto from "../button/GithubADM"
 import Demo from "../button/Demo"
 
 export default function Cont_Projeto() {

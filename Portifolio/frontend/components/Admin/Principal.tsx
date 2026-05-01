@@ -14,6 +14,9 @@ export default function Principal() {
     const { formacaoDados } = useFormacao();
     const { projetoDados } = useProjeto();
 
+    // console.log("Resposta do Cotext", projetoDados);
+
+
     return (
         <div className='w-full md:w-2/3 px-8 ml-6 flex flex-col gap-4 mt-42'>
             
@@ -28,7 +31,7 @@ export default function Principal() {
             </div>
 
             <div>
-                <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Diploma / Certificado</h2>
+                <h2 className=' text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Diploma / Certificado</h2>
                 {formacaoDados.map(item => (
                     <Cont_FormacaoADM key={item.id} formacaoDados={item} />
                 ))}
@@ -36,9 +39,12 @@ export default function Principal() {
             
             <div>
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Projetos</h2>
-                {projetoDados.map(item => (
+                <div className="flex gap-4 flex-wrap w-full">
+                    {projetoDados.map(item => (
                     <Cont_ProjetoADM key={item.id} projetoDados={item} />
                 ))}
+                </div>
+                
             </div>
         </div>
     )

@@ -7,9 +7,9 @@ export interface Projeto { //exporto para usar em outros arquivos, resolver o ti
     titulo: string;
     tecnologia: string;
     descricao: string;
-    projeto_url_demo: string;
-    projeto_url_github: string;
-    layout_url_servidor: string;
+    demonstracao_url: string;
+    github_url: string;
+    layout_url: string;
 }
 
 // 1. Remova a função de adicionar do contrato

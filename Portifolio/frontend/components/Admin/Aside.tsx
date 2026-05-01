@@ -26,6 +26,7 @@ export default function Aside() {
     const { formacaoDados } = useFormacao();
     const { projetoDados } = useProjeto();
     const { itemDados, setItemDados } = useItem();
+    
 
     // 2. Atualize a função Selecionar para salvar a escolha
     const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -56,8 +57,6 @@ export default function Aside() {
             if (titulo && tecnologias && descricao && demo && github) {
 
                 if (!itemDados?.editar) {
-                    console.log("");
-                    
                     resposta = await CriarProjetoAction(formData);
                 } else {
                     idItem = itemDados.id
@@ -138,8 +137,8 @@ export default function Aside() {
                         setTitulo(dados.titulo || "");
                         setTecnologias(dados.tecnologia || "");
                         setDescricao(dados.descricao || "");
-                        setDemo(dados.projeto_url_demo || "");
-                        setGithub(dados.projeto_url_github || "");
+                        setDemo(dados.demonstracao_url || "");
+                        setGithub(dados.github_url || "");
                     }
                 }
             };

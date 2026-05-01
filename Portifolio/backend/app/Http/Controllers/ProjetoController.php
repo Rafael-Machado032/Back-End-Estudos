@@ -55,7 +55,7 @@ class ProjetoController extends Controller
             // 2. Gera a URL ASSINADA
             $url = $cld->image($validated['demonstracao_form'])
                 ->deliveryType('url2png')
-               
+                ->signUrl()
                 ->addTransformation('ar_16:9,c_auto,g_north,w_500')
                 ->toUrl();
 

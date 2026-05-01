@@ -1,10 +1,10 @@
-export default function GithubProjeto({ href }: { href: string }) {
+export default function GithubADM({ href }: { href: string }) {
     return (
         <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-5 py-3 bg-[#161b22] text-white border border-gray-700 rounded-lg font-medium transition-all duration-300 hover:border-[#7159c1] hover:shadow-[0_0_15px_rgba(113,89,193,0.4)] hover:-translate-y-1"
+            className="flex items-center gap-2 px-2 py-2 text-md bg-[#161b22] text-white border border-gray-700 rounded-lg font-medium transition-all duration-300 hover:border-[#7159c1] hover:shadow-[0_0_15px_rgba(113,89,193,0.4)] hover:-translate-y-1"
         >
             {/* SVG oficial do GitHub */}
             <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">

@@ -27,10 +27,11 @@ export async function BuscarProjetosAction() {
         if (!res.ok) return { success: false };
 
         const dadosDoBanco = await res.json();
+        // console.log("Resposta do servidor", dadosDoBanco);
 
         return {
             success: true,
-            dados: dadosDoBanco.dados
+            dados: dadosDoBanco
         };
     } catch {
         return { success: false };
@@ -50,7 +51,7 @@ export async function CriarProjetoAction(formData: FormData) {
         const dadosDoBanco = await res.json();
 
         revalidatePath('/admin/projeto');
-        console.log("Resposta do servidor", dadosDoBanco);
+        
 
         if (!res.ok) return { success: false };
         return { 
