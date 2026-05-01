@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Cloudinary\Cloudinary;
 
 
+
 class ProjetoController extends Controller
 {
     public function index()
@@ -29,29 +30,36 @@ class ProjetoController extends Controller
         ]);
 
         try {
-            $cloudName = "dxmrolrys";
             $nomeCapa = 'capa_' . time() . '.jpg';
             $pathCapa = 'projetos/' . $nomeCapa;
 
             // 1. Instancia o objeto Cloudinary (As chaves do .env devem estar corretas)
-            $cld = new Cloudinary([
-                'cloud' => [
-                    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-                    'api_key'    => env('CLOUDINARY_API_KEY'),
-                    'api_secret' => env('CLOUDINARY_API_SECRET'),
-                ],
-                'url' => [
-                    'secure' => true // Garante que a URL seja HTTPS
-                ]
-            ]);
+            // Muito mais simples e menos chance de erro de digitação
+            
 
+            // $cld = new Cloudinary([
+            //     'cloud' => [
+            //         'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+            //         'api_key'    => env('CLOUDINARY_API_KEY'),
+            //         'api_secret' => env('CLOUDINARY_API_SECRET'),
+            //     ],
+            //     'url' => [
+            //         'secure' => true, // Garante que a URL seja HTTPS
+            //         'analytics' => false
+            //     ]
+            // ]);
+
+            
+            $cld = new Cloudinary(env('CLOUDINARY_URL'));
+            
             // 2. Gera a URL ASSINADA
             $url = $cld->image($validated['demonstracao_form'])
                 ->deliveryType('url2png')
-                ->signUrl(true) // <-- ISSO GERA A ASSINATURA OBRIGATÓRIA
-                ->addTransformation('w_1280,h_800,c_fill')
+               
+                ->addTransformation('ar_16:9,c_auto,g_north,w_500')
                 ->toUrl();
 
+            Log::info("URL do Print: " . $url);
             
             Storage::disk('public')->put($pathCapa, file_get_contents($url));
 
