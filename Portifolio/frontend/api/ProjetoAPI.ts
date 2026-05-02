@@ -50,13 +50,13 @@ export async function CriarProjetoAction(formData: FormData) {
 
         const dadosDoBanco = await res.json();
 
-        revalidatePath('/admin/projeto');
-        
+        revalidatePath('/admin');
+
 
         if (!res.ok) return { success: false };
-        return { 
-            success: true, 
-            dados: dadosDoBanco.dados 
+        return {
+            success: true,
+            dados: dadosDoBanco.data
         };
     } catch (err) {
         console.error("Erro na Action:", err);
@@ -81,9 +81,9 @@ export async function EditarProjetoAction(id: string | number, formData: FormDat
         const dadosDoBanco = await res.json();
 
         revalidatePath('/admin/projeto');
-        return { 
-            success: true, 
-            dados: dadosDoBanco.dados 
+        return {
+            success: true,
+            dados: dadosDoBanco.data
         };
     } catch {
         return { success: false };
@@ -99,12 +99,18 @@ export async function DeletarProjetoAction(id: string | number) {
             headers: headers
         });
 
-        if (res.ok) {
-            revalidatePath('/admin/projeto');
-            return { success: true };
-        }
-        return { success: false };
-    } catch {
+        const dadosDoBanco = await res.json();
+        console.log("Resposta do servidor", dadosDoBanco);
+
+        if (!res.ok) return { success: false };
+
+        revalidatePath('/admin/projeto');
+
+
+
+        return { success: true };
+    } catch (e) {
+        console.log("Resposta do servidor", e);
         return { success: false };
     }
 }

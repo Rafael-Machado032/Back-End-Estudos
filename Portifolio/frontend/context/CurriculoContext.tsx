@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
-interface Curriculo {
+export interface Curriculo {
     curriculo_url_servidor?: string;
 }
 

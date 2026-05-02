@@ -6,7 +6,6 @@ import Deletar from "../button/Deletar"
 import { Projeto } from "@/context/ProjetoContext"
 
 export default function Cont_ProjetoADM({ projetoDados }: { projetoDados: Projeto }) {
-    console.log("Resposta do Cotext layout", projetoDados.layout_url);
     return (
         <div className="max-w-70 rounded-2xl bg-[#222222] border-[#00f1fe00] border relative">
             <div className="flex justify-end gap-2 p-4 w-full absolute  z-50">

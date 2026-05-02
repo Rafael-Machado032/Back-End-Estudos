@@ -15,7 +15,16 @@ class ProjetoController extends Controller
     public function index()
     /*(Leitura Geral)*/
     {
-        return response()->json(Projeto::all(), 200);
+        try{
+
+            return response()->json(Projeto::all(), 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao mostrar todos projeto.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function store(Request $request)
@@ -35,7 +44,7 @@ class ProjetoController extends Controller
 
             // 1. Instancia o objeto Cloudinary (As chaves do .env devem estar corretas)
             // Muito mais simples e menos chance de erro de digitação
-            
+
 
             // $cld = new Cloudinary([
             //     'cloud' => [
@@ -49,9 +58,9 @@ class ProjetoController extends Controller
             //     ]
             // ]);
 
-            
+
             $cld = new Cloudinary(env('CLOUDINARY_URL'));
-            
+
             // 2. Gera a URL ASSINADA
             $url = $cld->image($validated['demonstracao_form'])
                 ->deliveryType('url2png')
@@ -60,7 +69,7 @@ class ProjetoController extends Controller
                 ->toUrl();
 
             Log::info("URL do Print: " . $url);
-            
+
             Storage::disk('public')->put($pathCapa, file_get_contents($url));
 
             // CORREÇÃO: Mapeando os nomes exatos da validação
@@ -91,7 +100,16 @@ class ProjetoController extends Controller
     public function show(Projeto $projeto)
     /*(Leitura Única)*/
     {
-        return response()->json($projeto, 200);
+        try {
+
+            return response()->json($projeto, 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao mostrar o projeto.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function update(Request $request, Projeto $projeto)
@@ -105,43 +123,46 @@ class ProjetoController extends Controller
             'github_form' => 'required|string',
         ]);
 
-        // Se a URL do projeto mudou, gera um novo print
-        if ($validated['demonstracao_form'] !== $projeto->demonstracao_url) {
-            // Apaga a capa antiga
-            if ($projeto->layout_url) {
-                Storage::disk('public')->delete($projeto->layout_url);
-            }
+        try {
 
-            $cloudName = "dxmrolrys";
-            $nomeCapa = 'capa_' . time() . '.jpg';
-            $pathCapa = 'projetos/' . $nomeCapa;
-            $urlFetch = "https://res.cloudinary.com/{$cloudName}/image/fetch/w_1200,h_800,c_fill,f_jpg/" . $validated['demonstracao_form'];
+            $projeto->titulo = $validated['titulo_form'] ?? $projeto->titulo;
+            $projeto->tecnologia = $validated['tecnologias_form'] ?? $projeto->tecnologia;
+            $projeto->descricao = $validated['descricao_form'] ?? $projeto->descricao;
+            $projeto->demonstracao_url = $validated['demonstracao_form'] ?? $projeto->demonstracao_url;
+            $projeto->github_url = $validated['github_form'] ?? $projeto->github_url;
+            $projeto->save();
 
-            Storage::disk('public')->put($pathCapa, file_get_contents($urlFetch));
-            $projeto->layout_url = $pathCapa;
+
+            return response()->json([
+                'message' => 'Atualizado!',
+                'data' => $projeto
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao editar o projeto.',
+                'details' => $e->getMessage()
+            ], 500);
         }
-
-        $projeto->titulo = $validated['titulo_form'] ?? $projeto->titulo;
-        $projeto->tecnologia = $validated['tecnologias_form'] ?? $projeto->tecnologia;
-        $projeto->descricao = $validated['descricao_form'] ?? $projeto->descricao;
-        $projeto->demonstracao_url = $validated['demonstracao_form'] ?? $projeto->demonstracao_url;
-        $projeto->github_url = $validated['github_form'] ?? $projeto->github_url;
-        $projeto->save();
-
-
-        return response()->json([
-            'message' => 'Atualizado!',
-            'data' => $projeto
-        ], 200);
     }
 
     public function destroy(Projeto $projeto)
     /*(Exclusão)*/
     {
-        if ($projeto->layout_url) {
-            Storage::disk('public')->delete($projeto->layout_url);
+        try {
+            // Pega "projetos/capa_..." direto do banco, ignorando a URL completa
+            $pathOriginal = $projeto->getRawOriginal('layout_url');
+
+            if ($pathOriginal && Storage::disk('public')->exists($pathOriginal)) {
+                Storage::disk('public')->delete($pathOriginal);
+            }
+
+            $projeto->delete();
+            return response()->json(['message' => 'Removido com sucesso'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao deletar o projeto.',
+                'details' => $e->getMessage()
+            ], 500);
         }
-        $projeto->delete();
-        return response()->json(['message' => 'Removido com sucesso'], 200);
     }
 }

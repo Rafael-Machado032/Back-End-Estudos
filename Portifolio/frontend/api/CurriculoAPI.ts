@@ -77,7 +77,7 @@ export async function EditarCurriculoAction(id: string | number, formData: FormD
         revalidatePath('/', 'layout');
         return {
             success: true,
-            curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url,
+            dados: dadosDoBanco.dados?.curriculo_url,
         };
 
     } catch {

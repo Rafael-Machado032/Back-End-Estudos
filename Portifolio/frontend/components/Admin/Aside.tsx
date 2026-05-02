@@ -2,10 +2,13 @@
 import Publicar from "../button/Publicar"
 import LimparCancelar from "../button/LimparCancelar"
 import { useState, useEffect } from "react";
-import { useCurriculo } from "@/context/CurriculoContext"
-import { useFormacao } from "@/context/FormacaoContext";
-import { useProjeto } from "@/context/ProjetoContext";
-import { useItem } from "@/context/IdEditar";
+import { useProjeto } from "@/context/ProjetoContext"; //Estado de projeto
+import { useFormacao } from "@/context/FormacaoContext"; //Estado de formacao
+import { useCurriculo } from "@/context/CurriculoContext" //Estado de curriculo
+import { useItem } from "@/context/IdEditar"; //Estado de item
+import { Projeto } from "@/context/ProjetoContext"; //Interface de projeto
+import { Formacao } from "@/context/FormacaoContext"; //Interface de formacao
+import { Curriculo } from "@/context/CurriculoContext";
 import { CriarProjetoAction, EditarProjetoAction } from "@/api/ProjetoAPI";
 import { CriarFormacaoAction, EditarFormacaoAction } from "@/api/FormacaoAPI";
 import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
@@ -22,9 +25,9 @@ export default function Aside() {
     const [demo, setDemo] = useState("");
     const [github, setGithub] = useState("");
 
-    const { curriculoDados } = useCurriculo();
-    const { formacaoDados } = useFormacao();
-    const { projetoDados } = useProjeto();
+    const { curriculoDados, setCurriculoDados } = useCurriculo();
+    const { formacaoDados, setFormacaoDados } = useFormacao();
+    const { projetoDados, setProjetoDados } = useProjeto();
     const { itemDados, setItemDados } = useItem();
     
 
@@ -50,30 +53,48 @@ export default function Aside() {
         const certificado = formData.get("certificado_form") as File;
         const curriculo = formData.get("curriculo_form") as File;
 
-        let resposta = null
-        let idItem = null
+        interface ApiResponse { //Padroniza a resposta do api
+            success: boolean;
+            dados?: object;
+            error?: string;
+        }
+
+        let resposta: ApiResponse = { success: false };
 
         if (tipo === "Projeto") {
+
             if (titulo && tecnologias && descricao && demo && github) {
 
                 if (!itemDados?.editar) {
                     resposta = await CriarProjetoAction(formData);
-                } else {
-                    idItem = itemDados.id
-                    resposta = await EditarProjetoAction(idItem, formData);
                     if (resposta.success) {
+                        // Adiciona o novo projeto na lista global do contexto
+                        // resposta.data deve ser o objeto que o Laravel retornou
+                        const listaAtualizada = [...projetoDados, resposta.dados] as Projeto[];
+                        setProjetoDados(listaAtualizada);
+                        alert("Projeto criado com sucesso!");
                         limparFormulario();
+                    } else {
+                        alert("Erro ao criar Projeto");
                     }
-                }
-                if (resposta.success) {
-                    alert("Projeto criado com sucesso!");
                 } else {
-                    alert("Erro ao criar projeto");
+                    resposta = await EditarProjetoAction(itemDados.id, formData);
+                    if (resposta.success) {
+                        // Atualiza o item específico na lista do contexto
+                        const listaEditada = projetoDados.map(p => p.id === itemDados.id ? resposta.dados : p).filter(Boolean) as Projeto[];
+                        setProjetoDados(listaEditada);
+                        alert("Editado com sucesso!");
+                        limparFormulario();
+                    } else {
+                        alert("Erro ao Editar Projeto");
+                    }
                 }
             } else {
                 alert("Preencha todos os campos do projeto.");
             }
+
         } else if (tipo === "Diploma") {
+
             if (titulo && tecnologias && descricao) {
                 if (!itemDados?.editar) {
                     if (!certificado || certificado.size === 0) {
@@ -81,39 +102,57 @@ export default function Aside() {
                         return;
                     }
                     resposta = await CriarFormacaoAction(formData);
+                    if (resposta.success){
+                        const listaAtualizada = [...formacaoDados, resposta.dados] as Formacao[];
+                        setFormacaoDados(listaAtualizada);
+                        limparFormulario();
+                        alert("Formação criada com sucesso!");
+                    }
+                    else {
+                        alert("Erro ao criar Formacao");
+                    }
                 } else {
                     resposta = await EditarFormacaoAction(itemDados.id, formData);
                     if (resposta.success) {
+                        const listaEditada = formacaoDados.map(p => p.id === itemDados.id ? resposta.dados : p).filter(Boolean) as Formacao[];
+                        setFormacaoDados(listaEditada);
                         limparFormulario();
+                        alert("Editado com sucesso!");
+                    } else {
+                        alert("Erro ao editar Formacao");
                     }
-                }
-                if (resposta.success) {
-                    alert("Formação criada com sucesso!");
-                } else {
-                    alert("Erro ao criar formação");
                 }
             } else {
                 alert("Preencha todos os campos do diploma.");
             }
-        } else {
-            if (curriculo && curriculo.size > 0) {
 
+        } else {
+
+            if (curriculo && curriculo.size > 0) {
                 if (!curriculoDados?.curriculo_url_servidor) {
                     resposta = await CriarCurriculoAction(formData);
+                    if (resposta.success) {
+                        setCurriculoDados(resposta.dados as Curriculo)
+                        alert("Currículo criado com sucesso!");
+                    } else {
+                        alert("Erro ao criar currículo");
+                    }
                 } else {
                     resposta = await EditarCurriculoAction(1, formData);
-                }
-
-                if (resposta.success) {
-                    alert("Currículo atualizado com sucesso!");
-                } else {
-                    alert("Erro ao atualizar currículo");
+                    if (resposta.success) {
+                        setCurriculoDados(resposta.dados as Curriculo)
+                        alert("Currículo atualizado com sucesso!");
+                    } else {
+                        alert("Erro ao atualizar currículo");
+                    }
                 }
             } else {
                 alert("Selecione um arquivo de currículo.");
             }
+
         }
     }
+
     useEffect(() => {
         if (itemDados?.editar) {
             const preencherEditar = () => {
