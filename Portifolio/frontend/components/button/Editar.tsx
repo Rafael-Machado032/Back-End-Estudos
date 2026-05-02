@@ -11,7 +11,6 @@ export default function Editar({ id, tipo }: { id: string, tipo?: string }) {
             
         } else {
             setItemDados({ id: id, editar: true, tipo: "projeto" });
-            alert("Editar projeto")
         }
     }
     

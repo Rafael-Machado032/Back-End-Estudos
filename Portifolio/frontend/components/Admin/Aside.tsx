@@ -183,13 +183,17 @@ export default function Aside() {
             };
             // Use setTimeout ou deixe direto se não houver conflito de render
             preencherEditar();
+            
         }
+        console.log("Editar", itemDados?.editar);
+        
     }, [itemDados, formacaoDados, projetoDados]);
 
     return (
         <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
 
-            <form action={publicar} className='flex flex-col gap-4 w-full max-w-100 bg-[#1e293b] p-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]'>
+            <div  className='flex flex-col gap-4 w-full max-w-100 bg-[#1e293b] p-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]'>
+                <form action={publicar}>
                 <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-2'>Gerenciar Conteúdo</h2>
                 <div className='flex flex-col gap-1'>
                     <label className='text-[#94a3b8] text-sm font-bold'>Tipo de Item</label>
@@ -259,8 +263,9 @@ export default function Aside() {
                     </div>
                 )}
                 <Publicar />
+                </form>
                 <LimparCancelar onClick={limparFormulario} editar={itemDados?.editar || false} />
-            </form>
+            </div>
         </aside>
     )
 }

@@ -6,13 +6,14 @@ import Cont_ProjetoADM from "../Container/Cont_ProjetoADM"
 import { useCurriculo } from "@/context/CurriculoContext"
 import { useFormacao } from "@/context/FormacaoContext"
 import { useProjeto } from "@/context/ProjetoContext"
-
+import { useItem } from "@/context/IdEditar"
 
 
 export default function Principal() {
     const { curriculoDados } = useCurriculo();
     const { formacaoDados } = useFormacao();
     const { projetoDados } = useProjeto();
+    const { itemDados } = useItem();
 
     // console.log("Resposta do Cotext", projetoDados);
 
