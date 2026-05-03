@@ -18,7 +18,11 @@ const ItemContexto = createContext<ItemContextoTipo | undefined>(undefined);
 export function ItemProvedor({ children }: { children: ReactNode }) {
     // Agora o estado é puramente local. 
     // Começa vazio (null) e só muda quando você clica em algum botão.
-    const [itemDados, setItemDados] = useState<Item | null>(null);
+    const [itemDados, setItemDados] = useState<Item | null>({
+        id: "",
+        editar: false,
+        tipo: "Projeto" // Define que o painel começa mostrando Projetos
+    });
 
     // 3. Memorização do valor do contexto para performance
     const itemContextoValor = useMemo(() => ({

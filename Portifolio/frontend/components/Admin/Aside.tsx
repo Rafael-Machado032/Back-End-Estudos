@@ -36,6 +36,7 @@ export default function Aside() {
         limparFormulario(); // Limpa os campos ao mudar de tipo
         const valor = e.target.value;
         setTipo(valor);
+        setItemDados({ id: "", tipo: valor, editar: false }); 
     };
 
     // 2. Limpeza dos campos após publicar/sucesso
