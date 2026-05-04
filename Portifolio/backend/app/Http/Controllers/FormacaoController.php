@@ -6,6 +6,7 @@ use App\Models\Formacao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Cloudinary;
 
 class FormacaoController extends Controller
 {
@@ -28,34 +29,43 @@ class FormacaoController extends Controller
         // 1. Validação (Garante que o certificado é um PDF)
         $validated = $request->validate([
             'titulo_form' => 'required|string',
-            'tecnologias_form' => 'required|array',
+            'tecnologias_form' => 'required|string',
             'descricao_form' => 'required|string',
             'certificado_form' => 'required|file|mimes:pdf|max:5120', // Máx 5MB
         ]);
 
         try {
             $pathPDF = null;
-            $pathImagem = null;
+            $pathCapa = null;
 
             // 2. Upload do PDF para a pasta 'certificados' dentro de 'public'
             if ($request->hasFile('certificado_form')) {
                 $pathPDF = $request->file('certificado_form')->store('certificados', 'public');
 
-                // 2. Envia uma cópia temporária para o Cloudinary para gerar a capa
+                // B. Instancia o Cloudinary no seu padrão
+                $cld = new Cloudinary(env('CLOUDINARY_URL'));
+
+                // C. Sobe o PDF para o Cloudinary para ele poder "enxergar" o arquivo
+                // Usamos o caminho absoluto do arquivo que acabamos de salvar
                 $upload = (new UploadApi())->upload(storage_path('app/public/' . $pathPDF), [
-                    'folder' => 'certificados', // Organiza em uma pasta lá no Cloudinary
                     'resource_type' => 'auto'
                 ]);
 
-                // 3. Pega a URL da capa (JPG) no Cloudinary
-                $urlCapaCloudinary = str_replace('.pdf', '.jpg', $upload['secure_url']);
+                $urlCapa = $cld->image($upload['public_id'])
+                    ->addTransformation('pg_1') // Extrai a página 1
+                    ->format('jpg')
+                    ->addTransformation('w_500,h_700,c_fill,g_north')
+                    ->toUrl();
 
-                // 2. Define o caminho da imagem (corrigindo o nome da função)
-                $pathImagem = str_replace('.pdf', '.jpg', $pathPDF);
+                // E. Baixa a capa para o seu servidor (Igual você fez no projeto)
+                $nomeCapa = 'capa_' . time() . '.jpg';
+                $pathCapa = 'certificados/' . $nomeCapa;
 
-                // 5. BAIXA a imagem da nuvem para o seu storage local
-                $imagemConteudo = file_get_contents($urlCapaCloudinary);
-                Storage::disk('public')->put($pathImagem, $imagemConteudo);
+                // Dica: se der erro de SSL aqui, use o stream_context que te mostrei antes
+                Storage::disk('public')->put($pathCapa, file_get_contents($urlCapa));
+
+                // F. Opcional: Deleta do Cloudinary para não gastar sua cota
+                (new UploadApi())->destroy($upload['public_id']);
             }
 
             // 3. Salvando no Banco (Mapeando os campos)
@@ -64,7 +74,7 @@ class FormacaoController extends Controller
                 'tecnologia' => $validated['tecnologias_form'],
                 'descricao'   => $validated['descricao_form'],
                 'certificado_url' => $pathPDF, // Aqui salva o caminho do PDF: "certificados/xyz.pdf"
-                'capa_url' => $pathImagem // Salva o caminho da imagem gerada: "certificados/xyz.jpg"
+                'capa_url' => $pathCapa,// Salva o caminho da imagem gerada: "certificados/xyz.jpg"
             ]);
 
             return response()->json([

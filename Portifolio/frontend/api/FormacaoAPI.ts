@@ -47,10 +47,11 @@ export async function CriarFormacaoAction(formData: FormData) {
             headers: headers
         });
 
-        if (!res.ok) return { success: false };
-
         const dadosDoBanco = await res.json();
+        console.log("Resposta do servidor", dadosDoBanco);
 
+        if (!res.ok) return { success: false };
+        
         revalidatePath('/admin/item'); // Revalida a rota para atualizar os dados no frontend
         return {
             success: true,

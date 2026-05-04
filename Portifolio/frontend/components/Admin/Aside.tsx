@@ -16,7 +16,7 @@ import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI"
 export default function Aside() {
 
     // 1. Modifique o useState para buscar do localStorage ao iniciar
-    const [tipo, setTipo] = useState<string>("Projeto");
+    const [tipo, setTipo] = useState<string>("projeto");
 
     // ESTADOS PARA OS INPUTS (Para o usuário ver o que está editando)
     const [titulo, setTitulo] = useState("");
@@ -38,7 +38,12 @@ export default function Aside() {
         limparFormulario(); // Limpa os campos ao mudar de tipo
         const valor = e.target.value;
         setTipo(valor);
-        setItemDados({ id: "", tipo: valor, editar: false });
+        setItemDados({ 
+            id: "", 
+            editar: false, 
+            tipo: valor, 
+            carregando: false 
+        });
     };
 
     // 2. Limpeza dos campos após publicar/sucesso
@@ -48,18 +53,26 @@ export default function Aside() {
         setDescricao("");
         setDemo("");
         setGithub("");
+        
         if(itemDados?.editar){
-            setItemDados({ id: "", tipo: itemDados.tipo, editar: false });
+            setItemDados({ 
+                id: "", 
+                editar: false, 
+                tipo: itemDados.tipo, 
+                carregando: false 
+            });
         }
     };
 
     const publicar = async (formData: FormData) => {
-        setCarregando(true);
+        setItemDados({
+            id: itemDados?.id ?? "",      // Se id for undefined, vira ""
+            tipo: itemDados?.tipo ?? "",  // Se tipo for undefined, vira ""
+            editar: itemDados?.editar ?? false,
+            carregando: true
+        });
 
         try {
-
-
-
             const certificado = formData.get("certificado_form") as File;
             const curriculo = formData.get("curriculo_form") as File;
 
@@ -71,7 +84,7 @@ export default function Aside() {
 
             let resposta: ApiResponse = { success: false };
 
-            if (tipo === "Projeto") {
+            if (tipo === "projeto") {
 
                 if (titulo && tecnologias && descricao && demo && github) {
 
@@ -103,7 +116,7 @@ export default function Aside() {
                     alert("Preencha todos os campos do projeto.");
                 }
 
-            } else if (tipo === "Diploma") {
+            } else if (tipo === "formacao") {
 
                 if (titulo && tecnologias && descricao) {
                     if (!itemDados?.editar) {
@@ -137,7 +150,6 @@ export default function Aside() {
                 }
 
             } else {
-
                 if (curriculo && curriculo.size > 0) {
                     if (!curriculoDados?.curriculo_url_servidor) {
                         resposta = await CriarCurriculoAction(formData);
@@ -203,7 +215,7 @@ export default function Aside() {
             preencherEditar();
 
         }
-        console.log("Editar", itemDados?.editar);
+        //console.log("Editar", itemDados?.editar);
 
     }, [itemDados, formacaoDados, projetoDados]);
 
@@ -284,12 +296,6 @@ export default function Aside() {
                 </form>
                 <LimparCancelar onClick={limparFormulario} editar={itemDados?.editar || false} desabilitar={carregando} />
             </div>
-            {carregando && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-white"></div>
-                    <span className="ml-3 text-white">Processando...</span>
-                </div>
-            )}
         </aside>
     )
 }

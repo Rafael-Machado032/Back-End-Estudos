@@ -99,8 +99,8 @@ export async function DeletarProjetoAction(id: string | number) {
             headers: headers
         });
 
-        const dadosDoBanco = await res.json();
-        console.log("Resposta do servidor", dadosDoBanco);
+        //const dadosDoBanco = await res.json();
+        //console.log("Resposta do servidor", dadosDoBanco);
 
         if (!res.ok) return { success: false };
 

@@ -13,8 +13,6 @@ export default function Home() {
 
         if (senhaInput && senhaInput.trim() != ""){
             const resultado = await ActionLogin(formData) // Chama a Server Action que faz o fetch para o Laravel (POST /api/login)
-
-            console.log(resultado.message)
             
             if(!resultado?.success) {
                 setRespostaUsuario("Senha Incorreta")

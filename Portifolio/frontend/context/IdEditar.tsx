@@ -5,7 +5,8 @@ import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 interface Item {
     id: string;
     editar: boolean;
-    tipo?: string;
+    tipo: string;
+    carregando: boolean;
 }
 
 interface ItemContextoTipo {
@@ -21,7 +22,8 @@ export function ItemProvedor({ children }: { children: ReactNode }) {
     const [itemDados, setItemDados] = useState<Item | null>({
         id: "",
         editar: false,
-        tipo: "Projeto" // Define que o painel começa mostrando Projetos
+        tipo: "projeto", // Define que o painel começa mostrando Projetos
+        carregando: false
     });
 
     // 3. Memorização do valor do contexto para performance
