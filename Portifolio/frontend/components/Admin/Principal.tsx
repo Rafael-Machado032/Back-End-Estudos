@@ -20,7 +20,7 @@ export default function Principal() {
 
     return (
         <div className='w-full md:w-2/3 px-8 ml-6 flex flex-col gap-4 mt-42'>
-            {itemDados?.tipo === "Projeto" ? (
+            {itemDados?.tipo === "projeto" ? (
                 <div>
                     <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Projetos</h2>
                     <div className="flex gap-4 flex-wrap w-full">
@@ -29,7 +29,7 @@ export default function Principal() {
                         ))}
                     </div>
                 </div>
-            ) : itemDados?.tipo === "Diploma" ? (
+            ) : itemDados?.tipo === "formacao" ? (
                 <div>
                     <h2 className=' text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Diploma / Certificado</h2>
                     {formacaoDados.map(item => (

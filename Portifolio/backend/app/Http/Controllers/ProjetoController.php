@@ -42,23 +42,6 @@ class ProjetoController extends Controller
             $nomeCapa = 'capa_' . time() . '.jpg';
             $pathCapa = 'projetos/' . $nomeCapa;
 
-            // 1. Instancia o objeto Cloudinary (As chaves do .env devem estar corretas)
-            // Muito mais simples e menos chance de erro de digitação
-
-
-            // $cld = new Cloudinary([
-            //     'cloud' => [
-            //         'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
-            //         'api_key'    => env('CLOUDINARY_API_KEY'),
-            //         'api_secret' => env('CLOUDINARY_API_SECRET'),
-            //     ],
-            //     'url' => [
-            //         'secure' => true, // Garante que a URL seja HTTPS
-            //         'analytics' => false
-            //     ]
-            // ]);
-
-
             $cld = new Cloudinary(env('CLOUDINARY_URL'));
 
             // 2. Gera a URL ASSINADA

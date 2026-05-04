@@ -7,8 +7,8 @@ export interface Formacao { //exporto para usar em outros arquivos, resolver o t
     titulo: string;
     tecnologia: string;
     descricao: string;
-    certificado_url_servidor: string;
-    capa_url_servidor: string;
+    certificado_url: string;
+    capa_url: string;
 }
 
 // 1. Remova a função de adicionar do contrato

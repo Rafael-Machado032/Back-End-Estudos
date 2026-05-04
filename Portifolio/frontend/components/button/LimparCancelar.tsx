@@ -1,5 +1,5 @@
 
-export default function LimparCancelar({ onClick, editar }: { onClick: () => void, editar?: boolean }) {
+export default function LimparCancelar({ onClick, editar, desabilitar }: { onClick: () => void, editar?: boolean, desabilitar: boolean }) {
  
   return (
     <button
@@ -8,6 +8,7 @@ export default function LimparCancelar({ onClick, editar }: { onClick: () => voi
           : "bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
         }`}
       onClick={onClick}
+      disabled={desabilitar}
     >
       {editar ? 'Cancelar' : 'Limpar'}
     </button>

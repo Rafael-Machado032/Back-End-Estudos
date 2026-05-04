@@ -24,19 +24,21 @@ export default function Aside() {
     const [descricao, setDescricao] = useState("");
     const [demo, setDemo] = useState("");
     const [github, setGithub] = useState("");
+    const [carregando, setCarregando] = useState(false);
+
 
     const { curriculoDados, setCurriculoDados } = useCurriculo();
     const { formacaoDados, setFormacaoDados } = useFormacao();
     const { projetoDados, setProjetoDados } = useProjeto();
     const { itemDados, setItemDados } = useItem();
-    
+
 
     // 2. Atualize a função Selecionar para salvar a escolha
     const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
         limparFormulario(); // Limpa os campos ao mudar de tipo
         const valor = e.target.value;
         setTipo(valor);
-        setItemDados({ id: "", tipo: valor, editar: false }); 
+        setItemDados({ id: "", tipo: valor, editar: false });
     };
 
     // 2. Limpeza dos campos após publicar/sucesso
@@ -46,112 +48,127 @@ export default function Aside() {
         setDescricao("");
         setDemo("");
         setGithub("");
-        setItemDados({ id: "", tipo: "", editar: false });
+        if(itemDados?.editar){
+            setItemDados({ id: "", tipo: itemDados.tipo, editar: false });
+        }
     };
 
     const publicar = async (formData: FormData) => {
+        setCarregando(true);
 
-        const certificado = formData.get("certificado_form") as File;
-        const curriculo = formData.get("curriculo_form") as File;
+        try {
 
-        interface ApiResponse { //Padroniza a resposta do api
-            success: boolean;
-            dados?: object;
-            error?: string;
+
+
+            const certificado = formData.get("certificado_form") as File;
+            const curriculo = formData.get("curriculo_form") as File;
+
+            interface ApiResponse { //Padroniza a resposta do api
+                success: boolean;
+                dados?: object;
+                error?: string;
+            }
+
+            let resposta: ApiResponse = { success: false };
+
+            if (tipo === "Projeto") {
+
+                if (titulo && tecnologias && descricao && demo && github) {
+
+                    if (!itemDados?.editar) {
+                        resposta = await CriarProjetoAction(formData);
+                        if (resposta.success) {
+                            // Adiciona o novo projeto na lista global do contexto
+                            // resposta.data deve ser o objeto que o Laravel retornou
+                            const listaAtualizada = [...projetoDados, resposta.dados] as Projeto[];
+                            setProjetoDados(listaAtualizada);
+                            alert("Projeto criado com sucesso!");
+                            limparFormulario();
+                        } else {
+                            alert("Erro ao criar Projeto");
+                        }
+                    } else {
+                        resposta = await EditarProjetoAction(itemDados.id, formData);
+                        if (resposta.success) {
+                            // Atualiza o item específico na lista do contexto
+                            const listaEditada = projetoDados.map(p => p.id === itemDados.id ? resposta.dados : p).filter(Boolean) as Projeto[];
+                            setProjetoDados(listaEditada);
+                            alert("Editado com sucesso!");
+                            limparFormulario();
+                        } else {
+                            alert("Erro ao Editar Projeto");
+                        }
+                    }
+                } else {
+                    alert("Preencha todos os campos do projeto.");
+                }
+
+            } else if (tipo === "Diploma") {
+
+                if (titulo && tecnologias && descricao) {
+                    if (!itemDados?.editar) {
+                        if (!certificado || certificado.size === 0) {
+                            alert("Selecione um arquivo de certificado.");
+                            return;
+                        }
+                        resposta = await CriarFormacaoAction(formData);
+                        if (resposta.success) {
+                            const listaAtualizada = [...formacaoDados, resposta.dados] as Formacao[];
+                            setFormacaoDados(listaAtualizada);
+                            limparFormulario();
+                            alert("Formação criada com sucesso!");
+                        }
+                        else {
+                            alert("Erro ao criar Formacao");
+                        }
+                    } else {
+                        resposta = await EditarFormacaoAction(itemDados.id, formData);
+                        if (resposta.success) {
+                            const listaEditada = formacaoDados.map(p => p.id === itemDados.id ? resposta.dados : p).filter(Boolean) as Formacao[];
+                            setFormacaoDados(listaEditada);
+                            limparFormulario();
+                            alert("Editado com sucesso!");
+                        } else {
+                            alert("Erro ao editar Formacao");
+                        }
+                    }
+                } else {
+                    alert("Preencha todos os campos do diploma.");
+                }
+
+            } else {
+
+                if (curriculo && curriculo.size > 0) {
+                    if (!curriculoDados?.curriculo_url_servidor) {
+                        resposta = await CriarCurriculoAction(formData);
+                        if (resposta.success) {
+                            setCurriculoDados(resposta.dados as Curriculo)
+                            alert("Currículo criado com sucesso!");
+                        } else {
+                            alert("Erro ao criar currículo");
+                        }
+                    } else {
+                        resposta = await EditarCurriculoAction(1, formData);
+                        if (resposta.success) {
+                            setCurriculoDados(resposta.dados as Curriculo)
+                            alert("Currículo atualizado com sucesso!");
+                        } else {
+                            alert("Erro ao atualizar currículo");
+                        }
+                    }
+                } else {
+                    alert("Selecione um arquivo de currículo.");
+                }
+
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            alert("Ocorreu um erro inesperado.");
+        } finally {
+            // 2. Desativa o loading ao terminar (sucesso ou erro)
+            setCarregando(false);
         }
 
-        let resposta: ApiResponse = { success: false };
-
-        if (tipo === "Projeto") {
-
-            if (titulo && tecnologias && descricao && demo && github) {
-
-                if (!itemDados?.editar) {
-                    resposta = await CriarProjetoAction(formData);
-                    if (resposta.success) {
-                        // Adiciona o novo projeto na lista global do contexto
-                        // resposta.data deve ser o objeto que o Laravel retornou
-                        const listaAtualizada = [...projetoDados, resposta.dados] as Projeto[];
-                        setProjetoDados(listaAtualizada);
-                        alert("Projeto criado com sucesso!");
-                        limparFormulario();
-                    } else {
-                        alert("Erro ao criar Projeto");
-                    }
-                } else {
-                    resposta = await EditarProjetoAction(itemDados.id, formData);
-                    if (resposta.success) {
-                        // Atualiza o item específico na lista do contexto
-                        const listaEditada = projetoDados.map(p => p.id === itemDados.id ? resposta.dados : p).filter(Boolean) as Projeto[];
-                        setProjetoDados(listaEditada);
-                        alert("Editado com sucesso!");
-                        limparFormulario();
-                    } else {
-                        alert("Erro ao Editar Projeto");
-                    }
-                }
-            } else {
-                alert("Preencha todos os campos do projeto.");
-            }
-
-        } else if (tipo === "Diploma") {
-
-            if (titulo && tecnologias && descricao) {
-                if (!itemDados?.editar) {
-                    if (!certificado || certificado.size === 0) {
-                        alert("Selecione um arquivo de certificado.");
-                        return;
-                    }
-                    resposta = await CriarFormacaoAction(formData);
-                    if (resposta.success){
-                        const listaAtualizada = [...formacaoDados, resposta.dados] as Formacao[];
-                        setFormacaoDados(listaAtualizada);
-                        limparFormulario();
-                        alert("Formação criada com sucesso!");
-                    }
-                    else {
-                        alert("Erro ao criar Formacao");
-                    }
-                } else {
-                    resposta = await EditarFormacaoAction(itemDados.id, formData);
-                    if (resposta.success) {
-                        const listaEditada = formacaoDados.map(p => p.id === itemDados.id ? resposta.dados : p).filter(Boolean) as Formacao[];
-                        setFormacaoDados(listaEditada);
-                        limparFormulario();
-                        alert("Editado com sucesso!");
-                    } else {
-                        alert("Erro ao editar Formacao");
-                    }
-                }
-            } else {
-                alert("Preencha todos os campos do diploma.");
-            }
-
-        } else {
-
-            if (curriculo && curriculo.size > 0) {
-                if (!curriculoDados?.curriculo_url_servidor) {
-                    resposta = await CriarCurriculoAction(formData);
-                    if (resposta.success) {
-                        setCurriculoDados(resposta.dados as Curriculo)
-                        alert("Currículo criado com sucesso!");
-                    } else {
-                        alert("Erro ao criar currículo");
-                    }
-                } else {
-                    resposta = await EditarCurriculoAction(1, formData);
-                    if (resposta.success) {
-                        setCurriculoDados(resposta.dados as Curriculo)
-                        alert("Currículo atualizado com sucesso!");
-                    } else {
-                        alert("Erro ao atualizar currículo");
-                    }
-                }
-            } else {
-                alert("Selecione um arquivo de currículo.");
-            }
-
-        }
     }
 
     useEffect(() => {
@@ -160,7 +177,7 @@ export default function Aside() {
                 let dados = null;
                 if (itemDados.tipo === "formacao") {
                     // Sincroniza o Select com o valor correto
-                    setTipo("Diploma");
+                    setTipo("formacao");
 
                     dados = formacaoDados.find((item) => item.id === itemDados.id);
                     if (dados) {
@@ -170,7 +187,7 @@ export default function Aside() {
                     }
                 } else if (itemDados.tipo === "projeto") {
                     // Sincroniza o Select com o valor correto
-                    setTipo("Projeto");
+                    setTipo("projeto");
 
                     dados = projetoDados.find((item) => item.id === itemDados.id);
                     if (dados) {
@@ -184,89 +201,95 @@ export default function Aside() {
             };
             // Use setTimeout ou deixe direto se não houver conflito de render
             preencherEditar();
-            
+
         }
         console.log("Editar", itemDados?.editar);
-        
+
     }, [itemDados, formacaoDados, projetoDados]);
 
     return (
         <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
 
-            <div  className='flex flex-col gap-4 w-full max-w-100 bg-[#1e293b] p-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]'>
+            <div className='flex flex-col gap-4 w-full max-w-100 bg-[#1e293b] p-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]'>
                 <form action={publicar}>
-                <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-2'>Gerenciar Conteúdo</h2>
-                <div className='flex flex-col gap-1'>
-                    <label className='text-[#94a3b8] text-sm font-bold'>Tipo de Item</label>
-                    <select onChange={Selecionar} value={tipo} className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4'>
-                        <option value="Projeto">🚀 Projeto</option>
-                        <option value="Diploma">🎓 Diploma / Certificado</option>
-                        <option value="Curriculo"> 📄 Currículo</option>
-                    </select>
-                </div>
-
-                {tipo === "Projeto" ? (
-                    <div className="flex flex-col gap-4" key={"bloco-projeto"}>
-                        <div className='flex flex-col gap-1'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: App Web Incrível" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
-                        </div>
-
-                        <div className='flex flex-col gap-2'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} onChange={(e) => setTecnologias(e.target.value)} />
-                        </div>
-
-                        <div className='flex flex-col gap-1'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
-                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um app web incrível feito com React e Firebase" value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
-                        </div>
-
-                        <div className='flex flex-col gap-1'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>URL do projeto</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="demonstracao_form" type="text" placeholder="https://imagem.com" value={demo} onChange={(e) => setDemo(e.target.value)} />
-                        </div>
-
-                        <div className='flex flex-col gap-1'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>URL do Github</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="github_form" type="text" placeholder="https://github.com/usuario/repo" value={github} onChange={(e) => setGithub(e.target.value)} />
-                        </div>
+                    <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-2'>Gerenciar Conteúdo</h2>
+                    <div className='flex flex-col gap-1'>
+                        <label className='text-[#94a3b8] text-sm font-bold'>Tipo de Item</label>
+                        <select onChange={Selecionar} value={tipo} className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4'>
+                            <option value="projeto">🚀 Projeto</option>
+                            <option value="formacao">🎓 Diploma / Certificado</option>
+                            <option value="curriculo"> 📄 Currículo</option>
+                        </select>
                     </div>
-                ) : tipo === "Diploma" ? (
-                    <div className="flex flex-col gap-4" key={"bloco-diploma"}>
-                        <div className='flex flex-col gap-1'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
-                        </div>
 
-                        <div className='flex flex-col gap-2'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
-                            <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} onChange={(e) => setTecnologias(e.target.value)} />
-                        </div>
-
-                        <div className='flex flex-col gap-1'>
-                            <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
-                            <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um curso web voltado para React e Firebase" value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
-                        </div>
-
-                        {itemDados?.editar ? null :
+                    {tipo === "projeto" ? (
+                        <div className="flex flex-col gap-4" key={"bloco-projeto"}>
                             <div className='flex flex-col gap-1'>
-                                <label className='text-[#94a3b8] text-sm font-bold'>Certificado</label>
-                                <input type="file" accept=".pdf" name="certificado_form"
-                                    className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
-                            </div>}
-                    </div>
-                ) : (
-                    <div className='flex flex-col gap-1' key={"bloco-curriculo"}>
-                        <label className='text-[#94a3b8] text-sm font-bold'>Atualizar Currículo (PDF/Word)</label>
-                        <input type="file" accept=".pdf,.doc,.docx" name="curriculo_form"
-                            className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
-                    </div>
-                )}
-                <Publicar />
+                                <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: App Web Incrível" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
+                            </div>
+
+                            <div className='flex flex-col gap-2'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} onChange={(e) => setTecnologias(e.target.value)} />
+                            </div>
+
+                            <div className='flex flex-col gap-1'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
+                                <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um app web incrível feito com React e Firebase" value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
+                            </div>
+
+                            <div className='flex flex-col gap-1'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>URL do projeto</label>
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="demonstracao_form" type="text" placeholder="https://imagem.com" value={demo} onChange={(e) => setDemo(e.target.value)} />
+                            </div>
+
+                            <div className='flex flex-col gap-1'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>URL do Github</label>
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="github_form" type="text" placeholder="https://github.com/usuario/repo" value={github} onChange={(e) => setGithub(e.target.value)} />
+                            </div>
+                        </div>
+                    ) : tipo === "formacao" ? (
+                        <div className="flex flex-col gap-4" key={"bloco-diploma"}>
+                            <div className='flex flex-col gap-1'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
+                            </div>
+
+                            <div className='flex flex-col gap-2'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} onChange={(e) => setTecnologias(e.target.value)} />
+                            </div>
+
+                            <div className='flex flex-col gap-1'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
+                                <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um curso web voltado para React e Firebase" value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
+                            </div>
+
+                            {itemDados?.editar ? null :
+                                <div className='flex flex-col gap-1'>
+                                    <label className='text-[#94a3b8] text-sm font-bold'>Certificado</label>
+                                    <input type="file" accept=".pdf" name="certificado_form"
+                                        className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
+                                </div>}
+                        </div>
+                    ) : (
+                        <div className='flex flex-col gap-1' key={"bloco-curriculo"}>
+                            <label className='text-[#94a3b8] text-sm font-bold'>Atualizar Currículo (PDF/Word)</label>
+                            <input type="file" accept=".pdf,.doc,.docx" name="curriculo_form"
+                                className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
+                        </div>
+                    )}
+                    <Publicar desabilitar={carregando} />
                 </form>
-                <LimparCancelar onClick={limparFormulario} editar={itemDados?.editar || false} />
+                <LimparCancelar onClick={limparFormulario} editar={itemDados?.editar || false} desabilitar={carregando} />
             </div>
+            {carregando && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-white"></div>
+                    <span className="ml-3 text-white">Processando...</span>
+                </div>
+            )}
         </aside>
     )
 }

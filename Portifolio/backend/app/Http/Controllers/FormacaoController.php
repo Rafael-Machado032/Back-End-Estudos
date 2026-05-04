@@ -11,7 +11,16 @@ class FormacaoController extends Controller
 {
     public function index()
     {
-        return response()->json(Formacao::all(), 200);
+        try {
+
+            return response()->json(Formacao::all(), 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao mostrar todos projeto.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function store(Request $request)
@@ -19,7 +28,7 @@ class FormacaoController extends Controller
         // 1. Validação (Garante que o certificado é um PDF)
         $validated = $request->validate([
             'titulo_form' => 'required|string',
-            'tecnologia_form' => 'required|array',
+            'tecnologias_form' => 'required|array',
             'descricao_form' => 'required|string',
             'certificado_form' => 'required|file|mimes:pdf|max:5120', // Máx 5MB
         ]);
@@ -27,7 +36,6 @@ class FormacaoController extends Controller
         try {
             $pathPDF = null;
             $pathImagem = null;
-            $capaPDF = null;
 
             // 2. Upload do PDF para a pasta 'certificados' dentro de 'public'
             if ($request->hasFile('certificado_form')) {
@@ -35,6 +43,7 @@ class FormacaoController extends Controller
 
                 // 2. Envia uma cópia temporária para o Cloudinary para gerar a capa
                 $upload = (new UploadApi())->upload(storage_path('app/public/' . $pathPDF), [
+                    'folder' => 'certificados', // Organiza em uma pasta lá no Cloudinary
                     'resource_type' => 'auto'
                 ]);
 
@@ -52,27 +61,20 @@ class FormacaoController extends Controller
             // 3. Salvando no Banco (Mapeando os campos)
             $dadosFormacao = Formacao::create([
                 'titulo'      => $validated['titulo_form'],
-                'tecnologia' => $validated['tecnologia_form'],
+                'tecnologia' => $validated['tecnologias_form'],
                 'descricao'   => $validated['descricao_form'],
                 'certificado_url' => $pathPDF, // Aqui salva o caminho do PDF: "certificados/xyz.pdf"
                 'capa_url' => $pathImagem // Salva o caminho da imagem gerada: "certificados/xyz.jpg"
-                ]);
+            ]);
 
             return response()->json([
                 'message' => 'Formação cadastrada com sucesso!',
                 'data'    => $dadosFormacao
             ], 201);
-
         } catch (\Exception $e) {
-            // Se der erro no banco, apaga o PDF que subiu para não sobrar lixo
-            if ($pathPDF && $pathImagem){
-                Storage::disk('public')->delete($pathPDF);
-                Storage::disk('public')->delete($pathImagem);
-            }
-
             return response()->json([
-                'error'   => 'Erro ao salvar formação.',
-                'details' => config('app.debug') ? $e->getMessage() : null
+                'error' => 'Erro ao criar a formação.',
+                'details' => $e->getMessage()
             ], 500);
         }
     }
@@ -86,7 +88,7 @@ class FormacaoController extends Controller
     {
         $validated = $request->validate([
             'titulo_form' => 'required|string',
-            'tecnologia_form' => 'required|array',
+            'tecnologias_form' => 'required|array',
             'descricao_form' => 'required|string',
             'certificado_form' => 'nullable|file|mimes:pdf|max:5120', // mimes:pdf e nullable caso não queira mudar o arquivo
         ]);
@@ -127,7 +129,7 @@ class FormacaoController extends Controller
 
             // 4. ATUALIZAR DEMAIS CAMPOS
             $formacao->titulo = $validated['titulo_form'];
-            $formacao->tecnologia = $validated['tecnologia_form'];
+            $formacao->tecnologia = $validated['tecnologias_form'];
             $formacao->descricao = $validated['descricao_form'];
 
             $formacao->save();
@@ -135,7 +137,7 @@ class FormacaoController extends Controller
             return response()->json(['message' => 'Atualizado com sucesso!', 'data' => $formacao], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Erro ao atualizar.',
+                'error' => 'Erro ao editar a formação.',
                 'details' => $e->getMessage()
             ], 500);
         }
@@ -153,7 +155,14 @@ class FormacaoController extends Controller
         }
         // 3. Remove o registro do banco de dados
         $formacao->delete();
-
-        return response()->json(['message' => 'Removido com sucesso'], 200);
+        try{
+            return response()->json(['message' => 'Removido com sucesso'], 200);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao deletar a formação.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
 }
