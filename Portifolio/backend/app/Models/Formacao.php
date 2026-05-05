@@ -21,19 +21,14 @@ class Formacao extends Model
         'tecnologia' => 'array',
     ];
 
-    // 3. Accessor para o campo 'certificado'
-    protected function certificado(): Attribute
+    public function getCertificadoUrlAttribute($value)
     {
-        return Attribute::make(
-            get: fn($value) => $value ? asset('storage/' . $value) : null,
-        );
+        // O $value é o que está salvo no banco (ex: "foto.jpg")
+        return $value ? asset('storage/' . $value) : null;
     }
-
-    // 4. Accessor para o campo 'capa'
-    protected function capa(): Attribute
+    public function getCapaUrlAttribute($value)
     {
-        return Attribute::make(
-            get: fn($value) => $value ? asset('storage/' . $value) : null,
-        );
+        // O $value é o que está salvo no banco (ex: "foto.jpg")
+        return $value ? asset('storage/' . $value) : null;
     }
 }

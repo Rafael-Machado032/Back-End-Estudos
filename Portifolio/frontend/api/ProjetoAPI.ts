@@ -49,9 +49,9 @@ export async function CriarProjetoAction(formData: FormData) {
         });
 
         const dadosDoBanco = await res.json();
-
+        console.log("Resposta do servidor", dadosDoBanco);
+        
         revalidatePath('/admin');
-
 
         if (!res.ok) return { success: false };
         return {

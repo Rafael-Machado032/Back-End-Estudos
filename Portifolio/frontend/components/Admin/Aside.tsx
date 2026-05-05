@@ -14,7 +14,7 @@ import { CriarFormacaoAction, EditarFormacaoAction } from "@/api/FormacaoAPI";
 import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
-
+    
     // 1. Modifique o useState para buscar do localStorage ao iniciar
     const [tipo, setTipo] = useState<string>("projeto");
 
@@ -24,8 +24,6 @@ export default function Aside() {
     const [descricao, setDescricao] = useState("");
     const [demo, setDemo] = useState("");
     const [github, setGithub] = useState("");
-    const [carregando, setCarregando] = useState(false);
-
 
     const { curriculoDados, setCurriculoDados } = useCurriculo();
     const { formacaoDados, setFormacaoDados } = useFormacao();
@@ -38,11 +36,11 @@ export default function Aside() {
         limparFormulario(); // Limpa os campos ao mudar de tipo
         const valor = e.target.value;
         setTipo(valor);
-        setItemDados({ 
-            id: "", 
-            editar: false, 
-            tipo: valor, 
-            carregando: false 
+        setItemDados({
+            id: "",
+            editar: false,
+            tipo: valor,
+            carregando: false
         });
     };
 
@@ -53,13 +51,13 @@ export default function Aside() {
         setDescricao("");
         setDemo("");
         setGithub("");
-        
-        if(itemDados?.editar){
-            setItemDados({ 
-                id: "", 
-                editar: false, 
-                tipo: itemDados.tipo, 
-                carregando: false 
+
+        if (itemDados?.editar) {
+            setItemDados({
+                id: "",
+                editar: false,
+                tipo: itemDados.tipo,
+                carregando: false
             });
         }
     };
@@ -178,12 +176,17 @@ export default function Aside() {
             alert("Ocorreu um erro inesperado.");
         } finally {
             // 2. Desativa o loading ao terminar (sucesso ou erro)
-            setCarregando(false);
+            setItemDados({
+                id: itemDados?.id ?? "",      // Se id for undefined, vira ""
+                tipo: itemDados?.tipo ?? "",  // Se tipo for undefined, vira ""
+                editar: itemDados?.editar ?? false,
+                carregando: false
+            });
         }
-
     }
 
     useEffect(() => {
+        console.log("Estado no Irmão:", itemDados?.carregando);
         if (itemDados?.editar) {
             const preencherEditar = () => {
                 let dados = null;
@@ -292,9 +295,9 @@ export default function Aside() {
                                 className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
                         </div>
                     )}
-                    <Publicar desabilitar={carregando} />
+                    <Publicar desabilitar={itemDados?.carregando || false} />
                 </form>
-                <LimparCancelar onClick={limparFormulario} editar={itemDados?.editar || false} desabilitar={carregando} />
+                <LimparCancelar onClick={limparFormulario} editar={itemDados?.editar || false} desabilitar={itemDados?.carregando || false} />
             </div>
         </aside>
     )

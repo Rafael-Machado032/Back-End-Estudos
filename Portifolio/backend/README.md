@@ -78,3 +78,17 @@ Esse comando retorna a imagem do pdf
         'resource_type' => 'auto'
     ]);
 ```
+
+## Certificado SSL
+Por padrão o windons não conversa com os certificados PHP foi baixado o arquivo no link
+```http
+curl.se/ca/cacert.pem
+```
+e inserido no caminho C:\php\extras\ssl\cacert.pem
+No PHP.ini foi modificado onde retira o ";" e insere o caminho do certificado
+
+curl.cainfo = "C:\php\extras\ssl\cacert.pem"
+
+Faca o mesmo no
+
+openssl.cafile = "C:\php\extras\ssl\cacert.pem"
