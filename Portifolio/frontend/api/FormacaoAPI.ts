@@ -30,7 +30,7 @@ export async function BuscarFormacaoAction() {
 
         return {
             success: true,
-            dados: dadosDoBanco.dados
+            dados: dadosDoBanco
         };
     } catch {
         return { success: false };
@@ -55,7 +55,7 @@ export async function CriarFormacaoAction(formData: FormData) {
         revalidatePath('/admin/item'); // Revalida a rota para atualizar os dados no frontend
         return {
             success: true,
-            dados: dadosDoBanco.dados // Retorna os dados do banco para atualizar o estado};
+            dados: dadosDoBanco.data // Retorna os dados do banco para atualizar o estado};
         };
     } catch {
         return { success: false };

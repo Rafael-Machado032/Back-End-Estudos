@@ -15,7 +15,8 @@ export default function Principal() {
     const { projetoDados } = useProjeto();
     const { itemDados } = useItem();
 
-    // console.log("Resposta do Cotext", projetoDados);
+    console.log("Resposta do Cotext Projeto", projetoDados);
+    console.log("Resposta do Cotext Formação", formacaoDados);
 
 
     return (
@@ -32,9 +33,11 @@ export default function Principal() {
             ) : itemDados?.tipo == "formacao" ? (
                 <div>
                     <h2 className=' text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Diploma / Certificado</h2>
-                    {formacaoDados.map(item => (
-                        <Cont_FormacaoADM key={item.id} formacaoDados={item} />
-                    ))}
+                    <div className="flex gap-4 flex-wrap w-full">
+                        {formacaoDados.map(item => (
+                            <Cont_FormacaoADM key={item.id} formacaoDados={item} />
+                        ))}
+                    </div>
                 </div>
             ) : (
                 <div>

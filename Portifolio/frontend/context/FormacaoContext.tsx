@@ -5,10 +5,11 @@ import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 export interface Formacao { //exporto para usar em outros arquivos, resolver o tipo do projetoDados
     id: string;
     titulo: string;
-    tecnologia: string;
+    credencial: string;
     descricao: string;
     certificado_url: string;
     capa_url: string;
+    curso_url: string;
 }
 
 // 1. Remova a função de adicionar do contrato

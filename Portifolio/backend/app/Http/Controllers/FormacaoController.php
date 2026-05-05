@@ -16,6 +16,7 @@ class FormacaoController extends Controller
         try {
 
             return response()->json(Formacao::all(), 200);
+            
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro ao mostrar todos projeto.',

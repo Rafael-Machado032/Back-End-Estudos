@@ -14,13 +14,15 @@ import { CriarFormacaoAction, EditarFormacaoAction } from "@/api/FormacaoAPI";
 import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
-    
+
     // 1. Modifique o useState para buscar do localStorage ao iniciar
     const [tipo, setTipo] = useState<string>("projeto");
 
     // ESTADOS PARA OS INPUTS (Para o usuário ver o que está editando)
     const [titulo, setTitulo] = useState("");
     const [tecnologias, setTecnologias] = useState("");
+    const [credencial, setCredencial] = useState("");
+    const [siteCurso, setSiteCurso] = useState("");
     const [descricao, setDescricao] = useState("");
     const [demo, setDemo] = useState("");
     const [github, setGithub] = useState("");
@@ -48,6 +50,8 @@ export default function Aside() {
     const limparFormulario = () => {
         setTitulo("");
         setTecnologias("");
+        setCredencial("");
+        setSiteCurso("");
         setDescricao("");
         setDemo("");
         setGithub("");
@@ -116,7 +120,7 @@ export default function Aside() {
 
             } else if (tipo === "formacao") {
 
-                if (titulo && tecnologias && descricao) {
+                if (titulo && credencial && descricao) {
                     if (!itemDados?.editar) {
                         if (!certificado || certificado.size === 0) {
                             alert("Selecione um arquivo de certificado.");
@@ -197,7 +201,8 @@ export default function Aside() {
                     dados = formacaoDados.find((item) => item.id === itemDados.id);
                     if (dados) {
                         setTitulo(dados.titulo || "");
-                        setTecnologias(dados.tecnologia || "");
+                        setCredencial(dados.credencial || "");
+                        setSiteCurso(dados.curso_url || "");
                         setDescricao(dados.descricao || "");
                     }
                 } else if (itemDados.tipo === "projeto") {
@@ -270,17 +275,18 @@ export default function Aside() {
                                 <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
                                 <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="titulo_form" type="text" placeholder="Ex: Curso Web" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
                             </div>
-
-                            <div className='flex flex-col gap-2'>
-                                <label className='text-[#94a3b8] text-sm font-bold'>Tecnologias (Separadas por vírgula)</label>
-                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="tecnologias_form" type="text" placeholder="Ex: React, Firebase, Tailwind" value={tecnologias} onChange={(e) => setTecnologias(e.target.value)} />
-                            </div>
-
                             <div className='flex flex-col gap-1'>
                                 <label className='text-[#94a3b8] text-sm font-bold'>Descrição Curta</label>
                                 <textarea className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4 resize-none' name="descricao_form" rows={3} placeholder="Ex: Um curso web voltado para React e Firebase" value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
                             </div>
-
+                            <div className='flex flex-col gap-2'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>Código da credencial</label>
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="credencial_form" type="text" placeholder="Ex: abcdefgh-1234-ABCD-6789-AaBbCcDdEeFf" value={credencial} onChange={(e) => setCredencial(e.target.value)} />
+                            </div>
+                            <div className='flex flex-col gap-2'>
+                                <label className='text-[#94a3b8] text-sm font-bold'>URL da credencial</label>
+                                <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="siteCurso_form" type="text" placeholder="Ex: https://cursos.codigo.com/" value={siteCurso} onChange={(e) => setSiteCurso(e.target.value)} />
+                            </div>
                             {itemDados?.editar ? null :
                                 <div className='flex flex-col gap-1'>
                                     <label className='text-[#94a3b8] text-sm font-bold'>Certificado</label>
