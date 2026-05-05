@@ -29,8 +29,9 @@ class FormacaoController extends Controller
     {
         $validated = $request->validate([
             'titulo_form' => 'required|string',
-            'tecnologias_form' => 'required|string',
             'descricao_form' => 'required|string',
+            'credencial_form' => 'required|string',
+            'siteCurso_form' => 'required|string',
             'certificado_form' => 'required|file|mimes:pdf|max:5120',
         ]);
 
@@ -41,13 +42,8 @@ class FormacaoController extends Controller
 
             if ($request->hasFile('certificado_form')) {
                 $file = $request->file('certificado_form');
-                
-
                 try {
-
                     $cld = new Cloudinary(env('CLOUDINARY_URL'));
-
-
                     $uploadApi = new UploadApi();
                     
                     $response = $uploadApi->upload($file->getRealPath(), [
@@ -63,7 +59,6 @@ class FormacaoController extends Controller
                     $urlPdfCloudinary = $response['secure_url'];
                     $publicId = $response['public_id'];
 
-                    
                     $urlCapa = $cld->image($publicId)
                         ->format('jpg')
                         ->addTransformation('w_1000,c_limit,pg_1')
@@ -78,10 +73,6 @@ class FormacaoController extends Controller
                     $nomeCapa = 'capa_' . time() . '.jpg';
                     $pathCapaLocal = 'certificados/' . $nomeCapa;
 
-                    // $context = stream_context_create([
-                    //     "ssl" => ["verify_peer" => false, "verify_peer_name" => false]
-                    // ]);
-
                     $imagemConteudo = file_get_contents($urlCapa);
                     Storage::disk('public')->put($pathCapaLocal, $imagemConteudo);
                 } catch (\Exception $e) {
@@ -93,8 +84,9 @@ class FormacaoController extends Controller
             // SALVANDO NO BANCO
             $dadosFormacao = Formacao::create([
                 'titulo'          => $validated['titulo_form'],
-                'tecnologia'      => $validated['tecnologias_form'],
                 'descricao'       => $validated['descricao_form'],
+                'credencial'      => $validated['credencial_form'],
+                'curso_url'       => $validated['siteCurso_form'],
                 'certificado_url' => $pathPdf,
                 'capa_url'        => $pathCapaLocal,     // CAMINHO LOCAL DA CAPA
             ]);
@@ -122,9 +114,10 @@ class FormacaoController extends Controller
     {
         $validated = $request->validate([
             'titulo_form' => 'required|string',
-            'tecnologias_form' => 'required|array',
             'descricao_form' => 'required|string',
-            'certificado_form' => 'nullable|file|mimes:pdf|max:5120', // mimes:pdf e nullable caso não queira mudar o arquivo
+            'credencial_form' => 'required|string',
+            'siteCurso_form' => 'required|string',
+            'certificado_form' => 'required|file|mimes:pdf|max:5120',
         ]);
 
         try {
@@ -163,8 +156,9 @@ class FormacaoController extends Controller
 
             // 4. ATUALIZAR DEMAIS CAMPOS
             $formacao->titulo = $validated['titulo_form'];
-            $formacao->tecnologia = $validated['tecnologias_form'];
             $formacao->descricao = $validated['descricao_form'];
+            $formacao->credencial = $validated['credencial_form'];
+            $formacao->curso_url = $validated['siteCurso_form'];
 
             $formacao->save();
 
