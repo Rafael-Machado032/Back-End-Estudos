@@ -23,7 +23,9 @@ export default function Cont_ProjetoADM({ projetoDados }: { projetoDados: Projet
                 </div>
                 <div className=" w-full flex justify-center items-center gap-1 mt-6">
                     <DemoADM href={projetoDados?.demonstracao_url} />
-                    <GithubADM href={projetoDados?.github_url} />
+                    {projetoDados.github_url &&
+                        <GithubADM href={projetoDados?.github_url} />
+                    }
                 </div>
             </div>
         </div>

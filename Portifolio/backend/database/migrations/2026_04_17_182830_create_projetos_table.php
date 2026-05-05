@@ -17,7 +17,7 @@ return new class extends Migration
             $table->json('tecnologia');
             $table->text('descricao');
             $table->string('demonstracao_url');
-            $table->string('github_url');
+            $table->string('github_url')->nullable();
             $table->string('layout_url');
             $table->timestamps();
         });

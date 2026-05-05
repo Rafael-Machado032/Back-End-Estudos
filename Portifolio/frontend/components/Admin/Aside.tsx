@@ -88,7 +88,7 @@ export default function Aside() {
 
             if (tipo === "projeto") {
 
-                if (titulo && tecnologias && descricao && demo && github) {
+                if (titulo && tecnologias && descricao && demo) {
 
                     if (!itemDados?.editar) {
                         resposta = await CriarProjetoAction(formData);
@@ -265,7 +265,7 @@ export default function Aside() {
                             </div>
 
                             <div className='flex flex-col gap-1'>
-                                <label className='text-[#94a3b8] text-sm font-bold'>URL do Github</label>
+                                <label className='text-[#94a3b8] text-sm font-bold'>URL do Github ( Opcional )</label>
                                 <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="github_form" type="text" placeholder="https://github.com/usuario/repo" value={github} onChange={(e) => setGithub(e.target.value)} />
                             </div>
                         </div>

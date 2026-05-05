@@ -35,7 +35,7 @@ class ProjetoController extends Controller
             'tecnologias_form' => 'required|string',
             'descricao_form' => 'required|string',
             'demonstracao_form' => 'required|string',
-            'github_form' => 'required|string',
+            'github_form' => 'nullable|string',
         ]);
 
         try {
@@ -61,7 +61,7 @@ class ProjetoController extends Controller
                 'tecnologia'      => $validated['tecnologias_form'], // Ajustado para bater com o validate
                 'descricao'       => $validated['descricao_form'],
                 'demonstracao_url' => $validated['demonstracao_form'],
-                'github_url'      => $validated['github_form'],
+                'github_url'      => $validated['github_form'] ?? null,
                 'layout_url'      => $pathCapa,
             ]);
 
@@ -103,7 +103,7 @@ class ProjetoController extends Controller
             'tecnologias_form' => 'required|string',
             'descricao_form' => 'required|string',
             'demonstracao_form' => 'required|string',
-            'github_form' => 'required|string',
+            'github_form' => 'nullable|string',
         ]);
 
         try {
@@ -112,7 +112,7 @@ class ProjetoController extends Controller
             $projeto->tecnologia = $validated['tecnologias_form'] ?? $projeto->tecnologia;
             $projeto->descricao = $validated['descricao_form'] ?? $projeto->descricao;
             $projeto->demonstracao_url = $validated['demonstracao_form'] ?? $projeto->demonstracao_url;
-            $projeto->github_url = $validated['github_form'] ?? $projeto->github_url;
+            $projeto->github_url = $validated['github_form'];
             $projeto->save();
 
 
