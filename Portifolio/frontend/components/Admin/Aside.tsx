@@ -171,7 +171,7 @@ export default function Aside() {
     }
 
     useEffect(() => {
-        console.log("Estado no Irmão:", itemDados?.carregando);
+        // console.log("Estado no Irmão:", itemDados?.carregando);
         if (itemDados?.editar) {
             const preencherEditar = () => {
                 let dados = null;

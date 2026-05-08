@@ -42,11 +42,6 @@ class CurriculoController extends Controller
             ], 201);
         } catch (\Exception $e) {
             // 4. CLEANUP (LIMPEZA)
-            // Se subiu o arquivo mas deu erro no banco, apaga o arquivo
-            if ($path) {
-                Storage::disk('public')->delete($path);
-            }
-
             return response()->json([
                 'error'   => 'Erro interno no servidor.',
                 'details' => config('app.debug') ? $e->getMessage() : null

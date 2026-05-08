@@ -14,9 +14,8 @@ export default function Principal() {
     const { formacaoDados } = useFormacao();
     const { projetoDados } = useProjeto();
     const { itemDados } = useItem();
-
-    console.log("Resposta do Cotext Projeto", projetoDados);
-    console.log("Resposta do Cotext Formação", formacaoDados);
+    
+    console.log("Resposta do Cotext Curriculo", curriculoDados);
 
 
     return (
