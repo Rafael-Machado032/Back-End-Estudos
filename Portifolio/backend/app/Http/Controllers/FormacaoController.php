@@ -117,43 +117,9 @@ class FormacaoController extends Controller
             'descricao_form' => 'required|string',
             'credencial_form' => 'required|string',
             'siteCurso_form' => 'required|string',
-            'certificado_form' => 'required|file|mimes:pdf|max:5120',
         ]);
 
         try {
-            if ($request->hasFile('certificado_form')) {
-                // 1. APAGAR ARQUIVOS ANTIGOS (PDF e Capa)
-                if ($formacao->certificado_url) {
-                    Storage::disk('public')->delete($formacao->certificado_url);
-                }
-                if ($formacao->capa_url) {
-                    Storage::disk('public')->delete($formacao->capa_url);
-                }
-
-                // 2. SALVAR NOVO PDF
-                $pathPDF = $request->file('certificado_form')->store('certificados', 'public');
-
-                // 3. GERAR NOVA CAPA VIA CLOUDINARY
-                $upload = (new UploadApi())->upload(storage_path('app/public/' . $pathPDF), [
-                    'resource_type' => 'auto'
-                ]);
-
-                $urlCapaCloudinary = str_replace('.pdf', '.jpg', $upload['secure_url']);
-
-                // 3. GERAR NOVA CAPA (Igual ao store)
-                $pathImagem = str_replace('.pdf', '.jpg', $pathPDF);
-
-                // 4. BAIXA A NOVA IMAGEM PARA O STORAGE LOCAL
-                $imagemConteudo = file_get_contents($urlCapaCloudinary);
-                Storage::disk('public')->put($pathImagem, $imagemConteudo);
-
-                // Garante que só atualizamos o caminho se um novo arquivo foi processado
-                if (isset($pathPDF)) {
-                    $formacao->certificado_url = $pathPDF;
-                    $formacao->capa_url = $pathImagem;
-                }
-            }
-
             // 4. ATUALIZAR DEMAIS CAMPOS
             $formacao->titulo = $validated['titulo_form'];
             $formacao->descricao = $validated['descricao_form'];

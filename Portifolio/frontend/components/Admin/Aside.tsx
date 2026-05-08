@@ -15,9 +15,6 @@ import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI"
 
 export default function Aside() {
 
-    // 1. Modifique o useState para buscar do localStorage ao iniciar
-    const [tipo, setTipo] = useState<string>("projeto");
-
     // ESTADOS PARA OS INPUTS (Para o usuário ver o que está editando)
     const [titulo, setTitulo] = useState("");
     const [tecnologias, setTecnologias] = useState("");
@@ -37,13 +34,7 @@ export default function Aside() {
     const Selecionar = (e: React.ChangeEvent<HTMLSelectElement>) => {
         limparFormulario(); // Limpa os campos ao mudar de tipo
         const valor = e.target.value;
-        setTipo(valor);
-        setItemDados({
-            id: "",
-            editar: false,
-            tipo: valor,
-            carregando: false
-        });
+        setItemDados({ tipo: valor });
     };
 
     // 2. Limpeza dos campos após publicar/sucesso
@@ -56,23 +47,16 @@ export default function Aside() {
         setDemo("");
         setGithub("");
 
-        if (itemDados?.editar) {
-            setItemDados({
-                id: "",
-                editar: false,
-                tipo: itemDados.tipo,
-                carregando: false
-            });
-        }
+        setItemDados({
+            id: "",
+            editar: false,
+            carregando: false
+        });
+
     };
 
     const publicar = async (formData: FormData) => {
-        setItemDados({
-            id: itemDados?.id ?? "",      // Se id for undefined, vira ""
-            tipo: itemDados?.tipo ?? "",  // Se tipo for undefined, vira ""
-            editar: itemDados?.editar ?? false,
-            carregando: true
-        });
+        setItemDados({ carregando: true });
 
         try {
             const certificado = formData.get("certificado_form") as File;
@@ -86,11 +70,11 @@ export default function Aside() {
 
             let resposta: ApiResponse = { success: false };
 
-            if (tipo === "projeto") {
+            if (itemDados.tipo === "projeto") {
 
                 if (titulo && tecnologias && descricao && demo) {
 
-                    if (!itemDados?.editar) {
+                    if (!itemDados.editar) {
                         resposta = await CriarProjetoAction(formData);
                         if (resposta.success) {
                             // Adiciona o novo projeto na lista global do contexto
@@ -118,7 +102,7 @@ export default function Aside() {
                     alert("Preencha todos os campos do projeto.");
                 }
 
-            } else if (tipo === "formacao") {
+            } else if (itemDados.tipo === "formacao") {
 
                 if (titulo && credencial && descricao) {
                     if (!itemDados?.editar) {
@@ -151,7 +135,7 @@ export default function Aside() {
                     alert("Preencha todos os campos do diploma.");
                 }
 
-            } else {
+            } else if (itemDados.tipo === "curriculo"){
                 if (curriculo && curriculo.size > 0) {
                     if (!curriculoDados?.curriculo_url_servidor) {
                         resposta = await CriarCurriculoAction(formData);
@@ -174,18 +158,15 @@ export default function Aside() {
                     alert("Selecione um arquivo de currículo.");
                 }
 
+            }else {
+                alert("Erro de seleção!")
             }
         } catch (error) {
             console.error("Erro na requisição:", error);
             alert("Ocorreu um erro inesperado.");
         } finally {
             // 2. Desativa o loading ao terminar (sucesso ou erro)
-            setItemDados({
-                id: itemDados?.id ?? "",      // Se id for undefined, vira ""
-                tipo: itemDados?.tipo ?? "",  // Se tipo for undefined, vira ""
-                editar: itemDados?.editar ?? false,
-                carregando: false
-            });
+            setItemDados({ carregando: false });
         }
     }
 
@@ -195,9 +176,6 @@ export default function Aside() {
             const preencherEditar = () => {
                 let dados = null;
                 if (itemDados.tipo === "formacao") {
-                    // Sincroniza o Select com o valor correto
-                    setTipo("formacao");
-
                     dados = formacaoDados.find((item) => item.id === itemDados.id);
                     if (dados) {
                         setTitulo(dados.titulo || "");
@@ -206,8 +184,6 @@ export default function Aside() {
                         setDescricao(dados.descricao || "");
                     }
                 } else if (itemDados.tipo === "projeto") {
-                    // Sincroniza o Select com o valor correto
-                    setTipo("projeto");
 
                     dados = projetoDados.find((item) => item.id === itemDados.id);
                     if (dados) {
@@ -235,14 +211,14 @@ export default function Aside() {
                     <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-2'>Gerenciar Conteúdo</h2>
                     <div className='flex flex-col gap-1'>
                         <label className='text-[#94a3b8] text-sm font-bold'>Tipo de Item</label>
-                        <select onChange={Selecionar} value={tipo} className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4'>
+                        <select onChange={Selecionar} value={itemDados.tipo} className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4'>
                             <option value="projeto">🚀 Projeto</option>
                             <option value="formacao">🎓 Diploma / Certificado</option>
                             <option value="curriculo"> 📄 Currículo</option>
                         </select>
                     </div>
 
-                    {tipo === "projeto" ? (
+                    {itemDados.tipo === "projeto" ? (
                         <div className="flex flex-col gap-4" key={"bloco-projeto"}>
                             <div className='flex flex-col gap-1'>
                                 <label className='text-[#94a3b8] text-sm font-bold'>Título</label>
@@ -269,7 +245,7 @@ export default function Aside() {
                                 <input className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="github_form" type="text" placeholder="https://github.com/usuario/repo" value={github} onChange={(e) => setGithub(e.target.value)} />
                             </div>
                         </div>
-                    ) : tipo === "formacao" ? (
+                    ) : itemDados.tipo === "formacao" ? (
                         <div className="flex flex-col gap-4" key={"bloco-diploma"}>
                             <div className='flex flex-col gap-1'>
                                 <label className='text-[#94a3b8] text-sm font-bold'>Título</label>

@@ -8,7 +8,7 @@ import { Projeto } from "@/context/ProjetoContext"
 export default function Cont_ProjetoADM({ projetoDados }: { projetoDados: Projeto }) {
     return (
         <div className="w-60 flex flex-col rounded-2xl bg-[#222222] border-[#00f1fe00] border relative">
-            <div className="flex justify-end gap-2 p-4 w-full absolute  -z-10">
+            <div className="flex justify-end gap-2 p-4 w-full absolute  z-10">
                 <Editar id={projetoDados.id} tipo="projeto" />
                 <Deletar id={projetoDados.id} tipo="projeto" />
             </div>

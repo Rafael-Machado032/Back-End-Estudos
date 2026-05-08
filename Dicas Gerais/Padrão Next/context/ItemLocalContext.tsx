@@ -5,32 +5,28 @@ import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 interface Item {
     id: string;
     editar: boolean;
-    tipo: string;
     carregando: boolean;
 }
 
 interface ItemContextoTipo {
     itemDados: Item;
-    setItemDados: (dados: Partial<Item>) => void;
+    setItemDados: (dados: Partial<Item>) => void; //Permite setar um item ou mais
 }
 
 const ItemContexto = createContext<ItemContextoTipo | undefined>(undefined);
 
 export function ItemProvedor({ children }: { children: ReactNode }) {
-    // Agora o estado é puramente local. 
-    // Começa vazio (null) e só muda quando você clica em algum botão.
-    const [itemDados, _setItemDados] = useState<Item>({
+    const [itemDados, _setItemDados] = useState<Item>({ //Ja começa com valores
         id: "",
         editar: false,
-        tipo: "projeto", // Define que o painel começa mostrando Projetos
         carregando: false
     });
-    // O seu set padrão que faz o merge
-    const setItemDados = (novosDados: Partial<Item>) => {
+
+    const setItemDados = (novosDados: Partial<Item>) => { // Função que permite setar um item ou mais
         _setItemDados((prev) => ({
-            ...prev,    // Mantém o que já existia
-            ...novosDados // Sobrescreve apenas o que você enviou
-        }) as Item); // O "as Item" resolve o erro do TypeScript
+            ...prev,
+            ...novosDados
+        }) as Item);
     };
 
     // 3. Memorização do valor do contexto para performance

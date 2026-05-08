@@ -80,7 +80,7 @@ export async function EditarFormacaoAction(id: string | number, formData: FormDa
         revalidatePath('/admin/item'); // Revalida a rota para atualizar os dados no frontend
         return {
             success: true,
-            dados: dadosDoBanco.dados
+            dados: dadosDoBanco.data
         };
     } catch {
         return { success: false };
