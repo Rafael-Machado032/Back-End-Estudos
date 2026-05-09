@@ -66,6 +66,7 @@ export default function Aside() {
                 success: boolean;
                 dados?: object;
                 error?: string;
+                curriculo_url_servidor: string;
             }
 
             let resposta: ApiResponse = { success: false };
@@ -140,7 +141,9 @@ export default function Aside() {
                     if (!curriculoDados?.curriculo_url_servidor) {
                         resposta = await CriarCurriculoAction(formData);
                         if (resposta.success) {
-                            setCurriculoDados(resposta.dados as Curriculo)
+                            console.log("Resposta do Banco para Contexto Curriculo CRIAR", resposta.dados);
+                            const curriculo = resposta.curriculo_url_servidor
+                            setCurriculoDados({ curriculo_url_servidor: curriculo } )
                             alert("Currículo criado com sucesso!");
                         } else {
                             alert("Erro ao criar currículo");
@@ -148,6 +151,7 @@ export default function Aside() {
                     } else {
                         resposta = await EditarCurriculoAction(1, formData);
                         if (resposta.success) {
+                            console.log("Resposta do Banco para Contexto Curriculo EDITAR", resposta.dados);
                             setCurriculoDados(resposta.dados as Curriculo)
                             alert("Currículo atualizado com sucesso!");
                         } else {
@@ -202,7 +206,6 @@ export default function Aside() {
         //console.log("Editar", itemDados?.editar);
 
     }, [itemDados, formacaoDados, projetoDados]);
-
     return (
         <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
 

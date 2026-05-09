@@ -128,7 +128,10 @@ class FormacaoController extends Controller
 
             $formacao->save();
 
-            return response()->json(['message' => 'Atualizado com sucesso!', 'data' => $formacao], 200);
+            return response()->json([
+                'message' => 'Atualizado com sucesso!', 
+                'data' => $formacao
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro ao editar a formação.',

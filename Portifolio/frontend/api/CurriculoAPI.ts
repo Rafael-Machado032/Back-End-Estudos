@@ -27,7 +27,7 @@ export async function BuscarCurriculoAction() {
         if (!res.ok) return null;
         const dadosDoBanco = await res.json();
         return {
-            curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url
+            curriculo_url_servidor: dadosDoBanco
         };
     } catch {
         return null;
@@ -52,7 +52,7 @@ export async function CriarCurriculoAction(formData: FormData) {
 
         return {
             success: true,
-            curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url,
+            curriculo_url_servidor: dadosDoBanco.data,
         };
 
     } catch {
@@ -77,7 +77,7 @@ export async function EditarCurriculoAction(id: string | number, formData: FormD
         revalidatePath('/', 'layout');
         return {
             success: true,
-            dados: dadosDoBanco.dados?.curriculo_url,
+            curriculo_url_servidor: dadosDoBanco.data,
         };
 
     } catch {

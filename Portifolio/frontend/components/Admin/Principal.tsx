@@ -14,7 +14,7 @@ export default function Principal() {
     const { formacaoDados } = useFormacao();
     const { projetoDados } = useProjeto();
     const { itemDados } = useItem();
-    
+
     console.log("Resposta do Cotext Curriculo", curriculoDados);
 
 
@@ -44,7 +44,7 @@ export default function Principal() {
                     {
                         curriculoDados?.curriculo_url_servidor != null ? (
                             <div className='flex justify-between items-center p-4 rounded-xl border border-[#22c55e] bg-[#22c55e1a]'>
-                                <span>{curriculoDados?.curriculo_url_servidor.split('/').pop()}</span>
+                                <span>{curriculoDados.curriculo_url_servidor.split('/').pop()}</span>
                                 <BaixarCVADM />
                             </div>
                         ) : null
