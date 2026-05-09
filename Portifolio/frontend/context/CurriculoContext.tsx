@@ -3,7 +3,9 @@
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 export interface Curriculo {
-    curriculo_url_servidor: string;
+    id: string;
+    curriculo_url: string;
+    updated_at: string;
 }
 
 interface CurriculoContextoTipo {

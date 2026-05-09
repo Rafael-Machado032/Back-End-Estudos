@@ -38,7 +38,7 @@ class CurriculoController extends Controller
 
             return response()->json([
                 'message' => 'Criado com sucesso!',
-                'data'    => $dadosCurriculo->curriculo_url, // Retorna a linha criada, incluindo o caminho do arquivo
+                'data'    => $dadosCurriculo, // Retorna a linha criada, incluindo o caminho do arquivo
             ], 201);
         } catch (\Exception $e) {
             // 4. CLEANUP (LIMPEZA)
@@ -69,13 +69,13 @@ class CurriculoController extends Controller
         return response()->json([
             'debug_request' => $request->all(),
             'message' => 'Atualizado!',
-            'data' => $curriculo->curriculo_url
+            'data' => $curriculo
         ], 200);
     }
 
     public function show(Curriculo $curriculo)
     {
-        return response()->json($curriculo->curriculo_url, 200);
+        return response()->json($curriculo, 200);
     }
 
 }

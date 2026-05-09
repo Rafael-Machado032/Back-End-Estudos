@@ -66,7 +66,6 @@ export default function Aside() {
                 success: boolean;
                 dados?: object;
                 error?: string;
-                curriculo_url_servidor: string;
             }
 
             let resposta: ApiResponse = { success: false };
@@ -136,14 +135,13 @@ export default function Aside() {
                     alert("Preencha todos os campos do diploma.");
                 }
 
-            } else if (itemDados.tipo === "curriculo"){
+            } else if (itemDados.tipo === "curriculo") {
                 if (curriculo && curriculo.size > 0) {
-                    if (!curriculoDados?.curriculo_url_servidor) {
+                    if (!curriculoDados?.curriculo_url) {
                         resposta = await CriarCurriculoAction(formData);
                         if (resposta.success) {
                             console.log("Resposta do Banco para Contexto Curriculo CRIAR", resposta.dados);
-                            const curriculo = resposta.curriculo_url_servidor
-                            setCurriculoDados({ curriculo_url_servidor: curriculo } )
+                            setCurriculoDados(resposta.dados as Curriculo)
                             alert("Currículo criado com sucesso!");
                         } else {
                             alert("Erro ao criar currículo");
@@ -162,7 +160,7 @@ export default function Aside() {
                     alert("Selecione um arquivo de currículo.");
                 }
 
-            }else {
+            } else {
                 alert("Erro de seleção!")
             }
         } catch (error) {

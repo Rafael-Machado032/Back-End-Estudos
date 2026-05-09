@@ -27,7 +27,7 @@ export async function BuscarCurriculoAction() {
         if (!res.ok) return null;
         const dadosDoBanco = await res.json();
         return {
-            curriculo_url_servidor: dadosDoBanco
+            dados: dadosDoBanco
         };
     } catch {
         return null;
@@ -52,7 +52,7 @@ export async function CriarCurriculoAction(formData: FormData) {
 
         return {
             success: true,
-            curriculo_url_servidor: dadosDoBanco.data,
+            dados: dadosDoBanco.data,
         };
 
     } catch {
@@ -77,28 +77,9 @@ export async function EditarCurriculoAction(id: string | number, formData: FormD
         revalidatePath('/', 'layout');
         return {
             success: true,
-            curriculo_url_servidor: dadosDoBanco.data,
+            dados: dadosDoBanco.data,
         };
 
-    } catch {
-        return { success: false };
-    }
-}
-
-// 4. DELETAR (COM AUTENTICAÇÃO - Privado)
-export async function DeletarCurriculoAction(id: string | number) {
-    try {
-        const headers = await getAuthHeaders();
-        const res = await fetch(`${urlBase}/curriculo/${id}`, {
-            method: 'DELETE',
-            headers: headers
-        });
-
-        if (res.ok) {
-            revalidatePath('/', 'layout');
-            return { success: true };
-        }
-        return { success: false };
     } catch {
         return { success: false };
     }

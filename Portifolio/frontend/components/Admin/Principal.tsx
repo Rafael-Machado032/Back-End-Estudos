@@ -15,8 +15,12 @@ export default function Principal() {
     const { projetoDados } = useProjeto();
     const { itemDados } = useItem();
 
+    console.log("Resposta do Cotext Projeto", projetoDados);
+    console.log("Resposta do Cotext Formação", formacaoDados);
     console.log("Resposta do Cotext Curriculo", curriculoDados);
 
+    // O split('-').reverse().join('/') transforma 2026-05-05 em 05/05/2026
+    const dataFormatada = curriculoDados?.updated_at?.split('T')[0].split('-').reverse().join('/');
 
     return (
         <div className='w-full md:w-2/3 px-8 ml-6 flex flex-col gap-4 mt-42'>
@@ -42,9 +46,14 @@ export default function Principal() {
                 <div>
                     <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-4'>Currículo Disponível</h2>
                     {
-                        curriculoDados?.curriculo_url_servidor != null ? (
+                        curriculoDados?.curriculo_url != null ? (
                             <div className='flex justify-between items-center p-4 rounded-xl border border-[#22c55e] bg-[#22c55e1a]'>
-                                <span>{curriculoDados.curriculo_url_servidor.split('/').pop()}</span>
+                                <span>Curriculo: 
+                                            <p className="text-[#aaaaaa]">{curriculoDados.curriculo_url.split('/').pop()}</p>
+                                </span>
+                                <span>Data da ultima atualização: 
+                                            <p className="text-[#aaaaaa]">{dataFormatada}</p>
+                                </span>
                                 <BaixarCVADM />
                             </div>
                         ) : null
