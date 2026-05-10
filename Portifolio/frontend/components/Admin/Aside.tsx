@@ -60,9 +60,7 @@ export default function Aside() {
         flushSync(() => { // Solução para poder usar o carregamento
             setItemDados({ carregando: true })
         });
-
         // console.log("Carregando ASIDE",itemDados.carregando);
-
         try {
             const certificado = formData.get("certificado_form") as File;
             const curriculo = formData.get("curriculo_form") as File;
@@ -194,10 +192,8 @@ export default function Aside() {
             };
             // Use setTimeout ou deixe direto se não houver conflito de render
             preencherEditar();
-
         }
         //console.log("Editar", itemDados?.editar);
-
     }, [itemDados, formacaoDados, projetoDados]);
     return (
         <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
