@@ -16,7 +16,6 @@ class FormacaoController extends Controller
         try {
 
             return response()->json(Formacao::all(), 200);
-            
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro ao mostrar todos projeto.',
@@ -45,7 +44,7 @@ class FormacaoController extends Controller
                 try {
                     $cld = new Cloudinary(env('CLOUDINARY_URL'));
                     $uploadApi = new UploadApi();
-                    
+
                     $response = $uploadApi->upload($file->getRealPath(), [
                         'resource_type' => 'auto',
                         'folder' => 'certificados'
@@ -129,7 +128,7 @@ class FormacaoController extends Controller
             $formacao->save();
 
             return response()->json([
-                'message' => 'Atualizado com sucesso!', 
+                'message' => 'Atualizado com sucesso!',
                 'data' => $formacao
             ], 200);
         } catch (\Exception $e) {
@@ -142,17 +141,20 @@ class FormacaoController extends Controller
 
     public function destroy(Formacao $formacao)
     {
-        // 1. Apaga o PDF original
-        if ($formacao->certificado_url) {
-            Storage::disk('public')->delete($formacao->certificado_url);
-        }
-        // 2. Apaga a imagem da capa (IMPORTANTE)
-        if ($formacao->capa_url) {
-            Storage::disk('public')->delete($formacao->capa_url);
-        }
-        // 3. Remove o registro do banco de dados
-        $formacao->delete();
         try {
+            $pathOriginalCertificado = $formacao->getRawOriginal('certificado_url');
+            $pathOriginalCapa = $formacao->getRawOriginal('capa_url');
+
+            if ($pathOriginalCertificado && Storage::disk('public')->exists($pathOriginalCertificado)) {
+                Storage::disk('public')->delete($pathOriginalCertificado);
+            }
+
+            if ($pathOriginalCapa && Storage::disk('public')->exists($pathOriginalCapa)) {
+                Storage::disk('public')->delete($pathOriginalCapa);
+            }
+
+            $formacao->delete();
+
             return response()->json(['message' => 'Removido com sucesso'], 200);
         } catch (\Exception $e) {
             return response()->json([

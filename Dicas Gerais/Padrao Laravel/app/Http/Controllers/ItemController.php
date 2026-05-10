@@ -72,11 +72,6 @@ class ItemController extends Controller
                 'dados'    => $registro // Não esquesa que de usar .dados para pegar as irfomações do item criado
             ], 201);
         } catch (\Exception $e) {
-            // 4. CLEANUP (LIMPEZA)
-            // Se subiu o arquivo mas deu erro no banco, apaga o arquivo
-            if ($caminhoArquivo) {
-                Storage::disk('public')->delete($caminhoArquivo);
-            }
 
             return response()->json([
                 'error'   => 'Erro interno no servidor.',
@@ -139,9 +134,10 @@ class ItemController extends Controller
     // Remove o item
     public function destroy(Item $item)
     {
+        $pathOriginal = $item->getRawOriginal('coluna_arquivo');
         // Ajustado para 'coluna_arquivo'
-        if ($item->getRawOriginal('coluna_arquivo')) {
-            Storage::disk('public')->delete($item->getRawOriginal('coluna_arquivo'));
+        if ($pathOriginal && Storage::disk('public')->exists($pathOriginal)) {
+            Storage::disk('public')->delete($pathOriginal);
         }
 
         $item->delete();

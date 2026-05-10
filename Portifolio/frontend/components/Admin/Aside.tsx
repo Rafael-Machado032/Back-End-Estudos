@@ -2,6 +2,7 @@
 import Publicar from "../button/Publicar"
 import LimparCancelar from "../button/LimparCancelar"
 import { useState, useEffect } from "react";
+import { flushSync } from "react-dom"; // Ignora a regra do async
 import { useProjeto } from "@/context/ProjetoContext"; //Estado de projeto
 import { useFormacao } from "@/context/FormacaoContext"; //Estado de formacao
 import { useCurriculo } from "@/context/CurriculoContext" //Estado de curriculo
@@ -56,7 +57,9 @@ export default function Aside() {
     };
 
     const publicar = async (formData: FormData) => {
-        await setItemDados({carregando:true})
+        flushSync(() => { // Solução para poder usar o carregamento
+            setItemDados({ carregando: true })
+        });
         
         console.log("Carregando ASIDE",itemDados.carregando);
 
