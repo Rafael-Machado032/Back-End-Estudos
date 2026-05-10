@@ -199,17 +199,16 @@ export default function Aside() {
         <aside className="flex flex-col w-full md:w-1/3 h-min sticky top-0 mt-34">
 
             <div className='flex flex-col gap-4 w-full max-w-100 bg-[#1e293b] p-8 rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)]'>
-                <form action={publicar}>
                     <h2 className='text-[#6366f1] text-lg font-bold border-b border-[#334155] pb-1 mb-2'>Gerenciar Conteúdo</h2>
                     <div className='flex flex-col gap-1'>
                         <label className='text-[#94a3b8] text-sm font-bold'>Tipo de Item</label>
-                        <select onChange={Selecionar} value={itemDados.tipo} className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4'>
+                        <select onChange={Selecionar} value={itemDados.tipo} className='border border-[#374151] bg-[#0f172a] rounded-lg py-2 px-4' name="selecionar">
                             <option value="projeto">🚀 Projeto</option>
                             <option value="formacao">🎓 Diploma / Certificado</option>
                             <option value="curriculo"> 📄 Currículo</option>
                         </select>
                     </div>
-
+                 <form action={publicar}>{/*Sempre mantem o form com os inputs o q não precisar deixe fora} */}
                     {itemDados.tipo === "projeto" ? (
                         <div className="flex flex-col gap-4" key={"bloco-projeto"}>
                             <div className='flex flex-col gap-1'>
