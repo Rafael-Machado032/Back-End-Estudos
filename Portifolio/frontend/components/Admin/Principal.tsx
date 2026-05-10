@@ -15,13 +15,13 @@ export default function Principal() {
     const { projetoDados } = useProjeto();
     const { itemDados } = useItem();
 
-    console.log("Resposta do Cotext Projeto", projetoDados);
-    console.log("Resposta do Cotext Formação", formacaoDados);
-    console.log("Resposta do Cotext Curriculo", curriculoDados);
+    // console.log("Resposta do Cotext Projeto", projetoDados);
+    // console.log("Resposta do Cotext Formação", formacaoDados);
+    // console.log("Resposta do Cotext Curriculo", curriculoDados);
 
     // O split('-').reverse().join('/') transforma 2026-05-05 em 05/05/2026
     const dataFormatada = curriculoDados?.updated_at?.split('T')[0].split('-').reverse().join('/');
-    console.log("Carregando PRINCIPAL ", itemDados.carregando);
+    // console.log("Carregando PRINCIPAL ", itemDados.carregando);
     return (
         <div className='w-full md:w-2/3 px-8 ml-6 flex flex-col gap-4 mt-42'>
             {itemDados?.tipo == "projeto" ? (

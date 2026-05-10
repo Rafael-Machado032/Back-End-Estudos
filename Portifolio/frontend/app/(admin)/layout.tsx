@@ -78,9 +78,9 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
   const buscarFormacao = await BuscarFormacaoAction();
   const buscarProjeto = await BuscarProjetosAction();
   
-  console.log("Resposta do Banco Projeto", buscarProjeto);
-  console.log("Resposta do Banco Formação", buscarFormacao);
-  console.log("Resposta do Banco Curriculo", buscarCurriculo);
+  // console.log("Resposta do Banco Projeto", buscarProjeto);
+  // console.log("Resposta do Banco Formação", buscarFormacao);
+  // console.log("Resposta do Banco Curriculo", buscarCurriculo);
 
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${montserrat.variable} h-full antialiased`}>

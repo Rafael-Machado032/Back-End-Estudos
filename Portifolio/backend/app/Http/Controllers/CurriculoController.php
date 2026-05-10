@@ -31,10 +31,16 @@ class CurriculoController extends Controller
 
             // 3. PERSISTÊNCIA (SALVAR NO BANCO)
             // Mapeie: 'coluna_no_banco' => $dadosValidados['campo_do_form']
-            $dadosCurriculo = Curriculo::create([
-                'id' => "1",
-                'curriculo_url' => $path,
-            ]);
+            // $dadosCurriculo = Curriculo::create([
+            //     'id' => "1",
+            //     'curriculo_url' => $path,
+            // ]);
+
+            $dadosCurriculo = Curriculo::updateOrCreate(
+                ['id' => 1],          // 1º Array: Condição (Procure por este ID)
+                ['curriculo_url' => $path] // 2º Array: Dados (Atualize ou crie com este valor)
+            );
+
 
             return response()->json([
                 'message' => 'Criado com sucesso!',
@@ -47,30 +53,6 @@ class CurriculoController extends Controller
                 'details' => config('app.debug') ? $e->getMessage() : null
             ], 500);
         }
-    }
-
-    public function update(Request $request, Curriculo $curriculo){
-
-        $request->validate([
-            'curriculo_form' => 'required|file|mimes:pdf,doc,docx|max:5120', // Máx 5MB
-        ]);
-
-        if ($request->hasFile('curriculo_form')) {
-            Storage::disk('public')->delete($curriculo->getRawOriginal('curriculo_url'));
-            $file = $request->file('curriculo_form');
-            $nomeOriginal = $file->getClientOriginalName();
-            // storeAs garante que use o nome que você passou
-            $path = $file->storeAs('curriculo', $nomeOriginal, 'public');
-            $curriculo->curriculo_url = $path;
-        }
-
-        $curriculo->save();
-
-        return response()->json([
-            'debug_request' => $request->all(),
-            'message' => 'Atualizado!',
-            'data' => $curriculo
-        ], 200);
     }
 
     public function show(Curriculo $curriculo)

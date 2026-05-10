@@ -48,19 +48,17 @@ Route::middleware('auth:sanctum')->group(function () {
     /* --- CRUD DO ITEM --- */
 
     // Cadastrar (POST)
-    Route::post('/curriculo', [CurriculoController::class, 'store']);
+    Route::post('/curriculo', [CurriculoController::class, 'store']); //No caso cria ou edita configurado no controler
     Route::post('/formacao', [FormacaoController::class, 'store']);
     Route::post('/projeto', [ProjetoController::class, 'store']);
 
     // Atualizar (Usamos POST aqui para o upload de arquivos funcionar 100%)
     // No Front-end, você envia como FormData e adiciona o campo _method = 'PUT' se quiser,
     // mas chamando essa rota POST o Laravel receberá os arquivos corretamente.
-    Route::post('/curriculo/{curriculo}', [CurriculoController::class, 'update']);
     Route::post('/formacao/{formacao}', [FormacaoController::class, 'update']);
     Route::post('/projeto/{projeto}', [ProjetoController::class, 'update']);
 
     // Excluir (DELETE)
-    Route::delete('/curriculo/{curriculo}', [CurriculoController::class, 'destroy']);
     Route::delete('/formacao/{formacao}', [FormacaoController::class, 'destroy']);
     Route::delete('/projeto/{projeto}', [ProjetoController::class, 'destroy']);
 });

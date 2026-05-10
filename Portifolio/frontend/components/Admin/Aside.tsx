@@ -12,7 +12,7 @@ import { Formacao } from "@/context/FormacaoContext"; //Interface de formacao
 import { Curriculo } from "@/context/CurriculoContext";
 import { CriarProjetoAction, EditarProjetoAction } from "@/api/ProjetoAPI";
 import { CriarFormacaoAction, EditarFormacaoAction } from "@/api/FormacaoAPI";
-import { CriarCurriculoAction, EditarCurriculoAction } from "@/api/CurriculoAPI";
+import { CriarCurriculoAction } from "@/api/CurriculoAPI";
 
 export default function Aside() {
 
@@ -25,7 +25,7 @@ export default function Aside() {
     const [demo, setDemo] = useState("");
     const [github, setGithub] = useState("");
 
-    const { curriculoDados, setCurriculoDados } = useCurriculo();
+    const { setCurriculoDados } = useCurriculo();
     const { formacaoDados, setFormacaoDados } = useFormacao();
     const { projetoDados, setProjetoDados } = useProjeto();
     const { itemDados, setItemDados } = useItem();
@@ -60,8 +60,8 @@ export default function Aside() {
         flushSync(() => { // Solução para poder usar o carregamento
             setItemDados({ carregando: true })
         });
-        
-        console.log("Carregando ASIDE",itemDados.carregando);
+
+        // console.log("Carregando ASIDE",itemDados.carregando);
 
         try {
             const certificado = formData.get("certificado_form") as File;
@@ -80,7 +80,7 @@ export default function Aside() {
 
                     if (!itemDados.editar) {
                         resposta = await CriarProjetoAction(formData);
-                        
+
                         if (resposta.success) {
                             // Adiciona o novo projeto na lista global do contexto
                             // resposta.data deve ser o objeto que o Laravel retornou
@@ -142,29 +142,17 @@ export default function Aside() {
 
             } else if (itemDados.tipo === "curriculo") {
                 if (curriculo && curriculo.size > 0) {
-                    if (!curriculoDados?.curriculo_url) {
-                        resposta = await CriarCurriculoAction(formData);
-                        if (resposta.success) {
-                            console.log("Resposta do Banco para Contexto Curriculo CRIAR", resposta.dados);
-                            setCurriculoDados(resposta.dados as Curriculo)
-                            alert("Currículo criado com sucesso!");
-                        } else {
-                            alert("Erro ao criar currículo");
-                        }
+                    resposta = await CriarCurriculoAction(formData);
+                    if (resposta.success) {
+                        console.log("Resposta do Banco para Contexto Curriculo CRIAR", resposta.dados);
+                        setCurriculoDados(resposta.dados as Curriculo)
+                        alert("Currículo enviado com sucesso!");
                     } else {
-                        resposta = await EditarCurriculoAction(1, formData);
-                        if (resposta.success) {
-                            console.log("Resposta do Banco para Contexto Curriculo EDITAR", resposta.dados);
-                            setCurriculoDados(resposta.dados as Curriculo)
-                            alert("Currículo atualizado com sucesso!");
-                        } else {
-                            alert("Erro ao atualizar currículo");
-                        }
+                        alert("Erro ao criar currículo");
                     }
                 } else {
                     alert("Selecione um arquivo de currículo.");
                 }
-
             } else {
                 alert("Erro de seleção!")
             }
@@ -174,8 +162,10 @@ export default function Aside() {
         } finally {
             // 2. Desativa o loading ao terminar (sucesso ou erro)
             setItemDados({ carregando: false })
+            // console.log("Ultimo tipo: ", itemDados.tipo);
         }
     }
+    // console.log("Atual tipo: ", itemDados.tipo);
 
     useEffect(() => {
         // console.log("Estado no Irmão:", itemDados?.carregando);

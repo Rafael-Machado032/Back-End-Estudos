@@ -60,27 +60,3 @@ export async function CriarCurriculoAction(formData: FormData) {
     }
 }
 
-// 3. EDITAR (COM AUTENTICAÇÃO - Privado)
-export async function EditarCurriculoAction(id: string | number, formData: FormData) {
-    try {
-        const headers = await getAuthHeaders();
-        const res = await fetch(`${urlBase}/curriculo/${id}`, {
-            method: 'POST',
-            body: formData,
-            headers: headers
-        });
-
-        if (!res.ok) return { success: false };
-
-        const dadosDoBanco = await res.json();
-        
-        revalidatePath('/', 'layout');
-        return {
-            success: true,
-            dados: dadosDoBanco.data,
-        };
-
-    } catch {
-        return { success: false };
-    }
-}
