@@ -56,7 +56,9 @@ export default function Aside() {
     };
 
     const publicar = async (formData: FormData) => {
-        setItemDados({ carregando: true });
+        await setItemDados({carregando:true})
+        
+        console.log("Carregando ASIDE",itemDados.carregando);
 
         try {
             const certificado = formData.get("certificado_form") as File;
@@ -69,13 +71,13 @@ export default function Aside() {
             }
 
             let resposta: ApiResponse = { success: false };
-
             if (itemDados.tipo === "projeto") {
 
                 if (titulo && tecnologias && descricao && demo) {
 
                     if (!itemDados.editar) {
                         resposta = await CriarProjetoAction(formData);
+                        
                         if (resposta.success) {
                             // Adiciona o novo projeto na lista global do contexto
                             // resposta.data deve ser o objeto que o Laravel retornou
@@ -168,7 +170,7 @@ export default function Aside() {
             alert("Ocorreu um erro inesperado.");
         } finally {
             // 2. Desativa o loading ao terminar (sucesso ou erro)
-            setItemDados({ carregando: false });
+            setItemDados({ carregando: false })
         }
     }
 
