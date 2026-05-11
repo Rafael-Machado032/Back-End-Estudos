@@ -12,7 +12,7 @@ export default function Projeto() {
 
                 {/* Container do Slider */}
                 <motion.div
-                    className="flex gap-6 cursor-grab active:cursor-grabbing"
+                    className="flex gap-6 cursor-grabbing active:cursor-grab "
                     drag="x" // Permite arrastar no eixo X
                     dragConstraints={{ right: 0, left: -600 }} // Ajuste o 'left' conforme o número de cards
                     whileTap={{ cursor: "grabbing" }}

@@ -11,7 +11,6 @@ export default function Trajetoria() {
                     initial={{ opacity: 0, x: -200 }} // Começa invisível e 50px à esquerda
                     whileInView={{ opacity: 1, x: 0 }} // Quando entra no scroll, aparece
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    viewport={{ once: true }} // Anima apenas a primeira vez que vê
                     className='w-full md:w-1/2 flex flex-col gap-6'
                 >
                     <h2 className='text-4xl font-bold after:content-[""] after:block after:w-12 after:h-1 after:bg-[#00f2fe] after:mt-2 font-montserrat'>
@@ -26,7 +25,6 @@ export default function Trajetoria() {
                     initial={{ opacity: 0, x: 200 }} // Começa 50px à direita
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} // Delay de 0.2s para ficar elegante
-                    viewport={{ once: true }}
                     className='w-full md:w-1/2 flex flex-col gap-6 bg-[#16161a] p-8 rounded-2xl border border-[#ffffff0d] shadow-2xl'
                 >
                     <h3 className='font-bold text-xl'>Stack Técnica</h3>

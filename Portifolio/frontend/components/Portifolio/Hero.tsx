@@ -27,7 +27,7 @@ export default function Hero() {
 
             {/* 1. Terminal Text */}
             <motion.div
-                initial="hidden" animate="visible" variants={blurIn}
+                initial="hidden" whileInView="visible" variants={blurIn}
                 className="font-fira text-[#00f2fe] mb-3.75 text-[1.1rem]"
             >
                 <Typewriter
@@ -46,7 +46,7 @@ export default function Hero() {
             {/* 2. Nome Principal (Desfocado) */}
             <motion.h1
                 initial="hidden"
-                animate="visible"
+                whileInView="visible"
                 variants={blurIn}
                 transition={{ delay: 0.2 }}
                 className='font-montserrat text-7xl font-black mb-2.5'
@@ -57,7 +57,7 @@ export default function Hero() {
             {/* 3. Descrição (Desfocada) */}
             <motion.p
                 initial="hidden"
-                animate="visible"
+                whileInView="visible"
                 variants={blurIn}
                 transition={{ delay: 0.4 }}
                 className="text-[19px] text-[#a8a8b3] max-w-175 mb-7.5"
@@ -69,7 +69,7 @@ export default function Hero() {
             {/* 4. Botões (Entrada suave) */}
             <motion.div
                 initial="hidden"
-                animate="visible"
+                whileInView="visible"
                 variants={blurIn}
                 transition={{ delay: 0.6 }}
                 className="flex gap-4"

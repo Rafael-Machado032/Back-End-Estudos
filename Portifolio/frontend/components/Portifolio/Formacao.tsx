@@ -34,7 +34,6 @@ export default function Formacao() {
                 <motion.h2
                     initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
                     className='text-4xl font-bold after:content-[""] after:block after:w-12 after:h-1 after:bg-[#00f2fe] after:mt-2 mb-12'
                 >
                     Formação
@@ -42,10 +41,11 @@ export default function Formacao() {
 
                 {/* Grid Responsivo Profissional */}
                 <motion.div
-                    variants={containerVariants}
+                    
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, amount: 0.1 }}
+                    variants={containerVariants}
+                    viewport={{ amount: 0.1 }}
                     // grid-cols-1 (celular), grid-cols-2 (tablet), grid-cols-3 (desktop)
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
