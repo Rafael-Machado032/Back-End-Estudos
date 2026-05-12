@@ -1,10 +1,11 @@
 'use client';
 import { motion } from "motion/react";
 import Cont_Formacao from "../Container/Cont_Formacao";
+import { useFormacao } from "@/context/FormacaoContext"
 
 export default function Formacao() {
-    // Simulando sua lista de certificados (depois virá do seu Contexto/Laravel)
-    const certificados = [1, 2, 3, 4, 5, 6];
+
+    const { formacaoDados } = useFormacao();
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -29,7 +30,7 @@ export default function Formacao() {
 
 
     return (
-        <section className='flex justify-center px-6 py-20 text-[#e1e1e6] bg-[#111111c5] bg-radial bg-[radial-gradient(circle_at_center,rgba(113,89,193,0.1)_0%,transparent_70%)] scroll-mt-16' id="formacao">
+        <section className='flex justify-center px-6 py-10 text-[#e1e1e6] bg-[#111111c5] bg-radial bg-[radial-gradient(circle_at_center,rgba(113,89,193,0.1)_0%,transparent_70%)] scroll-mt-16' id="formacao">
             <div className='max-w-7xl w-full'>
                 <motion.h2
                     initial={{ opacity: 0, x: -20 }}
@@ -47,11 +48,11 @@ export default function Formacao() {
                     variants={containerVariants}
                     viewport={{ amount: 0.1 }}
                     // grid-cols-1 (celular), grid-cols-2 (tablet), grid-cols-3 (desktop)
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
                 >
-                    {certificados.map((item) => (
+                    {formacaoDados.map((item) => (
                         <motion.div
-                            key={item}
+                            key={item.id}
                             variants={cardVariants}
                             whileHover={{
                                 y: -8,
@@ -60,7 +61,7 @@ export default function Formacao() {
                             }}
                             className="w-full"
                         >
-                            <Cont_Formacao />
+                            <Cont_Formacao key={item.id} formacaoDados={item} />
                         </motion.div>
                     ))}
                 </motion.div>
