@@ -1,8 +1,10 @@
 'use client';
 import { motion } from "motion/react";
 import Cont_Projeto from "../Container/Cont_Projeto";
+import { useProjeto } from "@/context/ProjetoContext"
 
 export default function Projeto() {
+    const { projetoDados } = useProjeto();
     return (
         <section className='flex justify-center px-6 py-10 text-[#e1e1e6] overflow-hidden scroll-mt-16' id="projetos" >
             <div className='max-w-7xl w-full'>
@@ -12,17 +14,13 @@ export default function Projeto() {
 
                 {/* Container do Slider */}
                 <motion.div
-                    className="flex gap-6 cursor-grab"
+                    className="flex justify-center gap-6 cursor-grab active:cursor-grabbing"
                     drag="x" // Permite arrastar no eixo X
-                    dragConstraints={{ right: 0, left: -600 }} // Ajuste o 'left' conforme o número de cards
                     whileTap={{ cursor: "grabbing" }}
                 >
-                    {/* Aqui você pode usar um .map se tiver uma lista, ou repetir o componente */}
-                    <div className="min-w-87.5"> <Cont_Projeto /> </div>
-                    <div className="min-w-87.5"> <Cont_Projeto /> </div>
-                    <div className="min-w-87.5"> <Cont_Projeto /> </div>
-                    <div className="min-w-87.5"> <Cont_Projeto /> </div>
-                    <div className="min-w-87.5"> <Cont_Projeto /> </div>
+                    {projetoDados.map(item => (
+                        <Cont_Projeto key={item.id} projetoDados={item} />
+                    ))}
                 </motion.div>
 
                 {/* Dica visual para o usuário */}
