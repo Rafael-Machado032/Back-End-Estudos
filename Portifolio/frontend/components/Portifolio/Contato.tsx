@@ -25,7 +25,7 @@ export default function Contato() {
                 <div className="flex flex-col gap-4 justify-center items-center">
                     <div className="flex flex-col sm:flex-row gap-4">
                         <motion.div
-                            initial={{ opacity: 0, x: -100 }}
+                            initial={{ opacity: 0, x: -50 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} // Delay de 0.2s para ficar elegante
                         >
@@ -41,7 +41,7 @@ export default function Contato() {
                         </motion.div>
 
                         <motion.div
-                            initial={{ opacity: 0, x: 100 }}
+                            initial={{ opacity: 0, x: 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} // Delay de 0.2s para ficar elegante
                         >

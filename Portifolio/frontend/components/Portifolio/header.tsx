@@ -9,7 +9,7 @@ export default function Header() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenu, setMobileMenu] = useState(false);
 
-    const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    const handleScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => { // Função de Clique e Rolagem Suave
         e.preventDefault();
         const element = document.getElementById(id);
 
@@ -20,6 +20,7 @@ export default function Header() {
             // Atualiza a URL sem o # (ou apenas com o último ID)
             window.history.pushState(null, '', `#${id}`);
         }
+        setMobileMenu(false)
     };
 
     // Monitora o scroll para mostrar/esconder o fundo da navbar
