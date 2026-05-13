@@ -39,9 +39,13 @@ export default function Projeto() {
     return (
         <section className='flex justify-center px-6 py-10 text-[#e1e1e6] overflow-hidden scroll-mt-16' id="projetos" >
             <div className='w-full'>
-                <h2 className=' max-w-7xl mx-auto text-4xl font-bold after:content-[""] after:block after:w-12 after:h-1 after:bg-[#00f2fe] after:mt-2 mb-10'>
+                <motion.h2
+                    initial={{ opacity: 0, x: -1000 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    className='max-w-7xl mx-auto text-4xl font-bold after:content-[""] after:block after:w-12 after:h-1 after:bg-[#00f2fe] after:mt-2 mb-10'
+                >
                     Projetos em Destaque
-                </h2>
+                </motion.h2>
 
                 {/* Container do Slider */}
                 <motion.div
