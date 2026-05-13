@@ -63,7 +63,7 @@ export default function Projeto() {
                 </motion.div>
 
                 {/* Dica visual para o usuário */}
-                <p className="text-sm text-[#a8a8b3] mt-6 animate-pulse max-w-7xl mx-auto">
+                <p className="text-sm text-center sm:text-start text-[#a8a8b3] mt-6 animate-pulse max-w-7xl mx-auto">
                     ← Arraste para explorar →
                 </p>
             </div>

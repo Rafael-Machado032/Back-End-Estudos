@@ -48,7 +48,7 @@ export default function Formacao() {
                     variants={containerVariants}
                     viewport={{ amount: 0.1 }}
                     // grid-cols-1 (celular), grid-cols-2 (tablet), grid-cols-3 (desktop)
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
                 >
                     {formacaoDados.map((item) => (
                         <motion.div
@@ -59,7 +59,7 @@ export default function Formacao() {
                                 scale: 1.02,
                                 transition: { duration: 0.2 }
                             }}
-                            className="w-full"
+                            className="w-full flex justify-center"
                         >
                             <Cont_Formacao key={item.id} formacaoDados={item} />
                         </motion.div>

@@ -4,7 +4,7 @@ export default function Linkedin({ href }: { href: string }) {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#0077b5] text-white rounded-lg font-bold hover:bg-[#006097] hover:shadow-[0_0_20px_rgba(0,119,181,0.5)] hover:scale-105 transition-all duration-300"
+            className="flex items-center gap-2 px-8 py-4 bg-[#0077b5] text-white rounded-lg font-bold hover:bg-[#006097] hover:shadow-[0_0_20px_rgba(0,119,181,0.5)] hover:scale-105 transition-all duration-300"
         >
             {/* SVG oficial do LinkedIn */}
             <svg

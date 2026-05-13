@@ -4,7 +4,7 @@ export default function Github({ href }: { href: string }) {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-5 py-3 bg-[#161b22] text-white border border-gray-700 rounded-lg font-medium hover:border-[#afafaf] hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 transition-all duration-300"
+            className="flex items-center gap-2 px-8 py-4 bg-[#161b22] text-white border border-gray-700 rounded-lg font-medium hover:border-[#afafaf] hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:scale-105 transition-all duration-300"
         >
             {/* SVG oficial do GitHub */}
             <svg height="18" width="18" viewBox="0 0 16 16" fill="currentColor">

@@ -49,7 +49,7 @@ export default function Hero() {
                 whileInView="visible"
                 variants={blurIn}
                 transition={{ delay: 0.2 }}
-                className='font-montserrat text-7xl font-black mb-2.5'
+                className='font-montserrat text-5xl sm:text-7xl font-black mb-2.5'
             >
                 Rafael <span className='bg-linear-to-r from-[#7159c1] via-[#00f2fe] to-[#7159c1] bg-clip-text text-transparent animate-shimmer'>Machado</span>
             </motion.h1>
@@ -72,7 +72,7 @@ export default function Hero() {
                 whileInView="visible"
                 variants={blurIn}
                 transition={{ delay: 0.6 }}
-                className="flex gap-4"
+                className="flex flex-col sm:flex-row gap-4"
             >
                 <BaixarCV />
                 <WhatsApp />
