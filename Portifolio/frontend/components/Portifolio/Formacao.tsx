@@ -51,7 +51,6 @@ export default function Formacao() {
                     whileInView="visible"
                     variants={containerVariants}
                     viewport={{ amount: 0.1 }}
-                    // grid-cols-1 (celular), grid-cols-2 (tablet), grid-cols-3 (desktop)
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
                 >
                     {formacaoDados.map((item) => (
