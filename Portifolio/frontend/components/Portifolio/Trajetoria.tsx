@@ -38,6 +38,7 @@ export default function Trajetoria() {
                     className='w-full md:w-1/2 flex flex-col gap-6 bg-[#16161a] p-8 rounded-2xl border border-[#ffffff0d] shadow-2xl'
                 >
                     <h3 className='font-bold text-xl'>Stack Técnica</h3>
+                    
                     <div className='flex flex-wrap gap-3'>
                         {/* Exemplo de animação individual nas badges (opcional) */}
                         {stack.map((tech, index) => (

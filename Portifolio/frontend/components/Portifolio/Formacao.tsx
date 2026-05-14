@@ -23,7 +23,6 @@ export default function Formacao() {
             y: 0,
             transition: {
                 duration: 0.5,
-                // ease: [0.22, 1, 0.36, 1] // Opcional: usando valores numéricos que o TS sempre aceita
             }
         }
     };
