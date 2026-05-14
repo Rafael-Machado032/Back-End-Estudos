@@ -28,7 +28,7 @@
 - layout:           Ativa animações automáticas de layout. O elemento anima suavemente se o seu tamanho ou posição mudar devido a alterações no CSS ao redor.
 - layoutId:         Anima a transição de um elemento entre componentes diferentes. Se o componente antigo sumir e um novo surgir com o mesmo layoutId, o Motion cria uma transição fluida entre eles (Hero animation).
 
-## 🎭 initial, animate, exit, whileHover, whileTap, whileFocus, whileDrag, whileInView, viewport(Tem propriedades adicionais na linha 139)
+## 🎭 initial, animate, exit, whileHover, whileTap, whileFocus, whileDrag, whileInView
 
  *Atalhos de Posição e Transformação (Mais Usados)*
 - x:                                    Deslocamento horizontal (ex: 100, "-50%").
