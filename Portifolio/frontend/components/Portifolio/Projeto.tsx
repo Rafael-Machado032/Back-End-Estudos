@@ -6,8 +6,8 @@ import { useProjeto } from "@/context/ProjetoContext"
 
 export default function Projeto() {
     const { projetoDados } = useProjeto();
-    const divRef = useRef<HTMLInputElement>(null);
-    const x = useMotionValue(-120);
+    const divRef = useRef<HTMLDivElement>(null);
+    const x = useMotionValue(0);
 
     const projetoDublicado = [...projetoDados, ...projetoDados]
 
