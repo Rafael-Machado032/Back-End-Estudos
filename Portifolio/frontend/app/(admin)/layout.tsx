@@ -83,7 +83,7 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
   // console.log("Resposta do Banco Curriculo", buscarCurriculo);
 
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${montserrat.variable} h-full antialiased`}>
+    <html lang="pt-BR" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${montserrat.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <CurriculoProvedor curriculoInicial={buscarCurriculo?.dados}>
           <FormacaoProvedor formacaoInicial={buscarFormacao.dados}>
