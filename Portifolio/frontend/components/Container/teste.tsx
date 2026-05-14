@@ -39,6 +39,8 @@ export default function Trajetoria() {
             }
         }
     };
+    
+
 
     return (
         <section className='flex justify-center items-center px-6 py-40 text-[#e1e1e6] overflow-hidden scroll-mt-16 min-h-screen md:h-screen relative' id="trajetoria">
@@ -68,7 +70,7 @@ export default function Trajetoria() {
 
 
 
-                
+
 
                 {/* Lado Direito */}
                 <motion.div
@@ -89,31 +91,34 @@ export default function Trajetoria() {
                     >
                         {stack.map((tech, index) => {
                             const pos = posicoesEstaveis[index] || { x: 0, y: 0, rotate: 0 };
+                            const cardVariantes = {
+                                hidden: {
+                                    opacity: 0,
+                                    x: pos.x,
+                                    y: pos.y,
+                                    rotate: pos.rotate,
+                                    scale: 0.2
+                                },
+                                visible: {
+                                    opacity: 1,
+                                    x: 0,
+                                    y: 0,
+                                    rotate: 0,
+                                    scale: 1,
+                                    transition: {
+                                        
+                                        stiffness: 85,
+                                        damping: 14
+                                    }
+                                }
+                            }
 
                             return (
                                 <motion.span
                                     key={index}
-                                    variants={{
-                                        hidden: {
-                                            opacity: 0,
-                                            x: pos.x,
-                                            y: pos.y,
-                                            rotate: pos.rotate,
-                                            scale: 0.2
-                                        },
-                                        visible: {
-                                            opacity: 1,
-                                            x: 0,
-                                            y: 0,
-                                            rotate: 0,
-                                            scale: 1,
-                                            transition: {
-                                                type: "spring",
-                                                stiffness: 85,
-                                                damping: 14
-                                            }
-                                        }
-                                    }}
+                                    variants={cardVariantes}
+                                    initial="hidden"
+                                    whileInView="visible"
                                     className='bg-[#ffffff0d] px-4 py-1 rounded-md text-sm border transition-all duration-200 ease-in-out border-[#ffffff1a] hover:border-[#00f2fe] hover:text-[#00f2fe] cursor-default whitespace-nowrap'
                                 >
                                     {tech}
