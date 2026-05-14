@@ -35,7 +35,6 @@ export default function Formacao() {
                 <motion.h2
                     initial={{ opacity: 0, x: -100 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    
                     transition={{
                         type: "tween",             // Desativa a física de mola
                         ease: [0.68, -0.75, 0.27, 1.75], // Curva que força o elemento a passar do ponto e voltar

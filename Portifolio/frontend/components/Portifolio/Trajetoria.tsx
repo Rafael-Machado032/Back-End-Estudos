@@ -1,7 +1,17 @@
 'use client'; // Necessário para animações
 import { motion } from "motion/react";
+import { useProjeto } from "@/context/ProjetoContext"
 
 export default function Trajetoria() {
+
+    const { projetoDados } = useProjeto()
+
+    const stack = [...new Set(projetoDados.flatMap((item) => item.tecnologia.split(",")).map((tech) => tech.trim()))];
+
+
+    console.log("Retorno do stak", stack);
+
+
     return (
         <section className='flex justify-center items-center px-6 py-40 text-[#e1e1e6] overflow-hidden scroll-mt-16 h-screen' id="trajetoria">
             <div className='flex justify-center items-center max-w-7xl flex-col md:flex-row gap-10'>
@@ -30,8 +40,8 @@ export default function Trajetoria() {
                     <h3 className='font-bold text-xl'>Stack Técnica</h3>
                     <div className='flex flex-wrap gap-3'>
                         {/* Exemplo de animação individual nas badges (opcional) */}
-                        {["Next.js", "React", "TypeScript", "Laravel (PHP)", "MySQL", "Tailwind"].map((tech, index) => (
-                            <span key={index} className='bg-[#ffffff0d] px-4 py-1 rounded-md text-sm border border-[#ffffff1a]'>
+                        {stack.map((tech, index) => (
+                            <span key={index} className='bg-[#ffffff0d] px-4 py-1 rounded-md text-sm border transition-all duration-200 ease-in-out border-[#ffffff1a] hover:border-[#00f2fe] hover:text-[#00f2fe]'>
                                 {tech}
                             </span>
                         ))}
