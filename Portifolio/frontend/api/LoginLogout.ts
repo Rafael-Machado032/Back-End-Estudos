@@ -1,5 +1,4 @@
 'use server';
-
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -7,6 +6,7 @@ const API_URL = process.env.API_URL;
 
 // --- LOGIN ---
 export async function ActionLogin(formData: FormData) {
+    
     const password = formData.get('senha_form')?.toString();
 
     try {
