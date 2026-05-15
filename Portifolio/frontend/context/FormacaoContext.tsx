@@ -1,13 +1,15 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
-interface Formacao {
+export interface Formacao { //exporto para usar em outros arquivos, resolver o tipo do projetoDados
     id: string;
     titulo: string;
-    tecnologia: string;
+    credencial: string;
     descricao: string;
-    certificado_url_servidor: string;
+    certificado_url: string;
+    capa_url: string;
+    curso_url: string;
 }
 
 // 1. Remova a função de adicionar do contrato
@@ -18,37 +20,21 @@ interface FormacaoContextoTipo {
 
 const FormacaoContexto = createContext<FormacaoContextoTipo | undefined>(undefined);
 
-export function FormacaoProvedor({ children, formacaoInicial }: { children: ReactNode, formacaoInicial?: Formacao[] }) {
+export function FormacaoProvedor({ children, formacaoInicial = [] }: { children: ReactNode, formacaoInicial?: Formacao[] }) {
+    // 1. Estado nasce com a lista do Laravel ou um array vazio (evita quebra no .map)
+    const [formacaoDados, setFormacaoDados] = useState<Formacao[]>(formacaoInicial);
 
-    const [formacaoDados, setFormacaoDados] = useState<Formacao[]>(() => {
-        if (typeof window === 'undefined') return formacaoInicial || [];
-        try {
-            const salvo = localStorage.getItem('@Portifolio:Formacao');
-            return salvo ? JSON.parse(salvo) : (formacaoInicial || []);
-        } catch { return formacaoInicial || []; }
-    });
-
-    // Sincronização: Se o dado no Laravel mudar, o site atualiza
-    const [prevFormacaoInicial, setPrevFormacaoInicial] = useState(formacaoInicial);
-
-    if (formacaoInicial !== prevFormacaoInicial) {
-        setPrevFormacaoInicial(formacaoInicial);
-        if (JSON.stringify(formacaoInicial) !== JSON.stringify(formacaoDados)) {
-            setFormacaoDados(formacaoInicial || []);
-        }
-    }
-
-    useEffect(() => {
-        localStorage.setItem('@Portifolio:Formacao', JSON.stringify(formacaoDados));
-    }, [formacaoDados]);
-
-    // 2. O useMemo agora só passa a lista e a função de atualizar
-    const formacaoContextoValor = useMemo(() => ({
+    // 3. Memorização para performance
+    const FormacaoContextoValor = useMemo(() => ({
         formacaoDados,
-        setFormacaoDados
+        setFormacaoDados,
     }), [formacaoDados]);
-
-    return <FormacaoContexto.Provider value={formacaoContextoValor}>{children}</FormacaoContexto.Provider>;
+    
+    return (
+        <FormacaoContexto.Provider value={FormacaoContextoValor}>
+            {children}
+        </FormacaoContexto.Provider>
+    );
 }
 
 export const useFormacao = () => {

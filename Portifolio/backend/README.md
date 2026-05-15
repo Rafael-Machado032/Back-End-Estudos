@@ -56,3 +56,39 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Instalação de Efeitos
+
+*Cloudinary*
+Transforma pdf e url em imagem para exibição dos cards
+Cloudinary PHP SDK é api que faz conversão do pdf e url em imagem
+```bash
+    composer require cloudinary/cloudinary_php
+```
+Não foi instalado para laravel pois por enquato não é compativel com a versão novo
+No arquivo .env 
+```ini
+    CLOUDINARY_URL=cloudinary://sua_key:seu_secret@seu_cloud_name
+```
+Esse comando retorna a imagem do pdf
+```php
+    use Cloudinary\Api\Upload\UploadApi;
+
+    $upload = (new UploadApi())->upload(storage_path('app/public/' . $pathPDF), [
+        'resource_type' => 'auto'
+    ]);
+```
+
+## Certificado SSL
+Por padrão o windons não conversa com os certificados PHP foi baixado o arquivo no link
+```http
+curl.se/ca/cacert.pem
+```
+e inserido no caminho C:\php\extras\ssl\cacert.pem
+No PHP.ini foi modificado onde retira o ";" e insere o caminho do certificado
+
+curl.cainfo = "C:\php\extras\ssl\cacert.pem"
+
+Faca o mesmo no
+
+openssl.cafile = "C:\php\extras\ssl\cacert.pem"

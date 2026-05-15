@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fira_Code, Roboto, Montserrat } from "next/font/google";
-import "./globals.css";
+import { Geist, Geist_Mono, Fira_Code, Montserrat } from "next/font/google";
+import "../globals.css";
 import { CurriculoProvedor } from "@/context/CurriculoContext";
 import { FormacaoProvedor } from "@/context/FormacaoContext";
 import { ProjetoProvedor } from "@/context/ProjetoContext";
+import { ItemProvedor } from "@/context/IdEditar";
 import { BuscarCurriculoAction } from "@/api/CurriculoAPI";
 import { BuscarFormacaoAction } from "@/api/FormacaoAPI";
 import { BuscarProjetosAction } from "@/api/ProjetoAPI";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,15 +26,12 @@ const firaCode = Fira_Code({
   subsets: ["latin"]
 })
 
-const roboto = Roboto({
-  variable: "--font-roboto-regular",
-  subsets: ["latin"]
-})
 
 const montserrat = Montserrat({
   variable: "--font-montserrat-regular",
   subsets: ["latin"],
 })
+
 
 export const metadata: Metadata = { //}Meta Tags steads aqui
   title: "Portifolio | Rafael Machado",
@@ -77,14 +77,20 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
   const buscarCurriculo = await BuscarCurriculoAction();
   const buscarFormacao = await BuscarFormacaoAction();
   const buscarProjeto = await BuscarProjetosAction();
+  
+  // console.log("Resposta do Banco Projeto", buscarProjeto);
+  // console.log("Resposta do Banco Formação", buscarFormacao);
+  // console.log("Resposta do Banco Curriculo", buscarCurriculo);
 
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${roboto.variable} ${montserrat.variable} h-full antialiased`}>
+    <html lang="pt-BR" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${montserrat.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <CurriculoProvedor curriculoInicial={buscarCurriculo}>
-          <FormacaoProvedor formacaoInicial={buscarFormacao}>
-            <ProjetoProvedor projetoInicial={buscarProjeto}>
-              {children}
+        <CurriculoProvedor curriculoInicial={buscarCurriculo?.dados}>
+          <FormacaoProvedor formacaoInicial={buscarFormacao.dados}>
+            <ProjetoProvedor projetoInicial={buscarProjeto.dados}>
+              <ItemProvedor>
+                {children}
+              </ItemProvedor>
             </ProjetoProvedor>
           </FormacaoProvedor>
         </CurriculoProvedor>

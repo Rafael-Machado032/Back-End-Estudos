@@ -18,7 +18,7 @@ async function getAuthHeaders() {
 // 1. BUSCAR (SEM AUTENTICAÇÃO - Público)
 export async function BuscarCurriculoAction() {
     try {
-        const res = await fetch(`${urlBase}/curriculo/1`, {
+        const res = await fetch(`${urlBase}/curriculos/1`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' },
             cache: 'no-store' // Garante dado fresco do Laravel
@@ -26,9 +26,8 @@ export async function BuscarCurriculoAction() {
 
         if (!res.ok) return null;
         const dadosDoBanco = await res.json();
-
         return {
-            curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url
+            dados: dadosDoBanco
         };
     } catch {
         return null;
@@ -53,7 +52,7 @@ export async function CriarCurriculoAction(formData: FormData) {
 
         return {
             success: true,
-            curriculo_url_servidor: dadosDoBanco.dados?.curriculo_url,
+            dados: dadosDoBanco.data,
         };
 
     } catch {
@@ -61,42 +60,3 @@ export async function CriarCurriculoAction(formData: FormData) {
     }
 }
 
-// 3. EDITAR (COM AUTENTICAÇÃO - Privado)
-export async function EditarCurriculoAction(id: string | number, formData: FormData) {
-    try {
-        const headers = await getAuthHeaders();
-        formData.append('_method', 'PUT');
-
-        const res = await fetch(`${urlBase}/curriculo/${id}`, {
-            method: 'POST',
-            body: formData,
-            headers: headers
-        });
-
-        if (!res.ok) return { success: false };
-
-        revalidatePath('/', 'layout');
-        return { success: true };
-    } catch {
-        return { success: false };
-    }
-}
-
-// 4. DELETAR (COM AUTENTICAÇÃO - Privado)
-export async function DeletarCurriculoAction(id: string | number) {
-    try {
-        const headers = await getAuthHeaders();
-        const res = await fetch(`${urlBase}/curriculo/${id}`, {
-            method: 'DELETE',
-            headers: headers
-        });
-
-        if (res.ok) {
-            revalidatePath('/', 'layout');
-            return { success: true };
-        }
-        return { success: false };
-    } catch {
-        return { success: false };
-    }
-}

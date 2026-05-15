@@ -10,9 +10,11 @@ class Formacao extends Model
     // 1. Nomes devem ser iguais aos que você usou no Formacao::create do Controller
     protected $fillable = [
         'titulo',
-        'tecnologia',
         'descricao',
-        'certificado'
+        'credencial',
+        'certificado_url',
+        'capa_url',
+        'curso_url',
     ];
 
     // 2. ESSENCIAL: transforma a lista de array para JSON e vice-versa
@@ -20,11 +22,14 @@ class Formacao extends Model
         'tecnologia' => 'array',
     ];
 
-    // 3. Accessor para o campo 'certificado'
-    protected function certificado(): Attribute
+    public function getCertificadoUrlAttribute($value)
     {
-        return Attribute::make(
-            get: fn($value) => $value ? asset('storage/' . $value) : null,
-        );
+        // O $value é o que está salvo no banco (ex: "foto.jpg")
+        return $value ? asset('storage/' . $value) : null;
+    }
+    public function getCapaUrlAttribute($value)
+    {
+        // O $value é o que está salvo no banco (ex: "foto.jpg")
+        return $value ? asset('storage/' . $value) : null;
     }
 }

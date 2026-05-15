@@ -14,6 +14,23 @@ class ItemController extends Controller
         return response()->json(Item::all(), 200);
     }
 
+    // // Lista agrupado de itens (com filtro e paginação)
+    // public function index(Request $request)
+    // {
+    //     // 1. Em vez de all(), usamos query() para poder montar o filtro
+    //     $query = Item::query();
+
+    //     // 2. Filtro profissional (opcional)
+    //     if ($request->has('busca')) {
+    //         $query->where('coluna_titulo', 'like', '%' . $request->busca . '%');
+    //     }
+
+    //     // 3. Paginação (envia apenas 10 por vez)
+    //     // O Next.js vai receber: data (os itens), current_page, last_page, etc.
+    //     return response()->json($query->paginate(10), 200);
+    // }
+
+
     // Salva um novo item (com validação e upload)
     public function store(Request $request)
     {
@@ -52,14 +69,9 @@ class ItemController extends Controller
 
             return response()->json([
                 'message' => 'Criado com sucesso!',
-                'data'    => $registro
+                'dados'    => $registro // Não esquesa que de usar .dados para pegar as irfomações do item criado
             ], 201);
         } catch (\Exception $e) {
-            // 4. CLEANUP (LIMPEZA)
-            // Se subiu o arquivo mas deu erro no banco, apaga o arquivo
-            if ($caminhoArquivo) {
-                Storage::disk('public')->delete($caminhoArquivo);
-            }
 
             return response()->json([
                 'error'   => 'Erro interno no servidor.',
@@ -72,7 +84,10 @@ class ItemController extends Controller
     // Mostra um item específico
     public function show(Item $item)
     {
-        return response()->json($item, 200);
+        return response()->json([
+            'message' => 'Item encontrado!',
+            'dados' => $item
+        ], 200);
     }
 
     // Atualiza um item
@@ -90,26 +105,44 @@ class ItemController extends Controller
             $caminho = $request->file('campo_arquivo')->store('pasta_destino', 'public');
 
             // Mapeia para os nomes do banco antes de atualizar
-            $item->coluna_arquivo = $caminho;
+            if (isset($caminho)) { //Garante que só atualizamos o caminho se um novo arquivo foi processado
+                $item->coluna_arquivo = $caminho;
+            }
         }
+
+        // Se quiser usar o nome original do arquivo, pode usar storeAs:
+        // if ($request->hasFile('campo_arquivo')) {
+        //     Storage::disk('public')->delete($curriculo->getRawOriginal('coluna_arquivo'));
+        //     $file = $request->file('campo_arquivo');
+        //     $nomeOriginal = $file->getClientOriginalName();
+        //     // storeAs garante que use o nome que você passou
+        //     $path = $file->storeAs('pasta_destino', $nomeOriginal, 'public');
+        //     $item->coluna_arquivo = $path;
+        // }
 
         $item->coluna_titulo = $validated['campo_texto'] ?? $item->coluna_titulo;
         $item->coluna_json = $validated['campo_lista'] ?? $item->coluna_json;
         $item->save();
 
-        return response()->json(['message' => 'Atualizado!', 'data' => $item], 200);
+        return response()->json([
+            'message' => 'Atualizado!', 
+            'dados' => $item
+        ], 200);
     }
 
 
     // Remove o item
     public function destroy(Item $item)
     {
+        $pathOriginal = $item->getRawOriginal('coluna_arquivo');
         // Ajustado para 'coluna_arquivo'
-        if ($item->getRawOriginal('coluna_arquivo')) {
-            Storage::disk('public')->delete($item->getRawOriginal('coluna_arquivo'));
+        if ($pathOriginal && Storage::disk('public')->exists($pathOriginal)) {
+            Storage::disk('public')->delete($pathOriginal);
         }
 
         $item->delete();
-        return response()->json(['message' => 'Removido com sucesso'], 200);
+        return response()->json([
+            'message' => 'Removido com sucesso'
+        ], 200);
     }
 }

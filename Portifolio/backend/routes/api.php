@@ -23,7 +23,7 @@ Route::get('/login', function () {
 // Rotas de visualização do site
 Route::get('/formacoes', [FormacaoController::class, 'index']);
 Route::get('/projetos', [ProjetoController::class, 'index']);
-Route::get('/curriculo/{id}', [CurriculoController::class, 'show']);
+Route::get('/curriculos/{curriculo}', [CurriculoController::class, 'show']);
 
 /*
 
@@ -48,19 +48,17 @@ Route::middleware('auth:sanctum')->group(function () {
     /* --- CRUD DO ITEM --- */
 
     // Cadastrar (POST)
-    Route::post('/curriculo', [CurriculoController::class, 'store']);
-    Route::post('/formacoes', [FormacaoController::class, 'store']);
-    Route::post('/projetos', [ProjetoController::class, 'store']);
+    Route::post('/curriculo', [CurriculoController::class, 'store']); //No caso cria ou edita configurado no controler
+    Route::post('/formacao', [FormacaoController::class, 'store']);
+    Route::post('/projeto', [ProjetoController::class, 'store']);
 
     // Atualizar (Usamos POST aqui para o upload de arquivos funcionar 100%)
     // No Front-end, você envia como FormData e adiciona o campo _method = 'PUT' se quiser,
     // mas chamando essa rota POST o Laravel receberá os arquivos corretamente.
-    Route::post('/curriculo/{item}', [CurriculoController::class, 'update']);
-    Route::post('/formacoes/{item}', [FormacaoController::class, 'update']);
-    Route::post('/projetos/{item}', [ProjetoController::class, 'update']);
+    Route::post('/formacao/{formacao}', [FormacaoController::class, 'update']);
+    Route::post('/projeto/{projeto}', [ProjetoController::class, 'update']);
 
     // Excluir (DELETE)
-    Route::delete('/curriculo/{item}', [CurriculoController::class, 'destroy']);
-    Route::delete('/formacoes/{item}', [FormacaoController::class, 'destroy']);
-    Route::delete('/projetos/{item}', [ProjetoController::class, 'destroy']);
+    Route::delete('/formacao/{formacao}', [FormacaoController::class, 'destroy']);
+    Route::delete('/projeto/{projeto}', [ProjetoController::class, 'destroy']);
 });

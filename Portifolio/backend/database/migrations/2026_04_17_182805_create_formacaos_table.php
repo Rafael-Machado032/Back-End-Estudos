@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('formacaos', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
-            $table->json('tecnologia');
             $table->text('descricao');
+            $table->string('credencial');
+            $table->string('curso_url');
             $table->string('certificado_url');
+            $table->string('capa_url');
             $table->timestamps();
         });
     }

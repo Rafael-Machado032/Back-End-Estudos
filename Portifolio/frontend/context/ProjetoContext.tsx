@@ -1,15 +1,15 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
-interface Projeto {
+export interface Projeto { //exporto para usar em outros arquivos, resolver o tipo do projetoDados
     id: string;
     titulo: string;
     tecnologia: string;
     descricao: string;
-    projeto_url_demo: string;
-    projeto_url_github: string;
-    layout_url_servidor: string;
+    demonstracao_url: string;
+    github_url: string;
+    layout_url: string;
 }
 
 // 1. Remova a função de adicionar do contrato
@@ -20,37 +20,20 @@ interface ProjetoContextoTipo {
 
 const ProjetoContexto = createContext<ProjetoContextoTipo | undefined>(undefined);
 
-export function ProjetoProvedor({ children, projetoInicial }: { children: ReactNode, projetoInicial?: Projeto[] }) {
+export function ProjetoProvedor({ children, projetoInicial = [] }: { children: ReactNode, projetoInicial?: Projeto[] }) {
+    // 1. Estado nasce com a lista do Laravel ou um array vazio (evita quebra no .map)
+    const [projetoDados, setProjetoDados] = useState<Projeto[]>(projetoInicial);
 
-    const [projetoDados, setProjetoDados] = useState<Projeto[]>(() => {
-        if (typeof window === 'undefined') return projetoInicial || [];
-        try {
-            const salvo = localStorage.getItem('@Portifolio:Projeto');
-            return salvo ? JSON.parse(salvo) : (projetoInicial || []);
-        } catch { return projetoInicial || []; }
-    });
-
-    // Sincronização: Se o dado no Laravel mudar, o site atualiza
-    const [prevProjetoInicial, setPrevProjetoInicial] = useState(projetoInicial);
-
-    if (projetoInicial !== prevProjetoInicial) {
-        setPrevProjetoInicial(projetoInicial);
-        if (JSON.stringify(projetoInicial) !== JSON.stringify(projetoDados)) {
-            setProjetoDados(projetoInicial || []);
-        }
-    }
-
-    useEffect(() => {
-        localStorage.setItem('@Portifolio:Projeto', JSON.stringify(projetoDados));
-    }, [projetoDados]);
-
-    // 2. O useMemo agora só passa a lista e a função de atualizar
-    const contextoValor = useMemo(() => ({
+    const projetoContextoValor = useMemo(() => ({
         projetoDados,
         setProjetoDados
     }), [projetoDados]);
 
-    return <ProjetoContexto.Provider value={contextoValor}>{children}</ProjetoContexto.Provider>;
+    return (
+        <ProjetoContexto.Provider value={projetoContextoValor}>
+            {children}
+        </ProjetoContexto.Provider>
+    );
 }
 
 export const useProjeto = () => {

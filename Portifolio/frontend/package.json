@@ -9,12 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "lucide-react": "^1.8.0",
-    "next": "16.2.3",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "typewriter-effect": "^2.22.0"
-  },
+  "next": "latest",
+  "react": "latest",
+  "react-dom": "latest",
+  "motion": "latest",
+  "typewriter-effect": "latest",
+  "lucide-react": "latest"
+},
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

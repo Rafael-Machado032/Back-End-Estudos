@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Atualizar (Usamos POST aqui para o upload de arquivos funcionar 100%)
     // No Front-end, você envia como FormData e adiciona o campo _method = 'PUT' se quiser,
     // mas chamando essa rota POST o Laravel receberá os arquivos corretamente.
-    Route::post('/itens/{item}', [ItemController::class, 'update']);
+    Route::post('/itens/{item}', [ItemController::class, 'update']); //Variavel {item} é o ID do item que você quer atualizar e tem que ser o mesmo nome do parâmetro do método update no controller
 
     // Excluir (DELETE)
     Route::delete('/itens/{item}', [ItemController::class, 'destroy']);

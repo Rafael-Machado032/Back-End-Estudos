@@ -5,74 +5,74 @@ namespace App\Http\Controllers;
 use App\Models\Projeto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Cloudinary\Cloudinary;
+
+
 
 class ProjetoController extends Controller
 {
-    /**
-     *  Lista todos os registros.
-     */
     public function index()
     /*(Leitura Geral)*/
     {
-        return response()->json(Projeto::all(), 200);
-    }
+        try{
 
-    /**
-     * Retorna a página HTML com o formulário para criar um projeto.
-     */
-    public function create()
-    /*(Página de Formulário - Não se usa em API)*/
-    {
-        //
-    }
+            return response()->json(Projeto::all(), 200);
 
-    /**
-     * Recebe os dados do formulário (nome, imagem, link) e salva no banco de dados.
-     */
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao mostrar todos projeto.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
+    }
 
     public function store(Request $request)
     {
         // 1. Validação (Garante que o certificado é um PDF)
         $validated = $request->validate([
             'titulo_form' => 'required|string',
-            'tecnologia_form' => 'required|string',
+            'tecnologias_form' => 'required|string',
             'descricao_form' => 'required|string',
             'demonstracao_form' => 'required|string',
-            'github_form' => 'required|string',
-            'layout_form' => 'required|file|image|mimes:jpeg,jpg,png,webp,svg|max:5120', // Máx 5MB
+            'github_form' => 'nullable|string',
         ]);
 
         try {
-            $path = null;
+            $nomeCapa = 'capa_' . time() . '.jpg';
+            $pathCapa = 'projetos/' . $nomeCapa;
 
-            // 2. Upload do PDF para a pasta 'certificados' dentro de 'public'
-            if ($request->hasFile('layout_form')) {
-                $path = $request->file('layout_form')->store('projetos', 'public');
-            }
+            $cld = new Cloudinary(env('CLOUDINARY_URL'));
 
-            // 3. Salvando no Banco (Mapeando os campos)
+            // 2. Gera a URL ASSINADA
+            $url = $cld->image($validated['demonstracao_form'])
+                ->deliveryType('url2png')
+                ->signUrl()
+                ->addTransformation('ar_16:9,c_auto,g_north,w_500')
+                ->toUrl();
+
+            Log::info("URL do Print: " . $url);
+
+            Storage::disk('public')->put($pathCapa, file_get_contents($url));
+
+            // CORREÇÃO: Mapeando os nomes exatos da validação
             $dadosProjeto = Projeto::create([
-                'titulo' => $validated['titulo_form'],
-                'tecnologia' => $validated['tecnologia_form'],
-                'descricao' => $validated['descricao_form'],
+                'titulo'          => $validated['titulo_form'],
+                'tecnologia'      => $validated['tecnologias_form'], // Ajustado para bater com o validate
+                'descricao'       => $validated['descricao_form'],
                 'demonstracao_url' => $validated['demonstracao_form'],
-                'github_url' => $validated['github_form'],
-                'layout_url' => $path, // Aqui salva o caminho do PDF: "certificados/xyz.pdf"
+                'github_url'      => $validated['github_form'] ?? null,
+                'layout_url'      => $pathCapa,
             ]);
 
             return response()->json([
-                'message' => 'Formação cadastrada com sucesso!',
+                'message' => 'Projeto cadastrado com sucesso!',
                 'data' => $dadosProjeto
             ], 201);
         } catch (\Exception $e) {
-            // Se der erro no banco, apaga o PDF que subiu para não sobrar lixo
-            if ($path) {
-                Storage::disk('public')->delete($path);
-            }
-
             return response()->json([
                 'error' => 'Erro ao salvar projeto.',
-                'details' => config('app.debug') ? $e->getMessage() : null
+                'details' => $e->getMessage()
             ], 500);
         }
     }
@@ -83,70 +83,69 @@ class ProjetoController extends Controller
     public function show(Projeto $projeto)
     /*(Leitura Única)*/
     {
-        return response()->json($projeto, 200);
+        try {
+
+            return response()->json($projeto, 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao mostrar o projeto.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    /**
-     * Retorna a página HTML com o formulário de edição preenchido.
-     */
-    public function edit(Projeto $projeto)
-    /*(Página de Edição - Não se usa em API)*/
-    {
-        //
-    }
-
-    /**
-     *  Recebe os novos dados de um projeto que já existe e atualiza no banco.
-     */
     public function update(Request $request, Projeto $projeto)
     /*(Atualização)*/
     {
         $validated = $request->validate([
             'titulo_form' => 'required|string',
-            'tecnologia_form' => 'required|string',
+            'tecnologias_form' => 'required|string',
             'descricao_form' => 'required|string',
             'demonstracao_form' => 'required|string',
-            'github_form' => 'required|string',
-            'layout_form' => 'required|file|image|mimes:jpeg,jpg,png,webp,svg|max:5120', // Máx 5MB
+            'github_form' => 'nullable|string',
         ]);
 
-        if ($request->hasFile('layout_form')) {
-            // Usa o nome real da coluna: 'coluna_arquivo'
-            Storage::disk('public')->delete($projeto->getRawOriginal('layout_form'));
-            $path = $request->file('layout_form')->store('projetos', 'public');
+        try {
 
-            // Mapeia para os nomes do banco antes de atualizar
-            $projeto->layout_url = $path;
+            $projeto->titulo = $validated['titulo_form'] ?? $projeto->titulo;
+            $projeto->tecnologia = $validated['tecnologias_form'] ?? $projeto->tecnologia;
+            $projeto->descricao = $validated['descricao_form'] ?? $projeto->descricao;
+            $projeto->demonstracao_url = $validated['demonstracao_form'] ?? $projeto->demonstracao_url;
+            $projeto->github_url = $validated['github_form'];
+            $projeto->save();
+
+
+            return response()->json([
+                'message' => 'Atualizado!',
+                'data' => $projeto
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao editar o projeto.',
+                'details' => $e->getMessage()
+            ], 500);
         }
-
-        $projeto->titulo = $validated['titulo_form'] ?? $projeto->titulo;
-        $projeto->tecnologia = $validated['tecnologia_form'] ?? $projeto->tecnologia;
-        $projeto->descricao = $validated['descricao_form'] ?? $projeto->descricao;
-        $projeto->demonstracao_url = $validated['demonstracao_form'] ?? $projeto->demonstracao_url;
-        $projeto->github_url = $validated['github_form'] ?? $projeto->github_url;
-        $projeto->save();
-
-
-        return response()->json([
-            'message' => 'Atualizado!',
-            'data' => $projeto
-        ], 200);
     }
 
-    /**
-     * Deleta o registro do banco de dados.
-     */
     public function destroy(Projeto $projeto)
     /*(Exclusão)*/
     {
-        // Ajustado para 'coluna_arquivo'
-        if ($projeto->getRawOriginal('layout_url')) {
-            Storage::disk('public')->delete($projeto->getRawOriginal('layout_url'));
-        }
+        try {
+            // Pega "projetos/capa_..." direto do banco, ignorando a URL completa
+            $pathOriginal = $projeto->getRawOriginal('layout_url');
 
-        $projeto->delete();
-        return response()->json([
-            'message' => 'Removido com sucesso'
-        ], 200);
+            if ($pathOriginal && Storage::disk('public')->exists($pathOriginal)) {
+                Storage::disk('public')->delete($pathOriginal);
+            }
+
+            $projeto->delete();
+            return response()->json(['message' => 'Removido com sucesso'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Erro ao deletar o projeto.',
+                'details' => $e->getMessage()
+            ], 500);
+        }
     }
 }

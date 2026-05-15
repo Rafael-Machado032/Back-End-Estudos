@@ -1,5 +1,4 @@
 'use server';
-
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -7,6 +6,7 @@ const API_URL = process.env.API_URL;
 
 // --- LOGIN ---
 export async function ActionLogin(formData: FormData) {
+    
     const password = formData.get('senha_form')?.toString();
 
     try {
@@ -29,7 +29,7 @@ export async function ActionLogin(formData: FormData) {
                 path: '/',
                 httpOnly: true, // Segurança contra XSS
                 secure: process.env.NODE_ENV === 'production',
-                maxAge: 60 * 60 * 24 * 7, // 7 dias
+                maxAge: 60 * 60 * 24, // Exatamente 1 dia (86400s)
                 sameSite: 'lax',
             });
 

@@ -15,12 +15,24 @@ e insira
     Log::warning('Acesso suspeito detectado');
     Log::debug('Conteúdo da variável:', $dados); // Ótimo para arrays
 ```
-*No console*
-```php
-    error_log('Dados recebidos do Next.js: ' . json_encode($request->all())); //Mensagem Simples com variaveis simples sem array
-    dump($request->all()); // Ideal para objetos e arrays
-```
+
 ## Next
+
+*Do Next para Laravel*
+Pode verificar o que chega do next pelo return do controll
+```php
+    return response()->json([
+        'debug'   => $request->all(), // Retorna o q chegou no next
+        'error'   => 'Erro interno no servidor.',
+        'details' => config('app.debug') ? $e->getMessage() : null
+    ], 500);
+```
+
+Na resposta da api imprima na console
+```tsx
+    const dadosDoBanco = await res.json();
+    console.log("Resposta do servidor", dadosDoBanco.debug);
+```
 
 *Ver formData*
 ```tsx

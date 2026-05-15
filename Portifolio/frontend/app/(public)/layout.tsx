@@ -1,24 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Fira_Code, Roboto, Montserrat } from "next/font/google";
+import { Fira_Code, Montserrat } from "next/font/google";
 import "../globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { CurriculoProvedor } from "@/context/CurriculoContext";
+import { FormacaoProvedor } from "@/context/FormacaoContext";
+import { ProjetoProvedor } from "@/context/ProjetoContext";
+import { BuscarCurriculoAction } from "@/api/CurriculoAPI";
+import { BuscarFormacaoAction } from "@/api/FormacaoAPI";
+import { BuscarProjetosAction } from "@/api/ProjetoAPI";
 
 const firaCode = Fira_Code({
   variable: "--font-fira-code",
-  subsets: ["latin"]
-})
-
-const roboto = Roboto({
-  variable: "--font-roboto-regular",
   subsets: ["latin"]
 })
 
@@ -26,7 +17,6 @@ const montserrat = Montserrat({
   variable: "--font-montserrat-regular",
   subsets: ["latin"],
 })
-
 
 export const metadata: Metadata = { //}Meta Tags steads aqui
   title: "Portifolio | Rafael Machado",
@@ -67,15 +57,22 @@ export const viewport = { //A cor da barra do mobile com a cor do site
   ],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
+
+  const buscarCurriculo = await BuscarCurriculoAction();
+  const buscarFormacao = await BuscarFormacaoAction();
+  const buscarProjeto = await BuscarProjetosAction();
+
   return (
-    <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable} ${firaCode.variable} ${roboto.variable} ${montserrat.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={` ${firaCode.variable} ${montserrat.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        {children}
+        <CurriculoProvedor curriculoInicial={buscarCurriculo?.dados}>
+          <FormacaoProvedor formacaoInicial={buscarFormacao.dados}>
+            <ProjetoProvedor projetoInicial={buscarProjeto.dados}>
+              {children}
+            </ProjetoProvedor>
+          </FormacaoProvedor>
+        </CurriculoProvedor>
       </body>
     </html>
   );

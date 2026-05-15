@@ -4,7 +4,7 @@ import Principal from "@/components/Admin/Principal";
 
 export default function Home() {
     return (
-        <main className="flex flex-col items-center bg-[#0b0f1a] px-4 pb-6">
+        <main className="flex flex-col items-center bg-[#0b0f1a] px-4 pb-6 min-h-screen">
             
             <div className="flex flex-col w-full max-w-7xl">
                 <Header />
@@ -12,7 +12,6 @@ export default function Home() {
                     <Aside />
                     <Principal />
                 </div>
-                
             </div>
         </main>
     );

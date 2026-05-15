@@ -18,16 +18,23 @@ async function getAuthHeaders() {
 // 1. BUSCAR (SEM AUTENTICAÇÃO - Público)
 export async function BuscarProjetosAction() {
     try {
-        const res = await fetch(`${urlBase}/projeto`, {
+        const res = await fetch(`${urlBase}/projetos`, {
             method: 'GET',
             headers: { 'Accept': 'application/json' },
             cache: 'no-store' // Garante dado fresco do Laravel
         });
 
-        if (!res.ok) return [];
-        return await res.json();
+        if (!res.ok) return { success: false };
+
+        const dadosDoBanco = await res.json();
+        // console.log("Resposta do servidor", dadosDoBanco);
+
+        return {
+            success: true,
+            dados: dadosDoBanco
+        };
     } catch {
-        return [];
+        return { success: false };
     }
 }
 
@@ -41,11 +48,18 @@ export async function CriarProjetoAction(formData: FormData) {
             headers: headers
         });
 
-        if (!res.ok) return { success: false };
+        const dadosDoBanco = await res.json();
+        console.log("Resposta do servidor", dadosDoBanco);
+        
+        revalidatePath('/admin');
 
-        revalidatePath('/admin/projeto');
-        return { success: true, data: await res.json() };
-    } catch {
+        if (!res.ok) return { success: false };
+        return {
+            success: true,
+            dados: dadosDoBanco.data
+        };
+    } catch (err) {
+        console.error("Erro na Action:", err);
         return { success: false };
     }
 }
@@ -54,7 +68,7 @@ export async function CriarProjetoAction(formData: FormData) {
 export async function EditarProjetoAction(id: string | number, formData: FormData) {
     try {
         const headers = await getAuthHeaders();
-        formData.append('_method', 'PUT');
+
 
         const res = await fetch(`${urlBase}/projeto/${id}`, {
             method: 'POST',
@@ -64,8 +78,13 @@ export async function EditarProjetoAction(id: string | number, formData: FormDat
 
         if (!res.ok) return { success: false };
 
+        const dadosDoBanco = await res.json();
+
         revalidatePath('/admin/projeto');
-        return { success: true };
+        return {
+            success: true,
+            dados: dadosDoBanco.data
+        };
     } catch {
         return { success: false };
     }
@@ -80,12 +99,18 @@ export async function DeletarProjetoAction(id: string | number) {
             headers: headers
         });
 
-        if (res.ok) {
-            revalidatePath('/admin/projeto');
-            return { success: true };
-        }
-        return { success: false };
-    } catch {
+        //const dadosDoBanco = await res.json();
+        //console.log("Resposta do servidor", dadosDoBanco);
+
+        if (!res.ok) return { success: false };
+
+        revalidatePath('/admin/projeto');
+
+
+
+        return { success: true };
+    } catch (e) {
+        console.log("Resposta do servidor", e);
         return { success: false };
     }
 }
