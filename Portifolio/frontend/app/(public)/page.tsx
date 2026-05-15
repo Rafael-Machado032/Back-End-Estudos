@@ -18,7 +18,6 @@ export default function Home() {
       <Projeto />
       <Contato />
       <Footer />
-      
     </main>
   );
 }
