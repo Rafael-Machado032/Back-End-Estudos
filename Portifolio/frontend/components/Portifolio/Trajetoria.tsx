@@ -23,8 +23,8 @@ export default function Trajetoria() {
         Montado: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.08, // Atraso em cascata entre as badges
-                delayChildren: 0.3     // Espera o card da direita terminar de aparecer
+                staggerChildren: 0.1, // Atraso em cascata entre as badges
+                
             }
         }
     };
@@ -85,9 +85,9 @@ export default function Trajetoria() {
                 duration: 6, // Aumentado levemente para dar tempo de ver o brilho
 
                 // Sincronização dos tempos: o brilho acontece entre 85% e 95% da animação
-                times: [0, 0.10, 0.30, 0.35, 0.65, 1],
+                times: [0, 0.10, 0.30, 0.35, 0.40, 1],
 
-                ease: ["easeIn", "easeIn", "easeIn", "easeIn", "easeIn"],
+                
             }
         },
     } as Variants;
@@ -143,6 +143,12 @@ export default function Trajetoria() {
                                     className='bg-[#ffffff0d] px-4 py-1 rounded-md text-sm border border-[#ffffff1a] transition-all duration-200 ease-in-out hover:border-[#00f2fe] hover:text-[#00f2fe]'
                                     key={index}
                                     variants={stackVariante} // Filhos herdam os gatilhos automaticamente do pai
+                                    whileHover={{
+                                        boxShadow: "0px 0px 20px rgba(0, 242, 242, 0.8)",
+                                        borderColor: "rgba(0, 242, 242, 1)",
+                                        backgroundColor: "rgba(0, 242, 242, 0.2)", 
+                                        color: "rgba(0, 242, 242, 1)",
+                                    }}
                                 >
                                     {tech}
                                 </motion.span>
