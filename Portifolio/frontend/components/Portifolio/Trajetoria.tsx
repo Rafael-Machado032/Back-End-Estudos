@@ -140,7 +140,7 @@ export default function Trajetoria() {
                         >
                             {stack.map((tech, index) => (
                                 <motion.span
-                                    className='bg-[#ffffff0d] px-4 py-1 rounded-md text-sm border border-[#ffffff1a] transition-all duration-200 ease-in-out hover:border-[#00f2fe] hover:text-[rgb(0,242,254)]'
+                                    className='bg-[#ffffff0d] px-4 py-1 rounded-md text-sm border border-[#ffffff1a] transition-all duration-200 ease-in-out hover:border-[#00f2fe] hover:text-[#00f2fe]'
                                     key={index}
                                     variants={stackVariante} // Filhos herdam os gatilhos automaticamente do pai
                                 >
