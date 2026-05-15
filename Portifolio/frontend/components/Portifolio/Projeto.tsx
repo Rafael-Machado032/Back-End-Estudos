@@ -37,7 +37,7 @@ export default function Projeto() {
     }, [x])
 
     return (
-        <section className='flex justify-center px-6 py-10 text-[#e1e1e6] overflow-hidden scroll-mt-16' id="projetos" >
+        <section className='flex justify-center px-6 pt-10 pb-16 text-[#e1e1e6] overflow-hidden scroll-mt-16' id="projetos" >
             <div className='w-full'>
                 <motion.h2
                     initial={{ opacity: 0, x: -100 }}

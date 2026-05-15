@@ -67,24 +67,28 @@
 - delay:                                Tempo de espera em segundos antes de começar (ex: 0.2).
 - repeat:                               Quantas vezes a animação vai repetir (ex: Infinity para loop eterno, ou números como 2, 3).
 - repeatType:                           Estilo da repetição. Aceita:
-      1. "loop":                Recomeça do início.
-      2. "reverse":             Vai e volta (estilo bumerangue).
-      3. "mirror":              Inverte o início e o fim a cada ciclo.
+    1. "loop":                Recomeça do início.
+    2. "reverse":             Vai e volta (estilo bumerangue).
+    3. "mirror":              Inverte o início e o fim a cada ciclo.
 - repeatDelay:                          Tempo de espera entre cada repetição. 
    
    *Tipos de Física (type)*
    O valor escolhido em type muda as outras propriedades disponíveis:
 - type: "tween" (Animação baseada em tempo):
     1. ease:                  Curva de velocidade. Aceita strings (ex: "linear", "easeIn", "easeOut", "easeInOut") ou uma array de curva Cubic Bezier (ex: [0.17, 0.67, 0.83, 0.67]).
+        * linear    -> O objeto se move exatamente com a mesma velocidade do início ao fim. Não há aceleração nem desaceleração.
+        * easeIn    -> O movimento começa extremamente lento (em repouso) e vai ganhando velocidade gradativamente até o final, onde atinge a velocidade máxima e para bruscamente.
+        * easeOut   -> O objeto surge ou começa na velocidade máxima instantaneamente e vai freando suavemente até parar de forma delicada no destino.
+        * easeInOut -> O movimento começa lento, acelera bastante no meio do caminho (pico de velocidade) e desacelera suavemente antes de parar completamente no final.
 - type: "spring" (Física de mola realista - Padrão para posições):
-      1. stiffness:             Rigidez da mola. Números maiores deixam o movimento mais rápido e abrupto (ex: 100, 300).
-      2. damping:               Amortecimento. Números menores fazem o elemento quicar mais. Números maiores freiam o movimento mais rápido (ex: 10, 30).
-      3. mass:                  Peso do objeto. Objetos mais pesados demoram mais para acelerar e parar (ex: 1, 5).
-      4. velocity:              Velocidade inicial do disparo da mola.
+    1. stiffness:             Rigidez da mola. Números maiores deixam o movimento mais rápido e abrupto (ex: 100, 300).
+    2. damping:               Amortecimento. Números menores fazem o elemento quicar mais. Números maiores freiam o movimento mais rápido (ex: 10, 30).
+    3. mass:                  Peso do objeto. Objetos mais pesados demoram mais para acelerar e parar (ex: 1, 5).
+    4. velocity:              Velocidade inicial do disparo da mola.
 - type: "inertia" (Efeito de desaceleração por atrito):
-      1. velocity:              Velocidade inicial.
-      2. power:                 A força do empurrão inicial.
-      3. timeConstant:          Controla a taxa de desaceleração. 
+    1. velocity:              Velocidade inicial.
+    2. power:                 A força do empurrão inicial.
+    3. timeConstant:          Controla a taxa de desaceleração. 
    
    *Controles Avançados de Sequência (Keyframes e Filhos)* 
 - times:                                Array de números entre 0 e 1 para definir o tempo exato de cada passo dos keyframes (ex: [0, 0.3, 1]).

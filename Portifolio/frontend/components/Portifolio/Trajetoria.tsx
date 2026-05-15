@@ -31,8 +31,6 @@ export default function Trajetoria() {
 
     const stackVariante = {
         Espalhado: () => {
-            // Gera as posições cobrindo quase toda a área da section (areaMaxRef)
-            // Subtraímos margens para os itens não nascerem colados nas bordas do monitor
             const posX = gerarPosicao(-contMax.largura / 2 + 100, contMin.largura / 2 - 300);
             const posY = gerarPosicao(-contMax.altura / 2 + 100, contMin.altura / 2 - 300);
 
@@ -40,30 +38,60 @@ export default function Trajetoria() {
                 opacity: 0,
                 x: posX,
                 y: posY,
-                scale: 0.9,
             };
         },
         Montado: {
-            // 🚀 KEYFRAMES: Passamos arrays para criar as etapas do movimento
-            // O 'null' diz: "Fique parado na posição aleatória onde você nasceu"
-            opacity: [0, 1, 1],
-            x: [null, null, 0], // Fica no lugar sorteado e no final vai direto para o 0 (Card)
-            y: [null, null, 0], // Fica no lugar sorteado e no final vai direto para o 0 (Card)
-            scale: [0.9, 1, 1],
+            opacity: [0, 1, 1, 1, 1, 1],
+            x: [null, null, null, 0, 0, 0],
+            y: [null, null, null, 0, 0, 0],
+            scale: [0.9, 1, 1, 1, 1, 1],
+
+            // ✨ Efeito de Brilho em Linha do Tempo:
+            // Nasce apagado -> Chega no card apagado -> Acende no final -> Suaviza para o estado normal
+            boxShadow: [
+                "0px 0px 0px rgba(0, 242, 254, 0)",
+                "0px 0px 0px rgba(0, 242, 254, 0)",
+                "0px 0px 0px rgba(0, 242, 254, 0)",
+                "0px 0px 0px rgba(0, 242, 254, 0)",
+                "0px 0px 20px rgba(0, 242, 242, 0.8)", // 🌟 Pico do brilho neon
+                "0px 0px 0px rgba(0, 242, 254, 0)"     // Suaviza e desliga
+            ],
+            borderColor: [
+                "rgba(255, 255, 255, 0.1)",
+                "rgba(255, 255, 255, 0.1)",
+                "rgba(255, 255, 255, 0.1)",
+                "rgba(255, 255, 255, 0.1)",
+                "rgba(0, 242, 242, 1)",                // Borda ciana acesa
+                "rgba(255, 255, 255, 0.1)"             // Volta à borda padrão
+            ],
+            backgroundColor: [
+                "rgba(255, 255, 255, 0.05)",
+                "rgba(255, 255, 255, 0.05)",
+                "rgba(255, 255, 255, 0.05)",
+                "rgba(255, 255, 255, 0.05)",
+                "rgba(0, 242, 242, 0.2)",              // Fundo ciano levemente aceso
+                "rgba(255, 255, 255, 0.05)"            // Volta ao fundo padrão
+            ],
+            color: [
+                "rgba(255, 255, 255, 1)",
+                "rgba(255, 255, 255, 1)",
+                "rgba(255, 255, 255, 1)",
+                "rgba(255, 255, 255, 1)",
+                "rgba(0, 242, 242, 1)",
+                "rgba(255, 255, 255, 1)",
+            ],
 
             transition: {
-                // ⏱️ ALTERE AQUI: Tempo total de toda a animação (em segundos)
-                duration: 2,
+                duration: 6, // Aumentado levemente para dar tempo de ver o brilho
 
-                // ⏱️ ALTERE AQUI: Linha do tempo de 0 a 1 (0.60 = 60% do tempo parado/pairando)
-                times: [0, 0.95, 1],
+                // Sincronização dos tempos: o brilho acontece entre 85% e 95% da animação
+                times: [0, 0.10, 0.30, 0.35, 0.65, 1],
 
-                // 🛑 REMOÇÃO DA MOLA: Usamos "easeOut" para surgir flutuando 
-                // e "linear" ou "easeIn" para o retorno ser direto e sem quicar
-                ease: ["easeOut", "linear"],
+                ease: ["easeIn", "easeIn", "easeIn", "easeIn", "easeIn"],
             }
-        }
+        },
     } as Variants;
+
 
     useEffect(() => {
         if (areaMaxRef.current && areaMinRef.current) {
@@ -75,7 +103,7 @@ export default function Trajetoria() {
     }, []);
 
     return (
-        <section ref={areaMaxRef} className='flex justify-center items-center px-6 py-47 text-[#e1e1e6] overflow-hidden scroll-mt-16' id="trajetoria">
+        <section ref={areaMaxRef} className='flex justify-center items-center px-6 py-43 text-[#e1e1e6] overflow-hidden scroll-mt-16' id="trajetoria">
             <div className='flex justify-center items-center max-w-7xl flex-col md:flex-row gap-10'>
 
                 {/* Lado Esquerdo */}
@@ -88,8 +116,8 @@ export default function Trajetoria() {
                     <h2 className='text-4xl font-bold after:content-[""] after:block after:w-12 after:h-1 after:bg-[#00f2fe] after:mt-2 font-montserrat'>
                         Minha Trajetória
                     </h2>
-                    <p>Comecei na informática industrial, onde aprendi que software e hardware precisam falar a mesma língua. De criar sistemas de pesagem em C++ até configurar redes MikroTik do zero, minha base é resolver problemas reais.</p>
-                    <p>Hoje, aplico essa bagagem técnica para construir aplicações web modernas. Sou formado em Análise e Desenvolvimento de Sistemas e apaixonado pela agilidade do <b>Next.js</b> integrada à robustez do <b>Laravel</b>.</p>
+                    <p>Minha jornada começou no curso <b className="font-semibold text-cyan-400">Técnico em Informática Industrial</b>, onde aprendi como software e hardware se integram. Trabalhando na área técnica, dominei desde <b className="font-semibold text-cyan-400">infraestrutura até redes lógicas complexas</b>, sempre me destacando pela capacidade de <b className="font-semibold text-white">resolver problemas reais</b>.</p>
+                    <p>Movido pela paixão por desenvolvimento, graduei-me em <b className="font-semibold text-cyan-400">Análise e Desenvolvimento de Sistemas</b>. Hoje, uno toda essa bagagem técnica e de infraestrutura com especializações modernas <b className="font-semibold text-cyan-400">para construir aplicações web robustas, escaláveis e intuitivas</b>.</p>
                 </motion.div>
 
                 {/* Lado Direito */}
@@ -112,7 +140,7 @@ export default function Trajetoria() {
                         >
                             {stack.map((tech, index) => (
                                 <motion.span
-                                    className='bg-[#ffffff0d] px-4 py-1 rounded-md text-sm border border-[#ffffff1a] transition-all duration-200 ease-in-out hover:border-[#00f2fe] hover:text-[#00f2fe]'
+                                    className='bg-[#ffffff0d] px-4 py-1 rounded-md text-sm border border-[#ffffff1a] transition-all duration-200 ease-in-out hover:border-[#00f2fe] hover:text-[rgb(0,242,254)]'
                                     key={index}
                                     variants={stackVariante} // Filhos herdam os gatilhos automaticamente do pai
                                 >

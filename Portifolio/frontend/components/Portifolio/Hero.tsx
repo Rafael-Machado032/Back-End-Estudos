@@ -60,9 +60,9 @@ export default function Hero() {
                 whileInView="visible"
                 variants={blurIn}
                 transition={{ delay: 0.4 }}
-                className="text-[19px] text-[#a8a8b3] max-w-175 mb-7.5"
+                className="text-[19px] text-[#a8a8b3] max-w-5xl mb-7.5"
             >
-                Desenvolvedor Fullstack focado em soluções robustas com <b>Next.js</b> e <b>Laravel</b>.
+                Desenvolvedor Fullstack focado em soluções robustas com especialização em <b>Next.js</b> e <b>Laravel</b>. <br />
                 Transformando problemas complexos em interfaces limpas e eficientes.
             </motion.p>
 
