@@ -1,4 +1,4 @@
-import Header from "@/components/Portifolio/Header";
+import Header from "@/components/Portifolio/Heder";
 import Hero from "@/components/Portifolio/Hero";
 import Trajetoria from "@/components/Portifolio/Trajetoria";
 import Formacao from "@/components/Portifolio/Formacao";
