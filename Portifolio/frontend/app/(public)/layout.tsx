@@ -65,7 +65,7 @@ export default async function RootLayout({ children, }: Readonly<{ children: Rea
 
   return (
     <html lang="pt-BR" className={` ${firaCode.variable} ${montserrat.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <CurriculoProvedor curriculoInicial={buscarCurriculo?.dados}>
           <FormacaoProvedor formacaoInicial={buscarFormacao.dados}>
             <ProjetoProvedor projetoInicial={buscarProjeto.dados}>
