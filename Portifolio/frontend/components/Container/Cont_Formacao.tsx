@@ -39,13 +39,13 @@ export default function Cont_Formacao({ formacaoDados }: { formacaoDados: Formac
     }, [formacaoDados.descricao]);
 
     return (
-        <div className="flex flex-col max-w-75 rounded-2xl bg-[#222222]  border-[#00f1fe00] hover:border-[#00f2fe] border hover:shadow-[0_0_20px_rgba(0,119,181,0.5)] hover:scale-105 transition-all duration-300">
+        <div className="flex flex-col max-w-sm rounded-2xl bg-[#222222]  border-[#00f1fe00] hover:border-[#00f2fe] border hover:shadow-[0_0_20px_rgba(0,119,181,0.5)] hover:scale-105 transition-all duration-300">
             
             <a href={formacaoDados.certificado_url} target="_blank" className="relative w-full aspect-video">
                 <NextImage className="rounded-t-2xl" src={formacaoDados.capa_url} alt="Capa" fill unoptimized priority />
             </a>
 
-            <div className="flex flex-col justify-between h-full items-start gap-2 p-4">
+            <div className="flex flex-col justify-between w-80 gap-2 p-4 h-full">
 
                 <h3 className="text-xl">{formacaoDados?.titulo}</h3>
                 <div className="w-full">

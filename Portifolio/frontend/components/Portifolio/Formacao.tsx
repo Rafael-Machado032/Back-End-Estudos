@@ -1,36 +1,44 @@
 'use client';
-import { motion } from "motion/react";
-import Cont_Formacao from "../Container/Cont_Formacao";
-import { useFormacao } from "@/context/FormacaoContext"
+import { useRef, useEffect } from 'react';
+import { motion, useMotionValue } from "motion/react";
+import Cont_Formacao from '../Container/Cont_Formacao';
+import { useFormacao } from '@/context/FormacaoContext';
 
 export default function Formacao() {
+    const { formacaoDados } = useFormacao()
+    const divRef = useRef<HTMLDivElement>(null);
+    const x = useMotionValue(0);
 
-    const { formacaoDados } = useFormacao();
+    const projetoDublicado = [...formacaoDados, ...formacaoDados]
 
-    const containerVariants = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: { staggerChildren: 0.15 } // Cada card aparece 0.15s após o anterior
-        }
-    };
 
-    const cardVariants = {
-        hidden: { opacity: 0, scale: 0.9, y: 20 },
-        visible: {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            transition: {
-                duration: 0.5,
+    useEffect(() => {
+        if (!divRef.current) return;
+
+        // Pega a largura de um bloco inteiro de cards originais
+        const tamTotal = divRef.current.scrollWidth / 2;
+        
+        const desativarEspiao = x.on("change", (posAtual) => {
+
+            console.log("Posição Atual: ", posAtual);
+            console.log("Tamanho Total: ", tamTotal);
+
+            // Se arrastar para a esquerda além do bloco original
+            if (posAtual <= -tamTotal) {
+                x.set(posAtual + tamTotal);
             }
-        }
-    };
 
+            // Se arrastar para a direita além do início
+            if (posAtual >= 0) {
+                x.set(posAtual - tamTotal);
+            }
+        })
+        return () => desativarEspiao();
+    }, [x])
 
     return (
-        <section className='flex justify-center px-6 py-10 text-[#e1e1e6] bg-[#111111c5] bg-radial bg-[radial-gradient(circle_at_center,rgba(113,89,193,0.1)_0%,transparent_70%)] scroll-mt-16' id="formacao">
-            <div className='max-w-7xl w-full'>
+        <section className='flex justify-center px-6 pt-10 pb-25 text-[#e1e1e6] overflow-hidden scroll-mt-16' id="formacao" >
+            <div className='w-full'>
                 <motion.h2
                     initial={{ opacity: 0, x: -100 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -39,34 +47,30 @@ export default function Formacao() {
                         ease: [0.68, -0.75, 0.27, 1.75], // Curva que força o elemento a passar do ponto e voltar
                         duration: 0.5             // Tempo em segundos para completar o movimento
                     }}
-                    className='text-4xl font-bold after:content-[""] after:block after:w-12 after:h-1 after:bg-[#00f2fe] after:mt-2 mb-12'
+                    className='max-w-7xl mx-auto text-4xl font-bold after:content-[""] after:block after:w-12 after:h-1 after:bg-[#00f2fe] after:mt-2 mb-10'
                 >
                     Formação
                 </motion.h2>
 
-                {/* Grid Responsivo Profissional */}
+                {/* Container do Slider */}
                 <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    variants={containerVariants}
-                    viewport={{ amount: 0.1 }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+                    ref={divRef}
+                    style={{ x }}
+                    className="flex shrink-0 gap-6 cursor-grab active:cursor-grabbing"
+                    drag="x" // Permite arrastar no eixo X
+                    whileTap={{ cursor: "grabbing" }}
+
+
                 >
-                    {formacaoDados.map((item) => (
-                        <motion.div
-                            key={item.id}
-                            variants={cardVariants}
-                            whileHover={{
-                                y: -8,
-                                scale: 1.02,
-                                transition: { duration: 0.2 }
-                            }}
-                            className="w-full flex justify-center"
-                        >
-                            <Cont_Formacao key={item.id} formacaoDados={item} />
-                        </motion.div>
+                    {projetoDublicado.map((item, index) => (
+                        <Cont_Formacao key={`${item.id}-${index}`} formacaoDados={item} />
                     ))}
                 </motion.div>
+
+                {/* Dica visual para o usuário */}
+                <p className="text-sm text-center sm:text-start text-[#a8a8b3] mt-6 animate-pulse max-w-7xl mx-auto">
+                    ← Arraste para explorar →
+                </p>
             </div>
         </section>
     );

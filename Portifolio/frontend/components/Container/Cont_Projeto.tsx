@@ -31,7 +31,7 @@ export default function Cont_Projeto({ projetoDados }: { projetoDados: Projeto }
     return (
         <div className="flex flex-col max-w-sm rounded-2xl bg-[#222222] border-[#00f1fe00] hover:border-[#00f2fe] border hover:shadow-[0_0_20px_rgba(0,119,181,0.5)] hover:scale-105 transition-all duration-300">
             <div className="relative w-full aspect-video">
-                <NextImage className="rounded-t-2xl" src={projetoDados.layout_url} alt="Next.js Dashboard" fill unoptimized priority />
+                <NextImage className="rounded-t-2xl" src={projetoDados.layout_url} alt="Capa" fill unoptimized priority />
             </div>
             <div className="flex flex-col justify-between w-80 gap-2 p-4 h-full">
                 <div>
