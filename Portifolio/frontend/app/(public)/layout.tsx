@@ -25,17 +25,17 @@ export const metadata: Metadata = { //}Meta Tags steads aqui
     authors: [{ name: "Rafael Machado" }],
     robots: "index, follow",
     alternates: {
-        canonical: "https://seusite.com.br",
+        canonical: "https://rafaelmachadodev.vercel.app",
     },
     // Configurações de Compartilhamento (Facebook, WhatsApp, LinkedIn)
     openGraph: {
         type: "website",
-        url: "https://seusite.com.br",
+        url: "https://rafaelmachadodev.vercel.app",
         title: "Portifolio | Rafael Machado",
         description: "Desenvolvedor Fullstack focado em soluções robustas com Next.js e Laravel",
         images: [
             {
-                url: "https://seusite.com.br/banner-compartilhamento.jpg",
+                url: "https://rafaelmachadodev.vercel.app/banner.png",
                 width: 1200,
                 height: 630,
             },
@@ -46,7 +46,7 @@ export const metadata: Metadata = { //}Meta Tags steads aqui
         card: "summary_large_image",
         title: "Portifolio | Rafael Machado",
         description: "Desenvolvedor Fullstack focado em soluções robustas com Next.js e Laravel",
-        images: ["https://seusite.com.br/banner-compartilhamento.jpg"],
+        images: ["https://rafaelmachadodev.vercel.app/banner.png"],
     },
 };
 
