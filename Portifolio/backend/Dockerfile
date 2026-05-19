@@ -33,9 +33,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev --optimize-autoloader
 
 # EXECUTA AS MIGRAÇÕES AUTOMATICAMENTE NO DEPLOY
-RUN php artisan migrate --seed --force
-
-
+CMD php artisan migrate --seed --force && apache2-foreground
 
 # Ajusta as permissões de pastas do Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
