@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 
-const urlBase = process.env.API_URL;
+const urlBase = process.env.NEXT_PUBLIC_API_URL;
 
 // Função privada: Só usada internamente aqui para as funções que precisam de Token
 async function getAuthHeaders() {
