@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.4-apache
 
 # Instala dependências do sistema e pacotes necessários para o Composer e Laravel
 RUN apt-get update && apt-get install -y \
