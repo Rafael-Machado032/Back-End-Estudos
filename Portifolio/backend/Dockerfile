@@ -32,6 +32,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Executa a instalação das dependências do Laravel
 RUN composer install --no-dev --optimize-autoloader
 
+# EXECUTA AS MIGRAÇÕES AUTOMATICAMENTE NO DEPLOY
+RUN php artisan migrate --seed --force
+
+
+
 # Ajusta as permissões de pastas do Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
