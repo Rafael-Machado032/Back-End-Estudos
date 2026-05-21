@@ -22,14 +22,4 @@ class Formacao extends Model
         'tecnologia' => 'array',
     ];
 
-    public function getCertificadoUrlAttribute($value)
-    {
-        // O $value é o que está salvo no banco (ex: "foto.jpg")
-        return $value ? asset('storage/' . $value) : null;
-    }
-    public function getCapaUrlAttribute($value)
-    {
-        // O $value é o que está salvo no banco (ex: "foto.jpg")
-        return $value ? asset('storage/' . $value) : null;
-    }
 }

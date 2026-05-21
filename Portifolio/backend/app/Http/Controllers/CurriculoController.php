@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Curriculo;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Cloudinary\Api\Upload\UploadApi;
+use Illuminate\Support\Facades\Log;
 
 class CurriculoController extends Controller
 {
@@ -14,19 +15,33 @@ class CurriculoController extends Controller
         // Troque as chaves pelos nomes dos campos do seu formulário/frontend
 
         $request->validate([
-            'curriculo_form' => 'required|file|mimes:pdf,doc,docx|max:5120', // Máx 5MB
+            'curriculo_form' => 'required|file|mimes:pdf|max:5120', // Máx 5MB
         ]);
 
         try {
-            $path = null;
+            $urlPdfCloudinary = null; // Vamos guardar a URL aqui
 
             // 2. LÓGICA DE UPLOAD
 
             if ($request->hasFile('curriculo_form')) {
                 $file = $request->file('curriculo_form');
-                $nomeOriginal = $file->getClientOriginalName();
-                // storeAs garante que use o nome que você passou
-                $path = $file->storeAs('curriculo', $nomeOriginal, 'public');
+
+                try {
+                    
+                    $uploadApi = new UploadApi();
+
+                    $uploadResult = $uploadApi->upload($file->getRealPath(), [
+                        'folder' => 'curriculo',
+                        'public_id' => 'Curriculo-Rafael-Machado', // Nome limpo e fixo
+                        'overwrite' => true, // Permite substituir o arquivo antigo lá no painel
+                        'resource_type' => 'auto'
+                    ]);
+
+                    $urlPdfCloudinary = $uploadResult['secure_url'];
+                    
+                } catch (\Exception $e) {
+                    Log::error('Erro ao fazer upload do currículo para o Cloudinary.', ['error' => $e->getMessage()]);
+                }
             }
 
             // 3. PERSISTÊNCIA (SALVAR NO BANCO)
@@ -38,7 +53,7 @@ class CurriculoController extends Controller
 
             $dadosCurriculo = Curriculo::updateOrCreate(
                 ['id' => 1],          // 1º Array: Condição (Procure por este ID)
-                ['curriculo_url' => $path] // 2º Array: Dados (Atualize ou crie com este valor)
+                ['curriculo_url' => $urlPdfCloudinary] // 2º Array: Dados (Atualize ou crie com este valor)
             );
 
 

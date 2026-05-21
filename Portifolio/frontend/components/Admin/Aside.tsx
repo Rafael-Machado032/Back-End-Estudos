@@ -264,7 +264,7 @@ export default function Aside() {
                     ) : (
                         <div className='flex flex-col gap-1' key={"bloco-curriculo"}>
                             <label className='text-[#94a3b8] text-sm font-bold'>Atualizar Currículo (PDF/Word)</label>
-                            <input type="file" accept=".pdf,.doc,.docx" name="curriculo_form"
+                            <input type="file" accept=".pdf" name="curriculo_form"
                                 className="border border-[#374151] bg-[#0f172a] rounded-lg text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-l-lg file:border-0 file:text-sm file:font-semibold file:bg-[#374151] file:text-white hover:file:bg-[#4b5563] file:cursor-pointer" />
                         </div>
                     )}

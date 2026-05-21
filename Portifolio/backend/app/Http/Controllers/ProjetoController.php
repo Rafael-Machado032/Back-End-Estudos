@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Projeto;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Cloudinary\Cloudinary;
 
@@ -15,10 +14,9 @@ class ProjetoController extends Controller
     public function index()
     /*(Leitura Geral)*/
     {
-        try{
+        try {
 
             return response()->json(Projeto::all(), 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro ao mostrar todos projeto.',
@@ -39,30 +37,34 @@ class ProjetoController extends Controller
         ]);
 
         try {
-            $nomeCapa = 'capa_' . time() . '.jpg';
-            $pathCapa = 'projetos/' . $nomeCapa;
-
             $cld = new Cloudinary(env('CLOUDINARY_URL'));
 
             // 2. Gera a URL ASSINADA
-            $url = $cld->image($validated['demonstracao_form'])
+            $url = $cld->image($validated['demonstracao_form']) //Gera a url provisoria de 30 dias
                 ->deliveryType('url2png')
                 ->signUrl()
                 ->addTransformation('ar_16:9,c_auto,g_north,w_500')
                 ->toUrl();
 
-            Log::info("URL do Print: " . $url);
+            $projetoUrl = $cld->uploadApi()->upload($url, [ // Envia a URL assinada para o Cloudinary, que irá gerar uma URL definitiva
+                'resource_type' => 'image',
+                'asset_folder' => 'projetos',
+            ]);
 
-            Storage::disk('public')->put($pathCapa, file_get_contents($url));
+            Log::info(" ");
+            Log::info("URL provisorio do Print Gerada: " . $url);
+            Log::info("URL da imagem Gerada: " . $projetoUrl['secure_url'] );
+            Log::info(" ");
+            Log::info("#####################################################################################################################################################################################");
 
             // CORREÇÃO: Mapeando os nomes exatos da validação
             $dadosProjeto = Projeto::create([
-                'titulo'          => $validated['titulo_form'],
-                'tecnologia'      => $validated['tecnologias_form'], // Ajustado para bater com o validate
-                'descricao'       => $validated['descricao_form'],
+                'titulo'           => $validated['titulo_form'],
+                'tecnologia'       => $validated['tecnologias_form'], // Ajustado para bater com o validate
+                'descricao'        => $validated['descricao_form'],
                 'demonstracao_url' => $validated['demonstracao_form'],
-                'github_url'      => $validated['github_form'] ?? null,
-                'layout_url'      => $pathCapa,
+                'github_url'       => $validated['github_form'] ?? null, // Opcional
+                'layout_url'       => $projetoUrl['secure_url'],
             ]);
 
             return response()->json([
@@ -86,7 +88,6 @@ class ProjetoController extends Controller
         try {
 
             return response()->json($projeto, 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Erro ao mostrar o projeto.',
@@ -132,11 +133,31 @@ class ProjetoController extends Controller
     /*(Exclusão)*/
     {
         try {
+
+            $getPublicId = function ($url) {
+                if (!$url) return null;
+
+                // Remove a extensão (.pdf, .jpg, etc)
+                $pathWithoutExtension = preg_replace('/\.[^.]+$/', '', $url);
+
+                // Pega tudo o que vem depois da pasta /upload/v123456789/
+                if (preg_match('/\/upload\/(?:v\d+\/)?(.+)$/', $pathWithoutExtension, $matches)) {
+                    return $matches[1];
+                }
+                return null;
+            };
+
+
             // Pega "projetos/capa_..." direto do banco, ignorando a URL completa
             $pathOriginal = $projeto->getRawOriginal('layout_url');
+            $publicId = $getPublicId($pathOriginal);
 
-            if ($pathOriginal && Storage::disk('public')->exists($pathOriginal)) {
-                Storage::disk('public')->delete($pathOriginal);
+            if ($publicId) {
+                $cld = new Cloudinary(env('CLOUDINARY_URL'));
+                $cld->uploadApi()->destroy($publicId, ['resource_type' => 'image']);
+                Log::info("Imagem do projeto deletada do Cloudinary ID: " . $publicId);
+            } else {
+                Log::warning("Não foi possível extrair o public_id da imagem para: " . $pathOriginal);
             }
 
             $projeto->delete();

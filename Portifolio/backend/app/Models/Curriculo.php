@@ -10,9 +10,4 @@ class Curriculo extends Model
 
     // Remove o $appends e o método antigo, e usa este:
 
-    public function getCurriculoUrlAttribute($value)
-    {
-        // O $value é o que está salvo no banco (ex: "foto.jpg")
-        return $value ? asset('storage/' . $value) : null;
-    }
 }

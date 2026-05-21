@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Formacao;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\Cloudinary;
 use Illuminate\Support\Facades\Log;
@@ -36,8 +35,7 @@ class FormacaoController extends Controller
 
         try {
             $urlPdfCloudinary = null; // Vamos guardar a URL aqui
-            $pathCapaLocal = null;
-            $pathPdf = null;
+            $urlCapa = null; // URL da capa gerada a partir do PDF
 
             if ($request->hasFile('certificado_form')) {
                 $file = $request->file('certificado_form');
@@ -55,25 +53,29 @@ class FormacaoController extends Controller
                     }
 
                     // AQUI ESTÁ A CHAVE: Pegamos a URL segura do PDF enviado
-                    $urlPdfCloudinary = $response['secure_url'];
-                    $publicId = $response['public_id'];
+                    // 1. CORREÇÃO: Link de LEITURA para o PDF (Abre no navegador)
+                    $urlPdfCloudinary = $response['secure_url']; // URL definitiva do PDF no Cloudinary
+                    $publicId = $response['public_id']; // ID público do arquivo no Cloudinary, necessário para gerar a capa e para futuras operações (deletar, etc)
 
-                    $urlCapa = $cld->image($publicId)
+                    // $urlPdfCloudinary = $cld->image($publicId)
+                    //     ->extension('pdf')
+                    //     ->addTransformation('fl_inline')
+                    //     ->toUrl();
+
+                    $urlCapa = $cld->image($publicId) // Geramos a capa a partir do PDF usando o public_id
                         ->format('jpg')
                         ->addTransformation('w_1000,c_limit,pg_1')
                         ->toUrl();
 
+                    Log::info(" ");
                     Log::info("URL do Pdf Gerada: " . $urlPdfCloudinary);
                     Log::info("ID do pdf: " . $publicId);
                     Log::info("URL da Capa Gerada: " . $urlCapa);
+                    Log::info(" ");
+                    Log::info("#####################################################################################################################################################################################");
 
-                    $pathPdf = $request->file('certificado_form')->store('certificados', 'public');
-
-                    $nomeCapa = 'capa_' . time() . '.jpg';
-                    $pathCapaLocal = 'certificados/' . $nomeCapa;
-
-                    $imagemConteudo = file_get_contents($urlCapa);
-                    Storage::disk('public')->put($pathCapaLocal, $imagemConteudo);
+                    
+                    
                 } catch (\Exception $e) {
                     Log::error("ERRO NO CLOUDINARY: " . $e->getMessage());
                     return response()->json(['error' => 'Falha no processamento do arquivo', 'details' => $e->getMessage()], 500);
@@ -86,8 +88,8 @@ class FormacaoController extends Controller
                 'descricao'       => $validated['descricao_form'],
                 'credencial'      => $validated['credencial_form'],
                 'curso_url'       => $validated['siteCurso_form'],
-                'certificado_url' => $pathPdf,
-                'capa_url'        => $pathCapaLocal,     // CAMINHO LOCAL DA CAPA
+                'certificado_url' => $urlPdfCloudinary,
+                'capa_url'        => $urlCapa,     // URL DA CAPA NO CLOUDINARY
             ]);
 
             return response()->json([
@@ -142,21 +144,42 @@ class FormacaoController extends Controller
     public function destroy(Formacao $formacao)
     {
         try {
-            $pathOriginalCertificado = $formacao->getRawOriginal('certificado_url');
-            $pathOriginalCapa = $formacao->getRawOriginal('capa_url');
+            
+            $uploadApi = new UploadApi();
 
-            if ($pathOriginalCertificado && Storage::disk('public')->exists($pathOriginalCertificado)) {
-                Storage::disk('public')->delete($pathOriginalCertificado);
+            // 1. FUNÇÃO AUXILIAR: Extrai o public_id de uma URL do Cloudinary
+            // Ela transforma "https://cloudinary.com" em "certificados/arquivo"
+            $getPublicId = function ($url) {
+                if (!$url) return null;
+
+                // Remove a extensão (.pdf, .jpg, etc)
+                $pathWithoutExtension = preg_replace('/\.[^.]+$/', '', $url);
+
+                // Pega tudo o que vem depois da pasta /upload/v123456789/
+                if (preg_match('/\/upload\/(?:v\d+\/)?(.+)$/', $pathWithoutExtension, $matches)) {
+                    return $matches[1];
+                }
+                return null;
+            };
+
+            // 2. DELETAR O PDF DO CLOUDINARY
+            $pdfUrl = $formacao->getRawOriginal('certificado_url');
+            $pdfPublicId = $getPublicId($pdfUrl);
+
+            if ($pdfPublicId) {
+                // No Cloudinary, PDFs e RAW files precisam do parâmetro 'resource_type' => 'raw' ou 'auto' para deletar
+                $uploadApi->destroy($pdfPublicId, ['resource_type' => 'image']);
+                Log::info("PDF deletado do Cloudinary ID: " . $pdfPublicId);
+            } else {
+                Log::warning("Não foi possível extrair o public_id do PDF para: " . $pdfUrl);
             }
 
-            if ($pathOriginalCapa && Storage::disk('public')->exists($pathOriginalCapa)) {
-                Storage::disk('public')->delete($pathOriginalCapa);
-            }
-
+            // 4. DELETAR DO BANCO DE DADOS (NEON)
             $formacao->delete();
 
-            return response()->json(['message' => 'Removido com sucesso'], 200);
+            return response()->json(['message' => 'Formação e arquivos removidos com sucesso'], 200);
         } catch (\Exception $e) {
+            Log::error("ERRO AO DELETAR FORMAÇÃO: " . $e->getMessage());
             return response()->json([
                 'error' => 'Erro ao deletar a formação.',
                 'details' => $e->getMessage()

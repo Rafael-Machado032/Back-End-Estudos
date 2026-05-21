@@ -14,10 +14,4 @@ class Projeto extends Model
         'github_url',
         'layout_url'
     ];
-
-    public function getLayoutUrlAttribute($value)
-    {
-        // O $value é o que está salvo no banco (ex: "foto.jpg")
-        return $value ? asset('storage/' . $value) : null;
-    }
 }
